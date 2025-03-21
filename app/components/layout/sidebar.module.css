@@ -15,6 +15,44 @@
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
+.navItemContent {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.submenu {
+    margin-left: 2.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+/* ... existing code ... */
+
+.submenuItem {
+    padding: 0.5rem 1rem;
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    font-size: 0.9rem;
+    border-radius: 0.375rem;
+    transition: all 0.2s;
+}
+
+.submenuItem:hover {
+    background: rgba(255, 255, 255, 0.05);
+    color: #ffffff;
+    transform: translateX(4px);
+}
+
+.submenuItemActive {
+    background: rgba(99, 102, 241, 0.1);
+    color: #6366f1;
+    border-left: 2px solid #6366f1;
+}
+
+/* ... rest of existing code ... */
+
 .sidebarOpen {
     transform: translateX(0);
 }

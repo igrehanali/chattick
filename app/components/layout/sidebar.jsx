@@ -35,7 +35,32 @@ const navigation = [
   { name: "Notifications & Policies", href: "/notifications", icon: Bell },
   { name: "Themes & Customization", href: "/themes", icon: Palette },
   { name: "Reports & Moderation", href: "/reports", icon: ShieldAlert },
-  { name: "Analytics & Insights", href: "/analytics", icon: BarChart },
+  {
+    name: "Analytics & Insights",
+    href: "/analytics",
+    icon: BarChart,
+    submenu: [
+      { name: "View Subscription", href: "/analytics/SubscriptionAnalytics" },
+      { name: "Renewal Analytics", href: "/analytics/RenewalAnalytics" },
+      { name: "View Call/Message Usage", href: "/analytics/ViewCallMessageUsage" },
+      { name: "View Contest Participation/Gifts", href: "/analytics/ViewContextParticipationGifts" },
+      { name: "View Contest Payment/Financial", href: "/analytics/ViewPaymentFinancial" },
+      { name: "View Referral & Points", href: "/analytics/ViewReferralPoints" },
+      { name: "Analyze Support Requests Metrics", href: "/analytics/AnalyzeSupportRequestsMetrics" },
+      { name: "Analyze Bug Reports Metrics", href: "/analytics/AnalyzeBugReportsMetrics" },
+      { name: "Analyze Feature Suggestions", href: "/analytics/AnalyzeFeatureSuggestions" },
+      { name: "Analyze Tutorials Usage", href: "/analytics/AnalyzeTutorialsUsage" },
+      { name: "Analyze Group Usage", href: "/analytics/AnalyzeGroupUsage" },
+      { name: "Analyze Login & Security Metrics", href: "/analytics/AnalyzeLoginSecurityMetrics" },
+      { name: "Analyze Device & Session Usage", href: "/analytics/AnalyzeDeviceSessionUsage" },
+      { name: "Analyze Notification & Alert ", href: "/analytics/AnalyzeNotificationAlert" },
+      { name: "Manage Marketing Emails/Alerts", href: "/analytics/ManageMarketingEmailsAlerts" },
+
+
+
+
+    ],
+  },
   { name: "Admin & Super Admin Management", href: "/admin", icon: UserCog },
 ];
 
@@ -44,6 +69,7 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutAlert, setShowSignOutAlert] = useState(false);
   const { logout } = useAuth();
+  const [expandedItems, setExpandedItems] = useState([]);
 
   // Close sidebar when route changes on mobile
   useEffect(() => {
@@ -61,6 +87,14 @@ export function Sidebar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
+
+  const toggleSubmenu = (itemName) => {
+    setExpandedItems((prev) =>
+      prev.includes(itemName)
+        ? prev.filter((item) => item !== itemName)
+        : [...prev, itemName]
+    );
+  };
 
   return (
     <>
@@ -83,37 +117,68 @@ export function Sidebar() {
 
       {/* Sidebar */}
       <div
-        className={`${styles.sidebar} ${
-          isOpen ? styles.sidebarOpen : styles.sidebarClosed
-        }`}
+        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed
+          }`}
       >
         <div className={styles.header}>
           <span className={styles.headerTitle}>Admin Panel</span>
         </div>
+
         <nav className={styles.nav}>
           <div className={styles.navList}>
             {navigation.map((item) => {
               const isActive = pathname.startsWith(item.href);
+              const isExpanded = expandedItems.includes(item.name);
+
               return (
-                <Link
-                  key={item.name}
-                  href={item.href}
-                  className={`${styles.navItem} ${
-                    isActive ? styles.navItemActive : ""
-                  }`}
-                >
-                  <item.icon
-                    className={`${styles.navItemIcon} ${
-                      isActive ? styles.navItemIconActive : ""
-                    }`}
-                    aria-hidden="true"
-                  />
-                  {item.name}
-                </Link>
+                <div key={item.name}>
+                  <Link
+                    href={item.href}
+                    className={`${styles.navItem} ${isActive ? styles.navItemActive : ""
+                      }`}
+                    onClick={(e) => {
+                      if (item.submenu) {
+                        e.preventDefault(); // Prevent navigation if submenu exists
+                        toggleSubmenu(item.name);
+                      }
+                    }}
+                  >
+                    <item.icon
+                      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ""
+                        }`}
+                      aria-hidden="true"
+                    />
+                    {item.name}
+                    {item.submenu && (
+                      <span className={styles.submenuToggle}>
+                        {isExpanded ? "▲" : "▼"}
+                      </span>
+                    )}
+                  </Link>
+
+                  {item.submenu && isExpanded && (
+                    <div className={styles.submenu}>
+                      {item.submenu.map((subItem) => {
+                        const isSubItemActive = pathname === subItem.href;
+                        return (
+                          <Link
+                            key={subItem.name}
+                            href={subItem.href}
+                            className={`${styles.submenuItem} ${isSubItemActive ? styles.submenuItemActive : ""
+                              }`}
+                          >
+                            {subItem.name}
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
               );
             })}
           </div>
         </nav>
+
         <div className={styles.footer}>
           <button
             className={styles.signOutButton}
