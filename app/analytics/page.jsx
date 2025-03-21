@@ -185,8 +185,8 @@ const Analytics = () => {
             ))}
           </select>
 
-          <Button /> 
-      </div>
+          <Button />
+        </div>
 
         <div className="metrics-overview">
           <div className="metric-card">

@@ -41,27 +41,35 @@ const SubscriptionAnalytics = () => {
         newSignups: [
             { month: "Jan", count: 120 },
             { month: "Feb", count: 150 },
-            // ... more months
+            { month: "Mar", count: 180 },
+            { month: "Apr", count: 135 },
+            { month: "May", count: 165 }
         ],
         renewalRates: [
             { month: "Jan", rate: 85 },
             { month: "Feb", rate: 88 },
-            // ... more months
+            { month: "Mar", rate: 92 },
+            { month: "Apr", rate: 87 },
+            { month: "May", rate: 90 }
         ],
         planPopularity: [
             { name: "Basic", subscribers: 450 },
             { name: "Premium", subscribers: 300 },
-            { name: "Enterprise", subscribers: 150 },
+            { name: "Enterprise", subscribers: 150 }
         ],
         churnRate: [
             { month: "Jan", cancellations: 20 },
             { month: "Feb", cancellations: 15 },
-            // ... more months
+            { month: "Mar", cancellations: 18 },
+            { month: "Apr", cancellations: 12 },
+            { month: "May", cancellations: 16 }
         ],
         averageDuration: [
             { month: "Jan", basic: 8.5, premium: 12.3, enterprise: 15.7 },
             { month: "Feb", basic: 9.2, premium: 11.8, enterprise: 16.1 },
             { month: "Mar", basic: 8.8, premium: 12.5, enterprise: 15.9 },
+            { month: "Apr", basic: 9.5, premium: 12.8, enterprise: 16.3 },
+            { month: "May", basic: 9.1, premium: 12.2, enterprise: 16.0 }
         ],
     };
 
@@ -98,6 +106,7 @@ const SubscriptionAnalytics = () => {
                             <option key={year} value={year}>{year}</option>
                         ))}
                     </select>
+
 
                     <select
                         value={selectedMonth}
@@ -235,7 +244,7 @@ const SubscriptionAnalytics = () => {
                     </div>
                 </div>
             </div>
-        </AdminLayout>
+        </AdminLayout >
     );
 };
 

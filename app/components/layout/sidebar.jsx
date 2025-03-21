@@ -5,21 +5,9 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/contexts/auth-context";
 import {
-  LayoutDashboard,
-  Users,
-  MessageSquare,
-  CreditCard,
-  Trophy,
-  HelpCircle,
-  Settings,
-  Bell,
-  Palette,
-  ShieldAlert,
-  BarChart,
-  UserCog,
-  Menu,
-  X,
-  LogOut,
+  LayoutDashboard, Users, MessageSquare, CreditCard, Trophy,
+  HelpCircle, Settings, Bell, Palette, ShieldAlert,
+  BarChart, UserCog, Menu, X, LogOut,
 } from "lucide-react";
 import { SignOutAlert } from "./sign-out-alert";
 import styles from "./sidebar.module.css";
@@ -42,23 +30,19 @@ const navigation = [
     submenu: [
       { name: "View Subscription", href: "/analytics/SubscriptionAnalytics" },
       { name: "Renewal Analytics", href: "/analytics/RenewalAnalytics" },
-      { name: "View Call/Message Usage", href: "/analytics/ViewCallMessageUsage" },
-      { name: "View Contest Participation/Gifts", href: "/analytics/ViewContextParticipationGifts" },
-      { name: "View Contest Payment/Financial", href: "/analytics/ViewPaymentFinancial" },
-      { name: "View Referral & Points", href: "/analytics/ViewReferralPoints" },
-      { name: "Analyze Support Requests Metrics", href: "/analytics/AnalyzeSupportRequestsMetrics" },
-      { name: "Analyze Bug Reports Metrics", href: "/analytics/AnalyzeBugReportsMetrics" },
-      { name: "Analyze Feature Suggestions", href: "/analytics/AnalyzeFeatureSuggestions" },
-      { name: "Analyze Tutorials Usage", href: "/analytics/AnalyzeTutorialsUsage" },
-      { name: "Analyze Group Usage", href: "/analytics/AnalyzeGroupUsage" },
-      { name: "Analyze Login & Security Metrics", href: "/analytics/AnalyzeLoginSecurityMetrics" },
-      { name: "Analyze Device & Session Usage", href: "/analytics/AnalyzeDeviceSessionUsage" },
-      { name: "Analyze Notification & Alert ", href: "/analytics/AnalyzeNotificationAlert" },
+      { name: "Call/Message Usage", href: "/analytics/ViewCallMessageUsage" },
+      { name: "Contest Participation/Gifts", href: "/analytics/ViewContextParticipationGifts" },
+      { name: "Contest Payment/Financial", href: "/analytics/ViewPaymentFinancial" },
+      { name: "Referral & Points", href: "/analytics/ViewReferralPoints" },
+      { name: "Support Requests Metrics", href: "/analytics/AnalyzeSupportRequestsMetrics" },
+      { name: "Bug Reports Metrics", href: "/analytics/AnalyzeBugReportsMetrics" },
+      { name: "Feature Suggestions", href: "/analytics/AnalyzeFeatureSuggestions" },
+      { name: "Tutorials Usage", href: "/analytics/AnalyzeTutorialsUsage" },
+      { name: "Group Usage", href: "/analytics/AnalyzeGroupUsage" },
+      { name: "Login & Security Metrics", href: "/analytics/AnalyzeLoginSecurityMetrics" },
+      { name: "Device & Session Usage", href: "/analytics/AnalyzeDeviceSessionUsage" },
+      { name: "Notification & Alert ", href: "/analytics/AnalyzeNotificationAlert" },
       { name: "Manage Marketing Emails/Alerts", href: "/analytics/ManageMarketingEmailsAlerts" },
-
-
-
-
     ],
   },
   { name: "Admin & Super Admin Management", href: "/admin", icon: UserCog },
@@ -69,14 +53,30 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutAlert, setShowSignOutAlert] = useState(false);
   const { logout } = useAuth();
-  const [expandedItems, setExpandedItems] = useState([]);
 
-  // Close sidebar when route changes on mobile
+  // Initialize expandedItems based on current path
+  const [expandedItems, setExpandedItems] = useState(() => {
+    return navigation
+      .filter(item =>
+        item.submenu?.some(subItem => pathname.startsWith(subItem.href))
+      )
+      .map(item => item.name);
+  });
+
+  // Only close mobile sidebar on route change
   useEffect(() => {
     setIsOpen(false);
+
+    // Keep submenu open if current path matches
+    const parentItem = navigation.find(item =>
+      item.submenu?.some(subItem => pathname.startsWith(subItem.href))
+    );
+
+    if (parentItem && !expandedItems.includes(parentItem.name)) {
+      setExpandedItems(prev => [...prev, parentItem.name]);
+    }
   }, [pathname]);
 
-  // Close sidebar when clicking outside on mobile
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isOpen && !event.target.closest(".sidebar")) {
@@ -98,28 +98,16 @@ export function Sidebar() {
 
   return (
     <>
-      {/* Mobile menu button */}
       <button
         onClick={() => setIsOpen(!isOpen)}
         className={styles.mobileMenuButton}
       >
-        {isOpen ? (
-          <X className={styles.menuIcon} />
-        ) : (
-          <Menu className={styles.menuIcon} />
-        )}
+        {isOpen ? <X className={styles.menuIcon} /> : <Menu className={styles.menuIcon} />}
       </button>
 
-      {/* Overlay */}
-      {isOpen && (
-        <div className={styles.overlay} onClick={() => setIsOpen(false)} />
-      )}
+      {isOpen && <div className={styles.overlay} onClick={() => setIsOpen(false)} />}
 
-      {/* Sidebar */}
-      <div
-        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed
-          }`}
-      >
+      <div className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed}`}>
         <div className={styles.header}>
           <span className={styles.headerTitle}>Admin Panel</span>
         </div>
@@ -134,18 +122,16 @@ export function Sidebar() {
                 <div key={item.name}>
                   <Link
                     href={item.href}
-                    className={`${styles.navItem} ${isActive ? styles.navItemActive : ""
-                      }`}
+                    className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
                     onClick={(e) => {
                       if (item.submenu) {
-                        e.preventDefault(); // Prevent navigation if submenu exists
+                        e.preventDefault();
                         toggleSubmenu(item.name);
                       }
                     }}
                   >
                     <item.icon
-                      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ""
-                        }`}
+                      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ""}`}
                       aria-hidden="true"
                     />
                     {item.name}
@@ -164,8 +150,7 @@ export function Sidebar() {
                           <Link
                             key={subItem.name}
                             href={subItem.href}
-                            className={`${styles.submenuItem} ${isSubItemActive ? styles.submenuItemActive : ""
-                              }`}
+                            className={`${styles.submenuItem} ${isSubItemActive ? styles.submenuItemActive : ""}`}
                           >
                             {subItem.name}
                           </Link>

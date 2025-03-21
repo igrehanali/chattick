@@ -6,10 +6,10 @@
 
 .charts-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(min(100%, 500px), 1fr));
-    gap: 1.5rem;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    padding: 20px;
     width: 100%;
-    padding: 1rem;
 }
 
 .chart-card {
@@ -44,16 +44,8 @@
     border: 1px solid #e2e8f0;
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
     .charts-grid {
         grid-template-columns: 1fr;
-    }
-
-    .chart-card {
-        height: 350px;
-    }
-
-    .filter-select {
-        min-width: 100%;
     }
 }
