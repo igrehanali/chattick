@@ -1,0 +1,245 @@
+/* General Layout */
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-height: 85vh;
+    /* Prevents overflow */
+    overflow-y: auto;
+    padding: 1.5rem;
+}
+
+/* Header */
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 1rem;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+/* .title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2563eb;
+} */
+
+/* Search Bar */
+.searchContainer {
+    width: 350px;
+    padding: 0.5rem 1rem;
+    background: #f9fafb;
+    border-bottom: 2px solid #e5e7eb;
+    border-radius: 8px;
+}
+
+.searchWrapper {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.searchInput {
+    width: 300px;
+    padding: 0.7rem 3rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 8px;
+    background-color: white;
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.searchInput::placeholder {
+    color: #6b7280;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #2563eb;
+    box-shadow: 0 0 8px rgba(37, 99, 235, 0.25);
+}
+
+.searchIcon {
+    position: absolute;
+    left: 1rem;
+    font-size: 0.8rem;
+    color: #6b7280;
+}
+
+/* Table */
+.table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0 10px;
+}
+
+.tableHeader {
+    background-color: #f8fafc;
+    font-size: 0.9rem;
+    border-bottom: 2px solid #e2e8f0;
+}
+
+.tableHeaderCell {
+    padding: 1rem;
+    text-align: left;
+    font-weight: 600;
+    color: #64748b;
+    text-transform: uppercase;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+}
+
+.tableBody {
+    background-color: white;
+}
+
+.tableRow {
+    border-radius: 8px;
+    background-color: white;
+    transition: all 0.2s ease-in-out;
+    border: 1px solid transparent;
+}
+
+.tableRow:hover {
+    background-color: #f8fafc;
+    border-color: #e2e8f0;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.tableCell {
+    padding: 1rem;
+    color: #1e293b;
+    font-size: 0.875rem;
+    font-weight: 500;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* User Info */
+.userInfo {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+
+.avatar {
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #2563eb, #9333ea);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    font-weight: bold;
+    color: white;
+}
+
+.tableWrapper {
+    position: relative;
+    max-height: 72vh;
+    overflow: auto;
+    border-radius: 8px;
+    border: 1px solid #e5e7eb;
+}
+
+/* Status Labels */
+.status {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.45rem 1rem;
+    border-radius: 9999px;
+    font-size: 0.8rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    background-color: #d1fae5;
+    color: #065f46;
+}
+
+.blocked {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+/* Locations */
+.locations {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #6b7280;
+}
+
+/* Action Buttons */
+.actionButtons {
+    display: flex;
+    gap: 0.7rem;
+}
+
+.actionButtons button {
+    padding: 0.6rem 1rem;
+    border-radius: 6px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    transition: all 0.3s ease-in-out;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.1);
+}
+
+.actionButtons button:hover {
+    background-color: #1e40af;
+    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
+    transform: translateY(-2px);
+}
+
+.actionButtons button:active {
+    transform: translateY(0);
+}
+
+/* Secondary Button */
+.actionButtons button[variant="ghost"] {
+    background-color: transparent;
+    border: 2px solid #e5e7eb;
+    color: #374151;
+}
+
+.actionButtons button[variant="ghost"]:hover {
+    background-color: #f3f4f6;
+    border-color: #2563eb;
+    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+}
+
+/* Header Button */
+.header button {
+    padding: 0.75rem 1.6rem;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    background: linear-gradient(135deg, #2563eb, #9333ea);
+    color: white;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.header button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
+}
+
+.header button:active {
+    transform: translateY(0);
+}
+
+/* Actions Cell */
+.actionsCell {
+    text-align: right;
+}

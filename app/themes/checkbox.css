@@ -1,0 +1,52 @@
+.theme-designer__chat-item input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--primary-color);
+    border-radius: 4px;
+    margin-right: 8px;
+    position: relative;
+    cursor: pointer;
+    vertical-align: middle;
+    transition: all 0.2s ease;
+}
+
+.theme-designer__chat-item input[type="checkbox"]:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.theme-designer__chat-item input[type="checkbox"]:checked::after {
+    content: '';
+    position: absolute;
+    left: 6px;
+    top: 2px;
+    width: 5px;
+    height: 10px;
+    border: solid white;
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+}
+
+.theme-designer__chat-item input[type="checkbox"]:hover {
+    border-color: var(--primary-hover);
+    box-shadow: 0 0 0 2px rgba(25, 118, 210, 0.1);
+}
+
+.theme-designer__chat-item input[type="checkbox"]:focus {
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(25, 118, 210, 0.2);
+}
+
+.theme-designer__chat-item label {
+    display: flex;
+    align-items: center;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.theme-designer__chat-item label:hover input[type="checkbox"] {
+    border-color: var(--primary-hover);
+}

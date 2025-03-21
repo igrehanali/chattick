@@ -1,0 +1,61 @@
+.tabs {
+    width: 100%;
+}
+
+.tabsList {
+    display: flex;
+    overflow-x: auto;
+    width: 100%;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
+.tabButton {
+    padding: 0.75rem 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+    cursor: pointer;
+    border: none;
+    background: none;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    position: relative;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+
+.tabButton:hover {
+    color: #3b82f6;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.tabButton.active {
+    color: #3b82f6;
+    border-bottom: 2px solid #3b82f6;
+    font-weight: 500;
+    background-color: rgba(59, 130, 246, 0.05);
+}
+
+.tabContent {
+    padding: 1rem 0;
+}
+
+.tabPanel {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.tabTitle {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #111827;
+    margin-bottom: 1rem;
+}
+
+.saveButton {
+    width: 200px;
+}

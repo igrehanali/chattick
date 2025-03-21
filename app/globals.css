@@ -1,0 +1,191 @@
+:root {
+  --background-color: hsl(0, 0%, 100%);
+  --foreground-color: hsl(222.2, 84%, 4.9%);
+  --card-bg: hsl(0, 0%, 100%);
+  --card-color: hsl(222.2, 84%, 4.9%);
+  --popover-bg: hsl(0, 0%, 100%);
+  --popover-color: hsl(222.2, 84%, 4.9%);
+  --primary-color: hsl(221, 83%, 53%);
+  --primary-text: hsl(210, 40%, 98%);
+  --secondary-bg: hsl(210, 40%, 96.1%);
+  --secondary-text: hsl(222.2, 47.4%, 11.2%);
+  --muted-bg: hsl(210, 40%, 96.1%);
+  --muted-text: hsl(215.4, 16.3%, 46.9%);
+  --accent-bg: hsl(210, 40%, 96.1%);
+  --accent-text: hsl(222.2, 47.4%, 11.2%);
+  --destructive-color: hsl(0, 84.2%, 60.2%);
+  --destructive-text: hsl(210, 40%, 98%);
+  --border-color: hsl(214.3, 31.8%, 91.4%);
+  --input-border: hsl(214.3, 31.8%, 91.4%);
+  --ring-color: hsl(221, 83%, 53%);
+  --border-radius: 0.5rem;
+}
+
+[data-theme="dark"] {
+  --background-color: hsl(222.2, 84%, 4.9%);
+  --foreground-color: hsl(210, 40%, 98%);
+  --card-bg: hsl(222.2, 84%, 4.9%);
+  --card-color: hsl(210, 40%, 98%);
+  --popover-bg: hsl(222.2, 84%, 4.9%);
+  --popover-color: hsl(210, 40%, 98%);
+  --primary-color: hsl(217.2, 91.2%, 59.8%);
+  --primary-text: hsl(222.2, 47.4%, 11.2%);
+  --secondary-bg: hsl(217.2, 32.6%, 17.5%);
+  --secondary-text: hsl(210, 40%, 98%);
+  --muted-bg: hsl(217.2, 32.6%, 17.5%);
+  --muted-text: hsl(215, 20.2%, 65.1%);
+  --accent-bg: hsl(217.2, 32.6%, 17.5%);
+  --accent-text: hsl(210, 40%, 98%);
+  --destructive-color: hsl(0, 62.8%, 30.6%);
+  --destructive-text: hsl(210, 40%, 98%);
+  --border-color: hsl(217.2, 32.6%, 17.5%);
+  --input-border: hsl(217.2, 32.6%, 17.5%);
+  --ring-color: hsl(224.3, 76.3%, 48%);
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  border-color: var(--border-color);
+}
+
+body {
+  background-color: var(--background-color);
+  color: var(--foreground-color);
+  font-family: var(--font-geist-sans), system-ui, -apple-system, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: var(--font-geist-mono), monospace;
+}
+
+/* Custom Scrollbar Styles */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--secondary-bg);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--muted-text);
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--primary-color);
+}
+
+/* Firefox Scrollbar Styles */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: var(--muted-text) var(--secondary-bg);
+}
+
+/* ✅ Base input styles */
+input:not([type="checkbox"]),
+textarea,
+select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #334155;
+  background: #f8fafc;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  outline: none;
+  transition: all 0.25s ease-in-out;
+  margin: 0.2rem 0rem;
+}
+
+/* ✅ Dark mode styles */
+.dark input:not([type="checkbox"]),
+.dark textarea,
+.dark select {
+  background: #1e293b;
+  color: #e2e8f0;
+  border: 1px solid #475569;
+}
+
+/* ✅ Focus state (better accessibility) */
+input:not([type="checkbox"]):focus,
+textarea:focus,
+select:focus {
+  border-color: #4338ca;
+  box-shadow: 0 0 0 3px rgba(67, 56, 202, 0.3);
+}
+
+/* ✅ Dark mode focus */
+.dark input:not([type="checkbox"]):focus,
+.dark textarea:focus,
+.dark select:focus {
+  border-color: #a5b4fc;
+  box-shadow: 0 0 0 3px rgba(129, 140, 248, 0.3);
+}
+
+/* ✅ Disabled state */
+input:not([type="checkbox"]):disabled,
+textarea:disabled,
+select:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ✅ Placeholder styling */
+input:not([type="checkbox"])::placeholder,
+textarea::placeholder {
+  color: #94a3b8;
+}
+
+.dark input:not([type="checkbox"])::placeholder,
+.dark textarea::placeholder {
+  color: #64748b;
+}
+
+/* ✅ Select dropdown */
+select {
+  appearance: none;
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='none' stroke='%23717D95' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 1rem;
+}
+
+/* ✅ Dark mode select */
+.dark select {
+  background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg fill='none' stroke='%23CBD5E1' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+}
+
+/* ✅ Textarea resizable */
+textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* ✅ Base button styles */
+button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1.25rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: center;
+  color: #ffffff;
+  background: #3b82f6;
+  /* 🔵 Primary blue */
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.25s ease-in-out;
+  margin: 1rem 0.2rem;
+}
