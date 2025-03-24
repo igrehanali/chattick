@@ -1,15 +1,65 @@
 "use client";
 
 import React, { useState } from "react";
+import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
+import 'draft-js/dist/Draft.css';
 import styles from "./notifications.module.css";
 import toast from "react-hot-toast";
 import { AdminLayout } from "../components/layout/admin-layout";
 import { Button } from "../components/ui/button";
+
 export default function NotificationsPage() {
-  const [terms, setTerms] = useState("");
-  const [privacy, setPrivacy] = useState("");
-  const [about, setAbout] = useState("");
+  const [terms, setTerms] = useState(EditorState.createEmpty());
+  const [privacy, setPrivacy] = useState(EditorState.createEmpty());
+  const [about, setAbout] = useState(EditorState.createEmpty());
   const [activeTab, setActiveTab] = useState("terms");
+
+  const handleKeyCommand = (command, editorState) => {
+    const newState = RichUtils.handleKeyCommand(editorState, command);
+    if (newState) {
+      handleEditorChange(newState);
+      return 'handled';
+    }
+    return 'not-handled';
+  };
+
+  const handleEditorChange = (newState) => {
+    switch (activeTab) {
+      case 'terms':
+        setTerms(newState);
+        break;
+      case 'privacy':
+        setPrivacy(newState);
+        break;
+      case 'about':
+        setAbout(newState);
+        break;
+    }
+  };
+
+  const renderEditor = (editorState) => (
+    <div className={styles.editorWrapper}>
+      <div className={styles.toolbar}>
+        <button onClick={() => handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'))}>
+          Bold
+        </button>
+        <button onClick={() => handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'))}>
+          Italic
+        </button>
+        <button onClick={() => handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'))}>
+          Underline
+        </button>
+      </div>
+      <div className={styles.editor}>
+        <Editor
+          editorState={editorState}
+          onChange={handleEditorChange}
+          handleKeyCommand={handleKeyCommand}
+        />
+      </div>
+    </div>
+  );
+
   const handleSave = async (content) => {
     try {
       toast.success("Users have been successfully notified.", {
@@ -32,25 +82,22 @@ export default function NotificationsPage() {
         <div className={styles.tabs}>
           <div className={styles.tabsList}>
             <button
-              className={`${styles.tabButton} ${
-                activeTab === "terms" ? styles.active : ""
-              }`}
+              className={`${styles.tabButton} ${activeTab === "terms" ? styles.active : ""
+                }`}
               onClick={() => setActiveTab("terms")}
             >
               Terms & Conditions
             </button>
             <button
-              className={`${styles.tabButton} ${
-                activeTab === "privacy" ? styles.active : ""
-              }`}
+              className={`${styles.tabButton} ${activeTab === "privacy" ? styles.active : ""
+                }`}
               onClick={() => setActiveTab("privacy")}
             >
               Privacy Policy
             </button>
             <button
-              className={`${styles.tabButton} ${
-                activeTab === "about" ? styles.active : ""
-              }`}
+              className={`${styles.tabButton} ${activeTab === "about" ? styles.active : ""
+                }`}
               onClick={() => setActiveTab("about")}
             >
               About Us
@@ -61,7 +108,7 @@ export default function NotificationsPage() {
             {activeTab === "terms" && (
               <div className={styles.tabPanel}>
                 <h2 className={styles.tabTitle}>Terms & Conditions</h2>
-                <p>Terms & Conditions</p>
+                {renderEditor(terms)}
                 <Button
                   className={styles.saveButton}
                   onClick={() => handleSave(terms)}
@@ -74,7 +121,7 @@ export default function NotificationsPage() {
             {activeTab === "privacy" && (
               <div className={styles.tabPanel}>
                 <h2 className={styles.tabTitle}>Privacy Policy</h2>
-                <p>Privacy Policy</p>
+                {renderEditor(privacy)}
                 <Button
                   className={styles.saveButton}
                   onClick={() => handleSave(privacy)}
@@ -87,7 +134,7 @@ export default function NotificationsPage() {
             {activeTab === "about" && (
               <div className={styles.tabPanel}>
                 <h2 className={styles.tabTitle}>About Us</h2>
-                <p>About Us</p>
+                {renderEditor(about)}
                 <Button
                   className={styles.saveButton}
                   onClick={() => handleSave(about)}
