@@ -1,5 +1,4 @@
 "use client";
-
 import { useState } from "react";
 import styles from "./page.module.css";
 import {
@@ -55,6 +54,15 @@ export default function FAQPage() {
   const [currentCategory, setCurrentCategory] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState("all");
   const [showAnalytics, setShowAnalytics] = useState(false);
+  const [showConfirm, setShowConfirm] = useState(false);
+  const [confirmConfig, setConfirmConfig] = useState({
+    title: '',
+    message: '',
+    confirmText: '',
+    cancelText: '',
+    onConfirm: () => { },
+    variant: 'default'
+  });
 
   const handleAddNewFAQ = () => {
     setCurrentFaq(null);
@@ -76,54 +84,6 @@ export default function FAQPage() {
     setIsCategoryModalOpen(true);
   };
 
-  const handleDeleteFAQ = async (id) => {
-    if (window.confirm("Are you sure you want to delete this FAQ?")) {
-      try {
-        // TODO: Implement delete FAQ API call
-        setFaqs(faqs.filter((faq) => faq.id !== id));
-      } catch (error) {
-        console.error("Error deleting FAQ:", error);
-      }
-    }
-  };
-
-  const handleDeleteCategory = async (id) => {
-    const categoryToDelete = categories.find((c) => c.id === id);
-    if (!categoryToDelete) {
-      console.error("Category not found");
-      return;
-    }
-
-    const associatedFAQs = faqs.filter((faq) => faq.category === id);
-    if (associatedFAQs.length > 0) {
-      const message = `Cannot delete category "${
-        categoryToDelete.name
-      }" because it has ${associatedFAQs.length} associated FAQ${
-        associatedFAQs.length === 1 ? "" : "s"
-      }. Please reassign or delete the associated FAQs first.`;
-      alert(message);
-      return;
-    }
-
-    const confirmMessage = `Are you sure you want to delete the category "${categoryToDelete.name}"?\n\nThis action cannot be undone and will permanently remove this category from the system.`;
-
-    if (window.confirm(confirmMessage)) {
-      try {
-        // TODO: Implement delete category API call
-        setCategories(categories.filter((category) => category.id !== id));
-        // Reset selected category if the deleted category was selected
-        if (selectedCategory === id) {
-          setSelectedCategory("all");
-        }
-      } catch (error) {
-        const errorMessage =
-          error.message ||
-          "An unexpected error occurred while deleting the category";
-        console.error("Error deleting category:", error);
-        alert(`Failed to delete category: ${errorMessage}`);
-      }
-    }
-  };
 
   const filteredFAQs = faqs.filter(
     (faq) =>
@@ -132,8 +92,101 @@ export default function FAQPage() {
         faq.answer.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  // Update the ConfirmPopup component
+  const ConfirmPopup = ({ title, message, onConfirm, onCancel, confirmText, cancelText, variant }) => {
+    return (
+      <div className={styles.modalOverlay}>
+        <div className={styles.modalContent}>
+          <h2 className={styles.modalTitle}>{title}</h2>
+          <p className={styles.modalMessage}>{message}</p>
+          <div className={styles.modalActions}>
+            <Button variant="outline" onClick={onCancel}>
+              {cancelText || 'Cancel'}
+            </Button>
+            <Button variant={variant} onClick={onConfirm}>
+              {confirmText || 'Confirm'}
+            </Button>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  // Update the handlers
+  const handleDeleteFAQ = (id) => {
+    setConfirmConfig({
+      title: 'Delete FAQ',
+      message: 'Are you sure you want to delete this FAQ?',
+      confirmText: 'Delete',
+      variant: 'destructive',
+      onConfirm: () => {
+        setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq.id !== id));
+        setShowConfirm(false);
+      }
+    });
+    setShowConfirm(true);
+  };
+
+  const handleToggleVisibility = (faq) => {
+    setConfirmConfig({
+      title: `${faq.isVisible ? 'Hide' : 'Show'} FAQ`,
+      message: `Are you sure you want to ${faq.isVisible ? 'hide' : 'show'} this FAQ?`,
+      confirmText: faq.isVisible ? 'Hide' : 'Show',
+      variant: 'default',
+      onConfirm: () => {
+        setFaqs(faqs.map(f =>
+          f.id === faq.id ? { ...f, isVisible: !f.isVisible } : f
+        ));
+        setShowConfirm(false);
+      }
+    });
+    setShowConfirm(true);
+  };
+
+  const handleDeleteCategory = async (id) => {
+    const categoryToDelete = categories.find((c) => c.id === id);
+    if (!categoryToDelete) {
+      console.error("Category not found");
+      return;
+    }
+    const associatedFAQs = faqs.filter((faq) => faq.category === id);
+    if (associatedFAQs.length > 0) {
+      setConfirmConfig({
+        title: 'Cannot Delete Category',
+        message: `Cannot delete category "${categoryToDelete.name}" because it has ${associatedFAQs.length} associated FAQ${associatedFAQs.length === 1 ? '' : 's'}. Please reassign or delete the associated FAQs first.`,
+        confirmText: 'OK',
+        variant: 'default',
+        onConfirm: () => setShowConfirm(false)
+      });
+      setShowConfirm(true);
+      return;
+    }
+
+    setConfirmConfig({
+      title: 'Delete Category',
+      message: `Are you sure you want to delete the category "${categoryToDelete.name}"?\n\nThis action cannot be undone and will permanently remove this category from the system.`,
+      confirmText: 'Delete',
+      variant: 'destructive',
+      onConfirm: () => {
+        setCategories(categories.filter((category) => category.id !== id));
+        if (selectedCategory === id) {
+          setSelectedCategory("all");
+        }
+        setShowConfirm(false);
+      }
+    });
+    setShowConfirm(true);
+  };
+
+  // Update the render section
   return (
     <AdminLayout>
+      {showConfirm && (
+        <ConfirmPopup
+          {...confirmConfig}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
       <div>
         <div className={styles.header}>
           <h1 className={styles.title}> Surveys & FAQs</h1>
@@ -160,6 +213,8 @@ export default function FAQPage() {
             </Button>
           </div>
         </div>
+
+
 
         {showAnalytics && <FAQAnalytics faqs={faqs} categories={categories} />}
 
@@ -258,14 +313,22 @@ export default function FAQPage() {
                     </td>
                     <td className={styles.tableCell}>
                       <span
-                        className={`${styles.badge} ${
-                          faq.isVisible
-                            ? styles.badgeVisible
-                            : styles.badgeHidden
-                        }`}
+                        className={`${styles.badge} ${faq.isVisible
+                          ? styles.badgeVisible
+                          : styles.badgeHidden
+                          }`}
                       >
                         {faq.isVisible ? "Visible" : "Hidden"}
                       </span>
+                    </td>
+                    <td className={styles.tableCell}>
+                      <button
+                        onClick={() => handleToggleVisibility(faq)}
+                        className={`${styles.visibilityButton} ${faq.isVisible ? styles.visible : styles.hidden
+                          }`}
+                      >
+                        {faq.isVisible ? 'Published' : 'Draft'}
+                      </button>
                     </td>
                     <td className={styles.tableCell}>
                       <div className={styles.actions}>
@@ -293,17 +356,15 @@ export default function FAQPage() {
             isOpen={isFAQModalOpen}
             onClose={() => setIsFAQModalOpen(false)}
             faq={currentFaq}
-            categories={categories}
+            categories={categories}  // Add this line to pass categories
             onSave={(formData) => {
               if (currentFaq) {
-                // TODO: Implement update FAQ API call
                 setFaqs(
                   faqs.map((f) =>
                     f.id === currentFaq.id ? { ...f, ...formData } : f
                   )
                 );
               } else {
-                // TODO: Implement create FAQ API call
                 setFaqs([...faqs, { id: Date.now(), ...formData }]);
               }
               setIsFAQModalOpen(false);

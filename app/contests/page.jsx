@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState } from "react";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
 import { Trophy, Users, Gift, CreditCard } from "lucide-react";
@@ -8,27 +7,35 @@ import ContestsList from "./components/ContestsList";
 import ContestantsList from "./components/ContestantsList";
 import RewardsList from "./components/RewardsList";
 import CreditsList from "./components/CreditsList";
+import GiftsManagement from "./components/GiftsManagement";
+import PointsBundleManagement from "./components/PointsBundleManagement";
+
 
 export default function ContestsPage() {
   const [activeTab, setActiveTab] = useState("contests");
 
+  // Update the tabs array
   const tabs = [
     { id: "contests", label: "Contests", icon: Trophy },
     { id: "contestants", label: "Contestants", icon: Users },
-    { id: "rewards", label: "Gifts & Points", icon: Gift },
-    { id: "credits", label: "Contest Credits", icon: CreditCard },
+    { id: "gifts", label: "Gifts Management", icon: Gift },
+    { id: "points", label: "Points Bundles", icon: CreditCard },
+    { id: "rewards", label: "Rewards History", icon: Gift },
   ];
 
+  // Update the renderContent function
   const renderContent = () => {
     switch (activeTab) {
       case "contests":
         return <ContestsList />;
       case "contestants":
         return <ContestantsList />;
+      case "gifts":
+        return <GiftsManagement />;
+      case "points":
+        return <PointsBundleManagement />;
       case "rewards":
         return <RewardsList />;
-      case "credits":
-        return <CreditsList />;
       default:
         return null;
     }
@@ -46,9 +53,8 @@ export default function ContestsPage() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`${styles.button} ${
-                activeTab === tab.id ? styles.activeButton : ""
-              }`}
+              className={`${styles.button} ${activeTab === tab.id ? styles.activeButton : ""
+                }`}
               onClick={() => setActiveTab(tab.id)}
             >
               <tab.icon className={styles.buttonIcon} />

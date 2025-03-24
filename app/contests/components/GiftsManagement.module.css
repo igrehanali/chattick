@@ -1,0 +1,112 @@
+.container {
+    padding: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+    color: #111827;
+}
+
+.buttonIcon {
+    margin-right: 0.5rem;
+}
+
+.tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.tabButton {
+    padding: 0.5rem 1rem;
+    border: none;
+    background: none;
+    font-size: 0.875rem;
+    color: #6B7280;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.activeTab {
+    color: #2563EB;
+    border-bottom-color: #2563EB;
+}
+
+.tableWrapper {
+    background: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableHeader {
+    background-color: #f9fafb;
+}
+
+.tableHeaderCell {
+    padding: 0.75rem 1rem;
+    text-align: left;
+    font-weight: 500;
+    color: #6b7280;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.tableCell {
+    padding: 0.75rem 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.actions {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actionButton {
+    padding: 0.5rem;
+    background-color: #f3f4f6;
+    color: #2563eb;
+    cursor: pointer;
+    border-radius: 0.25rem;
+    transition: background-color 0.2s;
+}
+
+.editButton:hover {
+    background-color: #f3f4f6;
+    color: #25bdeb;
+}
+
+.deleteButton:hover {
+    background-color: #fee2e2;
+    color: #dc2626;
+}
+
+.statusButton {
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    border: none;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.active {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.inactive {
+    background-color: #fee2e2;
+    color: #dc2626;
+}

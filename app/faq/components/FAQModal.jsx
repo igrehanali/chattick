@@ -5,10 +5,10 @@ import styles from "./FAQModal.module.css";
 
 export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
   const [formData, setFormData] = useState({
-    question: "",
-    answer: "",
-    category: "",
-    isVisible: true,
+    question: '',
+    answer: '',
+    category: '',  // Make sure this exists
+    isVisible: true
   });
 
   useEffect(() => {
@@ -76,20 +76,17 @@ export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
           </div>
 
           <div className={styles.formGroup}>
-            <label htmlFor="category" className={styles.label}>
-              Category
-            </label>
+            <label htmlFor="category">Category</label>
             <select
               id="category"
+              name="category"
               value={formData.category}
-              onChange={(e) =>
-                setFormData({ ...formData, category: e.target.value })
-              }
-              className={styles.select}
+              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
               required
+              className={styles.select}
             >
               <option value="">Select a category</option>
-              {categories?.map((category) => (
+              {categories.map((category) => (
                 <option key={category.id} value={category.id}>
                   {category.name}
                 </option>

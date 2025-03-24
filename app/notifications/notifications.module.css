@@ -68,29 +68,53 @@
 
 .toolbar {
     padding: 10px;
-
     border-bottom: 1px solid #e5e7eb;
     display: flex;
-    gap: 10px;
+    gap: 16px;
+    flex-wrap: wrap;
+    background-color: #f9fafb;
 }
 
-.toolbar button {
-    padding: 5px 10px;
+.toolbarGroup {
+    display: flex;
+    gap: 4px;
+    padding: 0 8px;
+    border-right: 1px solid #e5e7eb;
+}
+
+.toolbarGroup:last-child {
+    border-right: none;
+}
+
+.toolbarButton {
+    padding: 4px 8px;
     border: 1px solid #e5e7eb;
     border-radius: 4px;
     background: white;
-    color: gray;
     cursor: pointer;
     font-size: 14px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #374151;
 }
 
-.toolbar button:hover {
+.toolbarButton:hover {
     background: #f3f4f6;
+    border-color: #d1d5db;
 }
 
 .editor {
     min-height: 400px;
     padding: 20px;
+    background: white;
+}
+
+.editorWrapper {
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    overflow: hidden;
 }
 
 .editor :global(.DraftEditor-root) {

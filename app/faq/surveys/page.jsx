@@ -13,16 +13,40 @@ import SurveyResponses from "../components/SurveyResponses";
 import SurveyAnalytics from "../components/SurveyAnalytics";
 import SurveyModal from "../components/SurveyModal";
 import { AdminLayout } from "../../components/layout/admin-layout";
+// import { ConfirmPopup } from "./../components";
 import Link from "next/link";
+import ConfirmDialog from "@/app/contests/components/ConfirmDialog";
 
 export default function SurveysPage() {
-  const [surveys, setSurveys] = useState([]);
+  const [surveys, setSurveys] = useState([
+    {
+      id: 1,
+      title: "Survey 1",
+      description: "This is a sample survey.",
+      startDate: "2023-06-01",
+      endDate: "2023-06-30",
+      isActive: true,
+
+    },
+    {
+      id: 2,
+      title: "Survey 2",
+      description: "This is a sample survey.",
+      startDate: "2023-06-01",
+      endDate: "2023-06-30",
+      isActive: true,
+
+    },
+
+  ]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isSurveyModalOpen, setIsSurveyModalOpen] = useState(false);
   const [isResponsesModalOpen, setIsResponsesModalOpen] = useState(false);
   const [isAnalyticsModalOpen, setIsAnalyticsModalOpen] = useState(false);
   const [currentSurvey, setCurrentSurvey] = useState(null);
   const [selectedSurveyId, setSelectedSurveyId] = useState(null);
+  const [confirmConfig, setConfirmConfig] = useState({});
+  const [showConfirm, setShowConfirm] = useState(false);
 
   const handleAddNewSurvey = () => {
     setCurrentSurvey(null);
@@ -34,15 +58,16 @@ export default function SurveysPage() {
     setIsSurveyModalOpen(true);
   };
 
-  const handleDeleteSurvey = async (id) => {
-    if (window.confirm("Are you sure you want to delete this survey?")) {
-      try {
-        // TODO: Implement delete survey API call
-        setSurveys(surveys.filter((survey) => survey.id !== id));
-      } catch (error) {
-        console.error("Error deleting survey:", error);
+  const handleDeleteSurvey = (id) => {
+    setConfirmConfig({
+      title: 'Delete Survey',
+      message: 'Are you sure you want to delete this Survey?',
+      onConfirm: () => {
+        setSurveys(surveys.filter(survey => survey.id !== id)); // Fixed: changed rewards to surveys
+        setShowConfirm(false);
       }
-    }
+    });
+    setShowConfirm(true);
   };
 
   const handleViewResponses = (surveyId) => {
@@ -63,6 +88,12 @@ export default function SurveysPage() {
 
   return (
     <AdminLayout>
+      {showConfirm && (
+        <ConfirmDialog
+          {...confirmConfig}
+          onCancel={() => setShowConfirm(false)}
+        />
+      )}
       <div className={styles.container}>
         <div className={styles.header}>
           <h1 className={styles.title}>Survey Management</h1>
@@ -122,11 +153,10 @@ export default function SurveysPage() {
                   </td>
                   <td className={styles.tableCell}>
                     <span
-                      className={`${styles.badge} ${
-                        survey.isActive
-                          ? styles.badgeActive
-                          : styles.badgeInactive
-                      }`}
+                      className={`${styles.badge} ${survey.isActive
+                        ? styles.badgeActive
+                        : styles.badgeInactive
+                        }`}
                     >
                       {survey.isActive ? "Active" : "Inactive"}
                     </span>

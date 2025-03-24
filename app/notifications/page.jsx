@@ -37,24 +37,65 @@ export default function NotificationsPage() {
     }
   };
 
+  const handleBlockType = (blockType) => {
+    handleEditorChange(RichUtils.toggleBlockType(activeTab === 'terms' ? terms : activeTab === 'privacy' ? privacy : about, blockType));
+  };
+
+  const handleInlineStyle = (inlineStyle) => {
+    handleEditorChange(RichUtils.toggleInlineStyle(activeTab === 'terms' ? terms : activeTab === 'privacy' ? privacy : about, inlineStyle));
+  };
+
   const renderEditor = (editorState) => (
     <div className={styles.editorWrapper}>
       <div className={styles.toolbar}>
-        <button onClick={() => handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'BOLD'))}>
-          Bold
-        </button>
-        <button onClick={() => handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'ITALIC'))}>
-          Italic
-        </button>
-        <button onClick={() => handleEditorChange(RichUtils.toggleInlineStyle(editorState, 'UNDERLINE'))}>
-          Underline
-        </button>
+        <div className={styles.toolbarGroup}>
+          <button onClick={() => handleInlineStyle('BOLD')} className={styles.toolbarButton}>
+            <strong>B</strong>
+          </button>
+          <button onClick={() => handleInlineStyle('ITALIC')} className={styles.toolbarButton}>
+            <em>I</em>
+          </button>
+          <button onClick={() => handleInlineStyle('UNDERLINE')} className={styles.toolbarButton}>
+            <u>U</u>
+          </button>
+          <button onClick={() => handleInlineStyle('STRIKETHROUGH')} className={styles.toolbarButton}>
+            <s>S</s>
+          </button>
+        </div>
+
+        <div className={styles.toolbarGroup}>
+          <button onClick={() => handleBlockType('header-one')} className={styles.toolbarButton}>
+            H1
+          </button>
+          <button onClick={() => handleBlockType('header-two')} className={styles.toolbarButton}>
+            H2
+          </button>
+          <button onClick={() => handleBlockType('header-three')} className={styles.toolbarButton}>
+            H3
+          </button>
+        </div>
+
+        <div className={styles.toolbarGroup}>
+          <button onClick={() => handleBlockType('unordered-list-item')} className={styles.toolbarButton}>
+            • List
+          </button>
+          <button onClick={() => handleBlockType('ordered-list-item')} className={styles.toolbarButton}>
+            1. List
+          </button>
+          <button onClick={() => handleBlockType('blockquote')} className={styles.toolbarButton}>
+            Quote
+          </button>
+          <button onClick={() => handleBlockType('code-block')} className={styles.toolbarButton}>
+            Code
+          </button>
+        </div>
       </div>
       <div className={styles.editor}>
         <Editor
           editorState={editorState}
           onChange={handleEditorChange}
           handleKeyCommand={handleKeyCommand}
+          placeholder="Start typing here..."
         />
       </div>
     </div>

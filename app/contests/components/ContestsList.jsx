@@ -86,6 +86,15 @@ export default function ContestsList() {
     contest.title.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit'
+    });
+  };
+
   return (
     <div>
       <div className={styles.sectionHeader}>
@@ -133,26 +142,21 @@ export default function ContestsList() {
                   <td>{contest.title}</td>
                   <td>
                     <span
-                      className={`${styles.status} ${
-                        styles[contest.status.toLowerCase()]
-                      }`}
+                      className={`${styles.status} ${styles[contest.status.toLowerCase()]
+                        }`}
                     >
                       {contest.status}
                     </span>
                   </td>
                   <td>{contest.frequency}</td>
+
                   <td>
-                    {new Date(
-                      contest.registrationStartDateTime
-                    ).toLocaleDateString()}{" "}
-                    -{" "}
-                    {new Date(
-                      contest.registrationEndDateTime
-                    ).toLocaleDateString()}
+                    {formatDate(contest.registrationStartDateTime)} -{' '}
+                    {formatDate(contest.registrationEndDateTime)}
                   </td>
                   <td>
-                    {new Date(contest.startDateTime).toLocaleDateString()} -{" "}
-                    {new Date(contest.endDateTime).toLocaleDateString()}
+                    {formatDate(contest.startDateTime)} -{' '}
+                    {formatDate(contest.endDateTime)}
                   </td>
                   <td>{contest.minParticipants}</td>
                   <td>
