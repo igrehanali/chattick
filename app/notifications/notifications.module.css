@@ -59,3 +59,44 @@
 .saveButton {
     width: 200px;
 }
+
+.editorWrapper {
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    margin: 20px 0;
+}
+
+.toolbar {
+    padding: 10px;
+
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    gap: 10px;
+}
+
+.toolbar button {
+    padding: 5px 10px;
+    border: 1px solid #e5e7eb;
+    border-radius: 4px;
+    background: white;
+    color: gray;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.toolbar button:hover {
+    background: #f3f4f6;
+}
+
+.editor {
+    min-height: 400px;
+    padding: 20px;
+}
+
+.editor :global(.DraftEditor-root) {
+    min-height: 350px;
+}
+
+.editor :global(.public-DraftEditor-content) {
+    min-height: 350px;
+}

@@ -28,6 +28,7 @@ const navigation = [
     href: "/analytics",
     icon: BarChart,
     submenu: [
+<<<<<<< HEAD
       { name: "View Subscription", href: "/analytics/SubscriptionAnalytics" },
       { name: "Renewal Analytics", href: "/analytics/RenewalAnalytics" },
       { name: "Call/Message Usage", href: "/analytics/ViewCallMessageUsage" },
@@ -53,12 +54,25 @@ const navigation = [
         href: "/analytics/AnalyzeFeatureSuggestions",
       },
       { name: "Tutorials Usage", href: "/analytics/AnalyzeTutorialsUsage" },
+=======
+      { name: "Subscription", href: "/analytics/SubscriptionAnalytics" },
+      { name: "Renewals", href: "/analytics/RenewalAnalytics" },
+      { name: "Call/Message", href: "/analytics/ViewCallMessageUsage" },
+      { name: "Contest Gifts", href: "/analytics/ViewContextParticipationGifts" },
+      { name: "Contest Finance", href: "/analytics/ViewPaymentFinancial" },
+      { name: "Referral Points", href: "/analytics/ViewReferralPoints" },
+      { name: "Support Metrics", href: "/analytics/AnalyzeSupportRequestsMetrics" },
+      { name: "Bug Metrics", href: "/analytics/AnalyzeBugReportsMetrics" },
+      { name: "Feature Ideas", href: "/analytics/AnalyzeFeatureSuggestions" },
+      { name: "Tutorials", href: "/analytics/AnalyzeTutorialsUsage" },
+>>>>>>> 812433f5cdf7615eccb207ea5b815f9e47175aa3
       { name: "Group Usage", href: "/analytics/AnalyzeGroupUsage" },
-      { name: "Login & Security Metrics", href: "/analytics/AnalyzeLoginSecurityMetrics" },
-      { name: "Device & Session Usage", href: "/analytics/AnalyzeDeviceSessionUsage" },
-      { name: "Notification & Alert ", href: "/analytics/AnalyzeNotificationAlert" },
-      { name: "Manage Marketing Emails/Alerts", href: "/analytics/ManageMarketingEmailsAlerts" },
+      { name: "Login Security", href: "/analytics/AnalyzeLoginSecurityMetrics" },
+      { name: "Device Sessions", href: "/analytics/AnalyzeDeviceSessionUsage" },
+      { name: "Notifications", href: "/analytics/AnalyzeNotificationAlert" },
+      { name: "Marketing Emails", href: "/analytics/ManageMarketingEmailsAlerts" },
     ],
+
   },
   { name: "Admin & Super Admin Management", href: "/admin", icon: UserCog },
 ];
@@ -126,7 +140,7 @@ export function Sidebar() {
         <div className={styles.header}>
           <span className={styles.headerTitle}>Admin Panel</span>
         </div>
-
+{/* hfhgf */}
         <nav className={styles.nav}>
           <div className={styles.navList}>
             {navigation.map((item) => {
