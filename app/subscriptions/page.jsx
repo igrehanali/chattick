@@ -22,6 +22,19 @@ export default function SubscriptionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showTierForm, setShowTierForm] = useState(false);
   const [editingTier, setEditingTier] = useState(null);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedCountry, setSelectedCountry] = useState("");
+
+  const years = ["2023", "2024", "2025"];
+  const months = [
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+  ]
+  const countries = ["USA", "Canada", "UK"];
+  const selectedPlan = "";
+
   const itemsPerPage = 10;
 
   const stats = [
@@ -350,11 +363,10 @@ export default function SubscriptionsPage() {
                   <td className={styles.tableCell}>{subscription.endDate}</td>
                   <td className={styles.tableCell}>
                     <span
-                      className={`${styles.badge} ${
-                        subscription.status === "active"
-                          ? styles.badgeSuccess
-                          : styles.badgeError
-                      }`}
+                      className={`${styles.badge} ${subscription.status === "active"
+                        ? styles.badgeSuccess
+                        : styles.badgeError
+                        }`}
                     >
                       {subscription.status}
                     </span>

@@ -12,7 +12,7 @@ export default function ContestantsList() {
       name: "John Doe",
       contest: "Summer Photo Contest",
       submissionDate: "2024-02-15",
-      status: "Pending",
+      status: "Reject",
     },
     {
       id: 2,
