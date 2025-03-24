@@ -31,12 +31,27 @@ const navigation = [
       { name: "View Subscription", href: "/analytics/SubscriptionAnalytics" },
       { name: "Renewal Analytics", href: "/analytics/RenewalAnalytics" },
       { name: "Call/Message Usage", href: "/analytics/ViewCallMessageUsage" },
-      { name: "Contest Participation/Gifts", href: "/analytics/ViewContextParticipationGifts" },
-      { name: "Contest Payment/Financial", href: "/analytics/ViewPaymentFinancial" },
+      {
+        name: "Contest Participation/Gifts",
+        href: "/analytics/ViewContextParticipationGifts",
+      },
+      {
+        name: "Contest Payment/Financial",
+        href: "/analytics/ViewPaymentFinancial",
+      },
       { name: "Referral & Points", href: "/analytics/ViewReferralPoints" },
-      { name: "Support Requests Metrics", href: "/analytics/AnalyzeSupportRequestsMetrics" },
-      { name: "Bug Reports Metrics", href: "/analytics/AnalyzeBugReportsMetrics" },
-      { name: "Feature Suggestions", href: "/analytics/AnalyzeFeatureSuggestions" },
+      {
+        name: "Support Requests Metrics",
+        href: "/analytics/AnalyzeSupportRequestsMetrics",
+      },
+      {
+        name: "Bug Reports Metrics",
+        href: "/analytics/AnalyzeBugReportsMetrics",
+      },
+      {
+        name: "Feature Suggestions",
+        href: "/analytics/AnalyzeFeatureSuggestions",
+      },
       { name: "Tutorials Usage", href: "/analytics/AnalyzeTutorialsUsage" },
       { name: "Group Usage", href: "/analytics/AnalyzeGroupUsage" },
       { name: "Login & Security Metrics", href: "/analytics/AnalyzeLoginSecurityMetrics" },
