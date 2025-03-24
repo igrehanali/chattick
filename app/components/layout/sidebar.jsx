@@ -4,17 +4,54 @@ import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/app/contexts/auth-context";
-import {
-  LayoutDashboard, Users, MessageSquare, CreditCard, Trophy,
-  HelpCircle, Settings, Bell, Palette, ShieldAlert,
-  BarChart, UserCog, Menu, X, LogOut,
-} from "lucide-react";
 import { SignOutAlert } from "./sign-out-alert";
 import styles from "./sidebar.module.css";
+import {
+  LayoutDashboard,
+  Users,
+  MessageSquare,
+  CreditCard,
+  Trophy,
+  HelpCircle,
+  Settings,
+  Bell,
+  Palette,
+  ShieldAlert,
+  BarChart,
+  UserCog,
+  Menu,
+  X,
+  LogOut,
+  Mail,
+  FileText,
+  Globe,
+  Briefcase,
+  FileSearch,
+  Database,
+  Eye,
+  Server,
+  Monitor,
+  HardDrive,
+  FolderOpen,
+  Calendar,
+  LineChart,
+  UserCheck,
+  Award,
+  Phone,
+  Book,
+  Lock,
+} from "lucide-react";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
-  { name: "User Management", href: "/users", icon: Users },
+  {
+    name: "User Management",
+    href: "/users",
+    icon: Users,
+    submenu: [
+      { name: "User Management", href: "/userManagement", icon: UserCheck },
+    ],
+  },
   { name: "Support & Tickets", href: "/support", icon: MessageSquare },
   { name: "Subscription & Payments", href: "/subscriptions", icon: CreditCard },
   { name: "Contests & Rewards", href: "/contests", icon: Trophy },
@@ -28,51 +65,83 @@ const navigation = [
     href: "/analytics",
     icon: BarChart,
     submenu: [
-<<<<<<< HEAD
-      { name: "View Subscription", href: "/analytics/SubscriptionAnalytics" },
-      { name: "Renewal Analytics", href: "/analytics/RenewalAnalytics" },
-      { name: "Call/Message Usage", href: "/analytics/ViewCallMessageUsage" },
       {
-        name: "Contest Participation/Gifts",
+        name: "Subscription",
+        href: "/analytics/SubscriptionAnalytics",
+        icon: FileText,
+      },
+      {
+        name: "Payment & Financial",
+        href: "/analytics/payment",
+        icon: Briefcase,
+      },
+      { name: "Renewals", href: "/analytics/RenewalAnalytics", icon: Calendar },
+      {
+        name: "Call/Message",
+        href: "/analytics/ViewCallMessageUsage",
+        icon: Phone,
+      },
+      {
+        name: "Contest Gifts",
         href: "/analytics/ViewContextParticipationGifts",
+        icon: Award,
       },
       {
-        name: "Contest Payment/Financial",
+        name: "Contest Finance",
         href: "/analytics/ViewPaymentFinancial",
+        icon: Database,
       },
-      { name: "Referral & Points", href: "/analytics/ViewReferralPoints" },
       {
-        name: "Support Requests Metrics",
+        name: "Referral Points",
+        href: "/analytics/ViewReferralPoints",
+        icon: Users,
+      },
+      {
+        name: "Support Metrics",
         href: "/analytics/AnalyzeSupportRequestsMetrics",
+        icon: FileSearch,
       },
       {
-        name: "Bug Reports Metrics",
+        name: "Bug Metrics",
         href: "/analytics/AnalyzeBugReportsMetrics",
+        icon: ShieldAlert,
       },
       {
-        name: "Feature Suggestions",
+        name: "Feature Ideas",
         href: "/analytics/AnalyzeFeatureSuggestions",
+        icon: Globe,
       },
-      { name: "Tutorials Usage", href: "/analytics/AnalyzeTutorialsUsage" },
-=======
-      { name: "Subscription", href: "/analytics/SubscriptionAnalytics" },
-      { name: "Renewals", href: "/analytics/RenewalAnalytics" },
-      { name: "Call/Message", href: "/analytics/ViewCallMessageUsage" },
-      { name: "Contest Gifts", href: "/analytics/ViewContextParticipationGifts" },
-      { name: "Contest Finance", href: "/analytics/ViewPaymentFinancial" },
-      { name: "Referral Points", href: "/analytics/ViewReferralPoints" },
-      { name: "Support Metrics", href: "/analytics/AnalyzeSupportRequestsMetrics" },
-      { name: "Bug Metrics", href: "/analytics/AnalyzeBugReportsMetrics" },
-      { name: "Feature Ideas", href: "/analytics/AnalyzeFeatureSuggestions" },
-      { name: "Tutorials", href: "/analytics/AnalyzeTutorialsUsage" },
->>>>>>> 812433f5cdf7615eccb207ea5b815f9e47175aa3
-      { name: "Group Usage", href: "/analytics/AnalyzeGroupUsage" },
-      { name: "Login Security", href: "/analytics/AnalyzeLoginSecurityMetrics" },
-      { name: "Device Sessions", href: "/analytics/AnalyzeDeviceSessionUsage" },
-      { name: "Notifications", href: "/analytics/AnalyzeNotificationAlert" },
-      { name: "Marketing Emails", href: "/analytics/ManageMarketingEmailsAlerts" },
+      {
+        name: "Tutorials",
+        href: "/analytics/AnalyzeTutorialsUsage",
+        icon: Book,
+      },
+      {
+        name: "Group Usage",
+        href: "/analytics/AnalyzeGroupUsage",
+        icon: Users,
+      },
+      {
+        name: "Login Security",
+        href: "/analytics/AnalyzeLoginSecurityMetrics",
+        icon: Lock,
+      },
+      {
+        name: "Device Sessions",
+        href: "/analytics/AnalyzeDeviceSessionUsage",
+        icon: Monitor,
+      },
+      {
+        name: "Notifications",
+        href: "/analytics/AnalyzeNotificationAlert",
+        icon: Bell,
+      },
+      {
+        name: "Marketing Emails",
+        href: "/analytics/ManageMarketingEmailsAlerts",
+        icon: Mail,
+      },
     ],
-
   },
   { name: "Admin & Super Admin Management", href: "/admin", icon: UserCog },
 ];
@@ -86,10 +155,10 @@ export function Sidebar() {
   // Initialize expandedItems based on current path
   const [expandedItems, setExpandedItems] = useState(() => {
     return navigation
-      .filter(item =>
-        item.submenu?.some(subItem => pathname.startsWith(subItem.href))
+      .filter((item) =>
+        item.submenu?.some((subItem) => pathname.startsWith(subItem.href))
       )
-      .map(item => item.name);
+      .map((item) => item.name);
   });
 
   // Only close mobile sidebar on route change
@@ -97,12 +166,12 @@ export function Sidebar() {
     setIsOpen(false);
 
     // Keep submenu open if current path matches
-    const parentItem = navigation.find(item =>
-      item.submenu?.some(subItem => pathname.startsWith(subItem.href))
+    const parentItem = navigation.find((item) =>
+      item.submenu?.some((subItem) => pathname.startsWith(subItem.href))
     );
 
     if (parentItem && !expandedItems.includes(parentItem.name)) {
-      setExpandedItems(prev => [...prev, parentItem.name]);
+      setExpandedItems((prev) => [...prev, parentItem.name]);
     }
   }, [pathname]);
 
@@ -116,6 +185,14 @@ export function Sidebar() {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [isOpen]);
+
+  useEffect(() => {
+    const sidebar = document.querySelector(`.${styles.sidebar}`);
+    const savedScroll = sessionStorage.getItem("sidebar-scroll");
+    if (sidebar && savedScroll) {
+      sidebar.scrollTop = parseInt(savedScroll, 10);
+    }
+  }, []);
 
   const toggleSubmenu = (itemName) => {
     setExpandedItems((prev) =>
@@ -131,16 +208,26 @@ export function Sidebar() {
         onClick={() => setIsOpen(!isOpen)}
         className={styles.mobileMenuButton}
       >
-        {isOpen ? <X className={styles.menuIcon} /> : <Menu className={styles.menuIcon} />}
+        {isOpen ? (
+          <X className={styles.menuIcon} />
+        ) : (
+          <Menu className={styles.menuIcon} />
+        )}
       </button>
 
-      {isOpen && <div className={styles.overlay} onClick={() => setIsOpen(false)} />}
+      {isOpen && (
+        <div className={styles.overlay} onClick={() => setIsOpen(false)} />
+      )}
 
-      <div className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed}`}>
+      <div
+        className={`${styles.sidebar} ${
+          isOpen ? styles.sidebarOpen : styles.sidebarClosed
+        }`}
+      >
         <div className={styles.header}>
           <span className={styles.headerTitle}>Admin Panel</span>
         </div>
-{/* hfhgf */}
+        {/* hfhgf */}
         <nav className={styles.nav}>
           <div className={styles.navList}>
             {navigation.map((item) => {
@@ -151,7 +238,9 @@ export function Sidebar() {
                 <div key={item.name}>
                   <Link
                     href={item.href}
-                    className={`${styles.navItem} ${isActive ? styles.navItemActive : ""}`}
+                    className={`${styles.navItem} ${
+                      isActive ? styles.navItemActive : ""
+                    }`}
                     onClick={(e) => {
                       if (item.submenu) {
                         e.preventDefault();
@@ -160,7 +249,9 @@ export function Sidebar() {
                     }}
                   >
                     <item.icon
-                      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ""}`}
+                      className={`${styles.navItemIcon} ${
+                        isActive ? styles.navItemIconActive : ""
+                      }`}
                       aria-hidden="true"
                     />
                     {item.name}
@@ -179,8 +270,14 @@ export function Sidebar() {
                           <Link
                             key={subItem.name}
                             href={subItem.href}
-                            className={`${styles.submenuItem} ${isSubItemActive ? styles.submenuItemActive : ""}`}
+                            className={`${styles.submenuItem} ${
+                              isSubItemActive ? styles.submenuItemActive : ""
+                            }`}
                           >
+                            <subItem.icon
+                              className={styles.navItemIcon}
+                              aria-hidden="true"
+                            />
                             {subItem.name}
                           </Link>
                         );

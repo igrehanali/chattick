@@ -7,15 +7,13 @@
     z-index: 40;
     display: flex;
     flex-direction: column;
-    width: 17rem;
+    width: 18rem;
     height: 100vh;
-    background: linear-gradient(180deg, #222239 0%, #01013e 100%);
+    background: linear-gradient(180deg, #313141 0%, #191927 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.05);
     box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
-
-
 
 .navItemContent {
     display: flex;
@@ -24,29 +22,23 @@
 }
 
 .submenu {
-    margin-left: 1.5rem;
-    /* Reduce left margin */
+    margin-left: 1rem;
     display: flex;
     flex-direction: column;
-    gap: 0.25rem;
-    /* Reduce gap between submenu items */
+    /* gap: 0.1rem; */
 }
 
 .submenuItem {
-    padding: 0.3rem 0.8rem;
-    /* Reduce padding */
+    padding: 0.4rem 0.8rem;
     color: #ebeef3;
-    /* Change color to a lighter gray */
     text-decoration: none;
     font-size: 0.85rem;
-    /* Slightly reduce font size */
     border-radius: 0.25rem;
     transition: all 0.2s;
     white-space: nowrap;
-    /* Ensure text stays on one line */
     overflow: hidden;
     text-overflow: ellipsis;
-    /* Add ellipsis for overflow */
+    margin: 0.5rem 0rem;
 }
 
 .submenuItem:hover {

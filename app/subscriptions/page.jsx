@@ -22,41 +22,8 @@ export default function SubscriptionsPage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [showTierForm, setShowTierForm] = useState(false);
   const [editingTier, setEditingTier] = useState(null);
-  const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState("");
-  const [selectedPlan, setSelectedPlan] = useState("");
-
   const itemsPerPage = 10;
 
-  const years = Array.from(
-    { length: 5 },
-    (_, i) => new Date().getFullYear() - i
-  );
-  const months = [
-    { value: "1", label: "January" },
-    { value: "2", label: "February" },
-    { value: "3", label: "March" },
-    { value: "4", label: "April" },
-    { value: "5", label: "May" },
-    { value: "6", label: "June" },
-    { value: "7", label: "July" },
-    { value: "8", label: "August" },
-    { value: "9", label: "September" },
-    { value: "10", label: "October" },
-    { value: "11", label: "November" },
-    { value: "12", label: "December" },
-  ];
-  const countries = [
-    "United States",
-    "Canada",
-    "United Kingdom",
-    "Australia",
-    "Germany",
-    "France",
-    "Japan",
-    "China",
-  ];
   const stats = [
     {
       label: "Total Revenue",
@@ -298,9 +265,7 @@ export default function SubscriptionsPage() {
               className={styles.filterSelect}
             >
               {years.map((year) => (
-                <option key={year} value={year}>
-                  {year}
-                </option>
+                <option key={year} value={year}>{year}</option>
               ))}
             </select>
 
@@ -311,9 +276,7 @@ export default function SubscriptionsPage() {
             >
               <option value="">All Months</option>
               {months.map((month) => (
-                <option key={month.value} value={month.value}>
-                  {month.label}
-                </option>
+                <option key={month.value} value={month.value}>{month.label}</option>
               ))}
             </select>
 
@@ -324,9 +287,7 @@ export default function SubscriptionsPage() {
             >
               <option value="">All Countries</option>
               {countries.map((country) => (
-                <option key={country} value={country}>
-                  {country}
-                </option>
+                <option key={country} value={country}>{country}</option>
               ))}
             </select>
 
@@ -337,9 +298,7 @@ export default function SubscriptionsPage() {
             >
               <option value="">All Plans</option>
               {plans.map((plan) => (
-                <option key={plan.name} value={plan.name}>
-                  {plan.name}
-                </option>
+                <option key={plan.name} value={plan.name}>{plan.name}</option>
               ))}
             </select>
           </div>
