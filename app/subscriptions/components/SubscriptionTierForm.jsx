@@ -1,66 +1,74 @@
 "use client";
-
-import { useState } from "react";
-import styles from "../page.module.css";
+import { useState, useEffect } from 'react';
+import styles from './SubscriptionTierForm.module.css';
+import { Plus, X } from 'lucide-react';
 
 export default function SubscriptionTierForm({ onSubmit, initialData }) {
-  const [formData, setFormData] = useState(
-    initialData || {
-      title: "",
-      startDateTime: "",
-      endDateTime: "",
-      priceInCurrency: "",
-      priceInPoints: "",
-      features: [],
-      maxWithdrawalsPerMonth: "",
-      maxWithdrawalsPerDay: "",
-      maxPointsPerMonth: "",
-      maxTotalPoints: "",
-      purchaseablePoints: "",
-      pointsPerPlan: "",
-      referralBonusPoints: "",
-      maxGroupsPerUser: "",
-      maxContactsPerUser: "",
-      maxMessages: "",
-      voiceCallDuration: "",
-      videoCallDuration: "",
-      isActive: true,
-      isPublished: false,
+  const [formData, setFormData] = useState({
+    title: '',
+    startDateTime: '',
+    endDateTime: '',
+    purchasePrice: '',
+    currency: 'USD',
+    renewalPoints: '',
+    features: [],
+    limits: {
+      withdrawals: {
+        perDay: '',
+        perMonth: ''
+      },
+      points: {
+        monthlyAccumulation: '',
+        totalAccumulation: '',
+        purchaseLimit: ''
+      },
+      planPoints: '',
+      referralBonus: '',
+      groups: '',
+      contacts: '',
+      messages: '',
+      voiceCallDuration: '',
+      videoCallDuration: ''
+    },
+    newFeature: ''
+  });
+
+  useEffect(() => {
+    if (initialData) {
+      setFormData(prev => ({ ...prev, ...initialData }));
     }
-  );
+  }, [initialData]);
 
-  const [feature, setFeature] = useState("");
-
-  const handleInputChange = (e) => {
-    const { name, value, type } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: type === "number" ? Number(value) : value,
-    }));
-  };
-
-  const handleCheckboxChange = (e) => {
-    const { name, checked } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: checked,
-    }));
-  };
-
-  const addFeature = () => {
-    if (feature.trim()) {
-      setFormData((prev) => ({
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    if (name.includes('.')) {
+      const [parent, child] = name.split('.');
+      setFormData(prev => ({
         ...prev,
-        features: [...prev.features, feature.trim()],
+        [parent]: {
+          ...prev[parent],
+          [child]: value
+        }
       }));
-      setFeature("");
+    } else {
+      setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
-  const removeFeature = (index) => {
-    setFormData((prev) => ({
+  const handleAddFeature = () => {
+    if (formData.newFeature.trim()) {
+      setFormData(prev => ({
+        ...prev,
+        features: [...prev.features, prev.newFeature.trim()],
+        newFeature: ''
+      }));
+    }
+  };
+
+  const handleRemoveFeature = (index) => {
+    setFormData(prev => ({
       ...prev,
-      features: prev.features.filter((_, i) => i !== index),
+      features: prev.features.filter((_, i) => i !== index)
     }));
   };
 
@@ -72,38 +80,34 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label htmlFor="title">Title</label>
+        <label>Title</label>
         <input
           type="text"
-          id="title"
           name="title"
           value={formData.title}
-          onChange={handleInputChange}
+          onChange={handleChange}
           required
         />
       </div>
 
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
-          <label htmlFor="startDateTime">Start Date</label>
+          <label>Start Date & Time</label>
           <input
             type="datetime-local"
-            id="startDateTime"
             name="startDateTime"
             value={formData.startDateTime}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
           />
         </div>
-
         <div className={styles.formGroup}>
-          <label htmlFor="endDateTime">End Date</label>
+          <label>End Date & Time</label>
           <input
             type="datetime-local"
-            id="endDateTime"
             name="endDateTime"
             value={formData.endDateTime}
-            onChange={handleInputChange}
+            onChange={handleChange}
             required
           />
         </div>
@@ -111,267 +115,231 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
 
       <div className={styles.formRow}>
         <div className={styles.formGroup}>
-          <label htmlFor="priceInCurrency">Price (Currency)</label>
-          <input
-            type="number"
-            id="priceInCurrency"
-            name="priceInCurrency"
-            value={formData.priceInCurrency}
-            onChange={handleInputChange}
-            min="0"
-            step="0.01"
-            required
-          />
+          <label>Purchase Price</label>
+          <div className={styles.priceInput}>
+            <input
+              type="number"
+              name="purchasePrice"
+              value={formData.purchasePrice}
+              onChange={handleChange}
+              required
+              min="0"
+              step="0.01"
+            />
+            <select
+              name="currency"
+              value={formData.currency}
+              onChange={handleChange}
+            >
+              <option value="USD">USD</option>
+              <option value="EUR">EUR</option>
+              <option value="GBP">GBP</option>
+            </select>
+          </div>
         </div>
-
         <div className={styles.formGroup}>
-          <label htmlFor="priceInPoints">Price (Points)</label>
+          <label>Renewal Points</label>
           <input
             type="number"
-            id="priceInPoints"
-            name="priceInPoints"
-            value={formData.priceInPoints}
-            onChange={handleInputChange}
-            min="0"
+            name="renewalPoints"
+            value={formData.renewalPoints}
+            onChange={handleChange}
             required
+            min="0"
           />
         </div>
       </div>
 
-      <div className={styles.formGroup}>
-        <label>Features</label>
+      <div className={styles.formSection}>
+        <h3>Withdrawal Limits</h3>
+        <div className={styles.formRow}>
+          <div className={styles.formGroup}>
+            <label>Per Day</label>
+            <input
+              type="number"
+              name="limits.withdrawals.perDay"
+              value={formData.limits.withdrawals.perDay}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Per Month</label>
+            <input
+              type="number"
+              name="limits.withdrawals.perMonth"
+              value={formData.limits.withdrawals.perMonth}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.formSection}>
+        <h3>Points Limits</h3>
+        <div className={styles.formRow}>
+          <div className={styles.formGroup}>
+            <label>Monthly Accumulation</label>
+            <input
+              type="number"
+              name="limits.points.monthlyAccumulation"
+              value={formData.limits.points.monthlyAccumulation}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Total Accumulation</label>
+            <input
+              type="number"
+              name="limits.points.totalAccumulation"
+              value={formData.limits.points.totalAccumulation}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Purchase Limit</label>
+            <input
+              type="number"
+              name="limits.points.purchaseLimit"
+              value={formData.limits.points.purchaseLimit}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.formSection}>
+        <h3>Other Limits</h3>
+        <div className={styles.formGrid}>
+          <div className={styles.formGroup}>
+            <label>Plan Points</label>
+            <input
+              type="number"
+              name="limits.planPoints"
+              value={formData.limits.planPoints}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Referral Bonus Points</label>
+            <input
+              type="number"
+              name="limits.referralBonus"
+              value={formData.limits.referralBonus}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Max Groups</label>
+            <input
+              type="number"
+              name="limits.groups"
+              value={formData.limits.groups}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Max Contacts</label>
+            <input
+              type="number"
+              name="limits.contacts"
+              value={formData.limits.contacts}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Max Messages</label>
+            <input
+              type="number"
+              name="limits.messages"
+              value={formData.limits.messages}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Voice Call Duration (minutes)</label>
+            <input
+              type="number"
+              name="limits.voiceCallDuration"
+              value={formData.limits.voiceCallDuration}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Video Call Duration (minutes)</label>
+            <input
+              type="number"
+              name="limits.videoCallDuration"
+              value={formData.limits.videoCallDuration}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+        </div>
+      </div>
+
+      <div className={styles.formSection}>
+        <h3>Features</h3>
         <div className={styles.featureInput}>
           <input
             type="text"
-            value={feature}
-            onChange={(e) => setFeature(e.target.value)}
-            placeholder="Add a feature"
+            name="newFeature"
+            value={formData.newFeature}
+            onChange={handleChange}
+            placeholder="Add a feature..."
           />
           <button
             type="button"
-            onClick={addFeature}
-            className={styles.addButton}
+            onClick={handleAddFeature}
+            className={styles.addFeatureButton}
           >
+            <Plus className="w-4 h-4" />
             Add
           </button>
         </div>
         <ul className={styles.featureList}>
-          {formData.features.map((feat, index) => (
+          {formData.features.map((feature, index) => (
             <li key={index} className={styles.featureItem}>
-              {feat}
+              {feature}
               <button
                 type="button"
-                onClick={() => removeFeature(index)}
-                className={styles.removeButton}
+                onClick={() => handleRemoveFeature(index)}
+                className={styles.removeFeatureButton}
               >
-                ×
+                <X className="w-4 h-4" />
               </button>
             </li>
           ))}
         </ul>
       </div>
 
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label htmlFor="maxWithdrawalsPerMonth">Max Withdrawals/Month</label>
-          <input
-            type="number"
-            id="maxWithdrawalsPerMonth"
-            name="maxWithdrawalsPerMonth"
-            value={formData.maxWithdrawalsPerMonth}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="maxWithdrawalsPerDay">Max Withdrawals/Day</label>
-          <input
-            type="number"
-            id="maxWithdrawalsPerDay"
-            name="maxWithdrawalsPerDay"
-            value={formData.maxWithdrawalsPerDay}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
+      <div className={styles.formActions}>
+        <button type="submit" className={styles.submitButton}>
+          {initialData ? 'Update Subscription' : 'Create Subscription'}
+        </button>
       </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label htmlFor="maxPointsPerMonth">Max Points/Month</label>
-          <input
-            type="number"
-            id="maxPointsPerMonth"
-            name="maxPointsPerMonth"
-            value={formData.maxPointsPerMonth}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="maxTotalPoints">Max Total Points</label>
-          <input
-            type="number"
-            id="maxTotalPoints"
-            name="maxTotalPoints"
-            value={formData.maxTotalPoints}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-      </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label htmlFor="purchaseablePoints">Purchaseable Points</label>
-          <input
-            type="number"
-            id="purchaseablePoints"
-            name="purchaseablePoints"
-            value={formData.purchaseablePoints}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="pointsPerPlan">Points per Plan</label>
-          <input
-            type="number"
-            id="pointsPerPlan"
-            name="pointsPerPlan"
-            value={formData.pointsPerPlan}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-      </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label htmlFor="referralBonusPoints">Referral Bonus Points</label>
-          <input
-            type="number"
-            id="referralBonusPoints"
-            name="referralBonusPoints"
-            value={formData.referralBonusPoints}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="maxGroupsPerUser">Max Groups/User</label>
-          <input
-            type="number"
-            id="maxGroupsPerUser"
-            name="maxGroupsPerUser"
-            value={formData.maxGroupsPerUser}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-      </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label htmlFor="maxContactsPerUser">Max Contacts/User</label>
-          <input
-            type="number"
-            id="maxContactsPerUser"
-            name="maxContactsPerUser"
-            value={formData.maxContactsPerUser}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="maxMessages">Max Messages</label>
-          <input
-            type="number"
-            id="maxMessages"
-            name="maxMessages"
-            value={formData.maxMessages}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-      </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label htmlFor="voiceCallDuration">
-            Voice Call Duration (minutes)
-          </label>
-          <input
-            type="number"
-            id="voiceCallDuration"
-            name="voiceCallDuration"
-            value={formData.voiceCallDuration}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-
-        <div className={styles.formGroup}>
-          <label htmlFor="videoCallDuration">
-            Video Call Duration (minutes)
-          </label>
-          <input
-            type="number"
-            id="videoCallDuration"
-            name="videoCallDuration"
-            value={formData.videoCallDuration}
-            onChange={handleInputChange}
-            min="0"
-            required
-          />
-        </div>
-      </div>
-
-      <div className={styles.formRow}>
-        <div className={styles.formGroup}>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              name="isActive"
-              checked={formData.isActive}
-              onChange={handleCheckboxChange}
-            />
-            Active
-          </label>
-        </div>
-
-        <div className={styles.formGroup}>
-          <label className={styles.checkboxLabel}>
-            <input
-              type="checkbox"
-              name="isPublished"
-              checked={formData.isPublished}
-              onChange={handleCheckboxChange}
-            />
-            Published
-          </label>
-        </div>
-      </div>
-
-      <button type="submit" className={styles.submitButton}>
-        Save Subscription Tier
-      </button>
     </form>
   );
 }

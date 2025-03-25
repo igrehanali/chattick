@@ -6,6 +6,7 @@ import { Search, Edit, Trash2, Plus } from "lucide-react";
 import styles from "../page.module.css";
 import ContestModal from "./ContestModal";
 import ContestProfile from "./ContestProfile";
+import PrizePoolModal from "./PrizePoolModal";
 
 export default function ContestsList() {
   const [showProfiles, setShowProfiles] = useState(false);
@@ -36,6 +37,16 @@ export default function ContestsList() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContest, setCurrentContest] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isPrizePoolModalOpen, setIsPrizePoolModalOpen] = useState(false);
+  const [prizePools, setPrizePools] = useState([
+    {
+      id: 1,
+      minParticipants: 50,
+      maxParticipants: 100,
+      prizePool: 1000,
+      numberOfWinners: 3
+    }
+  ]);
 
   const handleCreateContest = () => {
     setCurrentContest(null);
@@ -93,6 +104,24 @@ export default function ContestsList() {
       month: '2-digit',
       day: '2-digit'
     });
+  };
+
+  // Add this handler after other handlers
+  const handleAddPrizePool = () => {
+    if (prizePools.length < 5) {
+      setIsPrizePoolModalOpen(true);
+    }
+  };
+
+  const handleSavePrizePool = (data) => {
+    if (prizePools.length < 5) {
+      setPrizePools([...prizePools, { id: Date.now(), ...data }]);
+    }
+    setIsPrizePoolModalOpen(false);
+  };
+
+  const handleDeletePrizePool = (id) => {
+    setPrizePools(prizePools.filter(pool => pool.id !== id));
   };
 
   return (
@@ -210,6 +239,58 @@ export default function ContestsList() {
           contest={currentContest}
         />
       )}
+
+      <PrizePoolModal
+        isOpen={isPrizePoolModalOpen}
+        onClose={() => setIsPrizePoolModalOpen(false)}
+        onSave={handleSavePrizePool}
+        existingRanges={prizePools}
+      />
+      <div className={styles.section}>
+        <div className={styles.sectionHeader}>
+          <h3>Prize Pool Configurations</h3>
+          <Button
+            onClick={handleAddPrizePool}
+            disabled={prizePools.length >= 5}
+          >
+            <Plus className={styles.buttonIcon} />
+            Add Prize Pool Range
+          </Button>
+        </div>
+
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Participant Range</th>
+                <th>Prize Pool (Points)</th>
+                <th>Number of Winners</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {prizePools.map((pool) => (
+                <tr key={pool.id}>
+                  <td>{pool.minParticipants} - {pool.maxParticipants}</td>
+                  <td>{pool.prizePool}</td>
+                  <td>{pool.numberOfWinners}</td>
+                  <td>
+                    <div className={styles.actions}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDeletePrizePool(pool.id)}
+                      >
+                        <Trash2 className={styles.actionIcon} />
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

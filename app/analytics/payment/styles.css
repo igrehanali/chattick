@@ -1,268 +1,178 @@
 .payment-analytics {
     padding: 2rem;
-    display: flex;
-    flex-direction: column;
-    gap: 2rem;
-    max-width: 1600px;
-    margin: 0 auto;
-    width: 100%;
+    background-color: #f9fafb;
 }
 
-/* Filters Section */
+.payment-analytics h1 {
+    margin-bottom: 2rem;
+    color: #111827;
+}
+
 .filters {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 1rem;
+    margin-bottom: 2rem;
     background: white;
-    border-radius: var(--border-radius);
+    padding: 1.5rem;
+    border-radius: 8px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .filter-group {
     display: flex;
     gap: 1rem;
+
 }
 
 .filter-select {
     padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
     min-width: 180px;
+    background-color: white;
+    color: #374151;
     font-size: 0.95rem;
-    cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s;
 }
 
-.filter-select:hover {
-    border-color: var(--primary-color);
-}
-
-.filter-select:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
-}
-
-.date-range {
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
-.date-input {
-    padding: 0.75rem;
-    border: 1px solid var(--border-color);
-    border-radius: var(--border-radius);
-    font-size: 0.95rem;
-    cursor: pointer;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.date-input:hover {
-    border-color: var(--primary-color);
-}
-
-.date-input:focus {
-    outline: none;
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.1);
-}
-
-/* Metrics Grid */
 .metrics-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
     gap: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .metric-card {
     background: white;
-    padding: 1.75rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s;
 }
 
 .metric-card:hover {
-    /* transform: translateY(-2px); */
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    transform: translateY(-2px);
 }
 
 .metric-card h3 {
-    color: var(--gray-600);
-    font-size: 0.875rem;
+    color: #6b7280;
+    font-size: 1rem;
     margin-bottom: 0.5rem;
 }
 
 .metric-value {
-    font-size: 1.5rem;
+    font-size: 1.875rem;
     font-weight: 600;
-    margin-bottom: 0.5rem;
+    color: #111827;
+    margin: 0.5rem 0;
 }
 
 .metric-trend {
+    display: inline-block;
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
     font-size: 0.875rem;
-    padding: 0.25rem 0.5rem;
-    border-radius: 9999px;
+    font-weight: 500;
 }
 
 .metric-trend.positive {
-    background: #dcfce7;
-    color: #15803d;
+    background-color: #dcfce7;
+    color: #059669;
 }
 
 .metric-trend.negative {
-    background: #fee2e2;
-    color: #b91c1c;
+    background-color: #fee2e2;
+    color: #dc2626;
 }
 
 .metric-trend.neutral {
-    background: #f3f4f6;
+    background-color: #f3f4f6;
     color: #4b5563;
 }
 
-/* Charts Section */
+.metric-breakdown {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+.metric-breakdown span {
+    display: block;
+    margin-bottom: 0.25rem;
+}
+
 .charts-section {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    grid-template-columns: repeat(2, 1fr);
     gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+@media (max-width: 768px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
 }
 
 .chart-container {
     background: white;
-    padding: 1.75rem;
-    border-radius: var(--border-radius);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-    transition: transform 0.2s, box-shadow 0.2s;
-}
-
-.chart-container:hover {
-    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
 .chart-container h3 {
-    color: var(--gray-600);
-    font-size: 1rem;
+    color: #111827;
+    font-size: 1.125rem;
     margin-bottom: 1.5rem;
 }
 
-/* Bar Chart */
-.bar-chart {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-end;
-    height: 200px;
-    padding-top: 1rem;
+.detailed-metrics {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
 
-.bar-group {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 0.5rem;
-    width: 60px;
+.detailed-metrics h3 {
+    color: #111827;
+    font-size: 1.125rem;
+    margin-bottom: 1.5rem;
 }
 
-.bar {
+.metrics-table {
     width: 100%;
-    background: var(--primary-color);
-    border-radius: 6px 6px 0 0;
-    transition: height 0.3s ease, opacity 0.2s;
-    opacity: 0.85;
+    border-collapse: collapse;
 }
 
-.bar:hover {
-    opacity: 1;
+.metrics-table th,
+.metrics-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
 }
 
-/* Line Chart */
-.line-chart {
-    position: relative;
-    height: 200px;
-    padding-top: 1rem;
+.metrics-table th {
+    background-color: #f9fafb;
+    font-weight: 500;
+    color: #4b5563;
 }
 
-.chart-line {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
-    height: 2px;
-    background: var(--primary-color);
-    opacity: 0.2;
+.metrics-table td {
+    color: #111827;
 }
 
-.chart-points {
-    position: relative;
-    height: 100%;
+.metrics-table tr:hover {
+    background-color: #f9fafb;
 }
 
-.point {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    background: var(--primary-color);
-    border-radius: 50%;
-    transform: translate(-50%, 50%);
-    transition: transform 0.2s, box-shadow 0.2s;
-    cursor: pointer;
-}
+@media (max-width: 768px) {
+    .charts-section {
+        grid-template-columns: 1fr;
+    }
 
-.point:hover {
-    transform: translate(-50%, 50%) scale(1.5);
-    box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.2);
-}
+    .filter-group {
+        flex-wrap: wrap;
+    }
 
-/* Dark Mode */
-.dark .filters,
-.dark .metric-card,
-.dark .chart-container {
-    background: var(--gray-800);
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.2), 0 2px 4px -1px rgba(0, 0, 0, 0.1);
-}
-
-.dark .filter-select,
-.dark .date-input {
-    background: var(--gray-700);
-    border-color: var(--gray-600);
-    color: white;
-}
-
-.dark .filter-select:hover,
-.dark .date-input:hover {
-    border-color: var(--primary-color);
-}
-
-.dark .filter-select:focus,
-.dark .date-input:focus {
-    border-color: var(--primary-color);
-    box-shadow: 0 0 0 2px rgba(var(--primary-color-rgb), 0.2);
-}
-
-.dark .metric-card h3,
-.dark .chart-container h3 {
-    color: var(--gray-400);
-}
-
-.dark .metric-value {
-    color: white;
-}
-
-.dark .bar {
-    opacity: 0.75;
-}
-
-.dark .bar:hover {
-    opacity: 0.9;
-}
-
-.dark .point {
-    background: var(--primary-color);
-    box-shadow: 0 0 0 2px var(--gray-800);
-}
-
-.dark .point:hover {
-    box-shadow: 0 0 0 4px rgba(var(--primary-color-rgb), 0.3);
+    .filter-select {
+        width: 100%;
+    }
 }

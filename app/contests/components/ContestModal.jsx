@@ -142,9 +142,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               name="registrationStartDateTime"
               value={formData.registrationStartDateTime}
               onChange={handleChange}
-              className={`${styles.input} ${
-                errors.registrationStartDateTime ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.registrationStartDateTime ? styles.error : ""
+                }`}
             />
             {errors.registrationStartDateTime && (
               <span className={styles.errorText}>
@@ -163,9 +162,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               name="registrationEndDateTime"
               value={formData.registrationEndDateTime}
               onChange={handleChange}
-              className={`${styles.input} ${
-                errors.registrationEndDateTime ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.registrationEndDateTime ? styles.error : ""
+                }`}
             />
             {errors.registrationEndDateTime && (
               <span className={styles.errorText}>
@@ -182,9 +180,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               name="startDateTime"
               value={formData.startDateTime}
               onChange={handleChange}
-              className={`${styles.input} ${
-                errors.startDateTime ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.startDateTime ? styles.error : ""
+                }`}
             />
             {errors.startDateTime && (
               <span className={styles.errorText}>{errors.startDateTime}</span>
@@ -199,9 +196,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               name="endDateTime"
               value={formData.endDateTime}
               onChange={handleChange}
-              className={`${styles.input} ${
-                errors.endDateTime ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.endDateTime ? styles.error : ""
+                }`}
             />
             {errors.endDateTime && (
               <span className={styles.errorText}>{errors.endDateTime}</span>
@@ -217,9 +213,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               value={formData.minParticipants}
               onChange={handleChange}
               min="1"
-              className={`${styles.input} ${
-                errors.minParticipants ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.minParticipants ? styles.error : ""
+                }`}
             />
             {errors.minParticipants && (
               <span className={styles.errorText}>{errors.minParticipants}</span>
@@ -250,9 +245,11 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               onChange={handleChange}
               className={styles.input}
             >
-              <option value="Upcoming">Upcoming</option>
-              <option value="Active">Active</option>
-              <option value="Completed">Completed</option>
+
+              <option value="Unpublished">Unpublished</option >
+              <option value="published">published</option>
+              {/* <option value="Active">Active</option>
+              <option value="Completed">Completed</option> */}
             </select>
           </div>
 
@@ -264,9 +261,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               name="startDate"
               value={formData.startDate}
               onChange={handleChange}
-              className={`${styles.input} ${
-                errors.startDate ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.startDate ? styles.error : ""
+                }`}
             />
             {errors.startDate && (
               <span className={styles.errorText}>{errors.startDate}</span>
@@ -281,9 +277,8 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
               name="endDate"
               value={formData.endDate}
               onChange={handleChange}
-              className={`${styles.input} ${
-                errors.endDate ? styles.error : ""
-              }`}
+              className={`${styles.input} ${errors.endDate ? styles.error : ""
+                }`}
             />
             {errors.endDate && (
               <span className={styles.errorText}>{errors.endDate}</span>

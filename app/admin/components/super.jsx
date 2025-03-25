@@ -2,8 +2,11 @@ import React, { useState } from "react";
 import "./super.css";
 const SuperAdminSecurity = () => {
   // State Management
+  const [currentPassword, setCurrentPassword] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [recoveryEmail, setRecoveryEmail] = useState("admin@example.com");
+  const [recoveryPhone, setRecoveryPhone] = useState("+1234567890");
   const [twoFactor, setTwoFactor] = useState(false);
   const [trustedDevices, setTrustedDevices] = useState([
     { id: 1, device: "MacBook Pro", ip: "192.168.1.10", location: "USA" },
@@ -16,21 +19,30 @@ const SuperAdminSecurity = () => {
 
   // Handle Password Change
   const handlePasswordUpdate = () => {
-    if (password !== confirmPassword) {
-      alert("Passwords do not match!");
+    if (!currentPassword) {
+      alert("Please enter your current password!");
       return;
     }
+    if (password !== confirmPassword) {
+      alert("New passwords do not match!");
+      return;
+    }
+    // Add API call to verify current password and update new password
     alert("Password Updated Successfully!");
+    setCurrentPassword("");
+    setPassword("");
+    setConfirmPassword("");
   };
 
-  // Handle Remove Trusted Device
-  const removeTrustedDevice = (id) => {
-    setTrustedDevices(trustedDevices.filter((device) => device.id !== id));
+  // Handle Recovery Contact Update
+  const handleRecoveryEmailUpdate = () => {
+    // Add API call to update recovery email
+    alert("Recovery email updated successfully!");
   };
 
-  // Handle Log Out Session
-  const logoutSession = (id) => {
-    setActiveSessions(activeSessions.filter((session) => session.id !== id));
+  const handleRecoveryPhoneUpdate = () => {
+    // Add API call to update recovery phone
+    alert("Recovery phone updated successfully!");
   };
 
   return (
@@ -42,6 +54,13 @@ const SuperAdminSecurity = () => {
         {/* Update Password Section */}
         <div className="section">
           <h3>Update Password</h3>
+          <input
+            type="password"
+            placeholder="Current Password"
+            value={currentPassword}
+            onChange={(e) => setCurrentPassword(e.target.value)}
+            className="input"
+          />
           <input
             type="password"
             placeholder="New Password"
@@ -57,6 +76,33 @@ const SuperAdminSecurity = () => {
             className="input"
           />
           <button onClick={handlePasswordUpdate} className="btn">Update Password</button>
+        </div>
+
+        {/* Recovery Contacts Section */}
+        <div className="section">
+          <h3>Recovery Contacts</h3>
+          <div className="recovery-item">
+            <div className="recovery-input-group">
+              <input
+                type="email"
+                placeholder="Recovery Email"
+                value={recoveryEmail}
+                onChange={(e) => setRecoveryEmail(e.target.value)}
+                className="input"
+              />
+              <button onClick={handleRecoveryEmailUpdate} className="btn">Update Email</button>
+            </div>
+            <div className="recovery-input-group">
+              <input
+                type="tel"
+                placeholder="Recovery Phone"
+                value={recoveryPhone}
+                onChange={(e) => setRecoveryPhone(e.target.value)}
+                className="input"
+              />
+              <button onClick={handleRecoveryPhoneUpdate} className="btn">Update Phone</button>
+            </div>
+          </div>
         </div>
 
         {/* Two-Factor Authentication Section */}

@@ -118,9 +118,8 @@ export default function ThemeManagement() {
             (label, index) => (
               <button
                 key={index}
-                className={`tabs__tab ${
-                  activeTab === index ? "tabs__tab--active" : ""
-                }`}
+                className={`tabs__tab ${activeTab === index ? "tabs__tab--active" : ""
+                  }`}
                 onClick={() => handleTabChange(index)}
               >
                 {label}
