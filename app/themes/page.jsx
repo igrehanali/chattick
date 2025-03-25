@@ -318,7 +318,7 @@ export default function ThemeManagement() {
                   </div>
                 </div>
 
-                <div className="theme-designer__section">
+                {/* <div className="theme-designer__section">
                   <h3>Chat Settings</h3>
                   <div className="theme-designer__chat-grid">
                     <div className="theme-designer__chat-item">
@@ -416,7 +416,7 @@ export default function ThemeManagement() {
                       />
                     </div>
                   </div>
-                </div>
+                </div> */}
               </div>
             </div>
           </div>

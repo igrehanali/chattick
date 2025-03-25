@@ -107,3 +107,57 @@
         font-size: 1.25rem;
     }
 }
+
+.detailed-analysis {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 2rem;
+}
+
+.analysis-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.analysis-table th,
+.analysis-table td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.analysis-table th {
+    background-color: #f9fafb;
+    font-weight: 500;
+    color: #4b5563;
+}
+
+.status-badge {
+    padding: 0.25rem 0.75rem;
+    border-radius: 1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+}
+
+.status-badge.implemented {
+    background-color: #dcfce7;
+    color: #059669;
+}
+
+.status-badge.in-progress {
+    background-color: #fff7ed;
+    color: #ea580c;
+}
+
+.status-badge.under-review {
+    background-color: #eff6ff;
+    color: #2563eb;
+}
+
+.status-badge.pending {
+    background-color: #f3f4f6;
+    color: #4b5563;
+}
