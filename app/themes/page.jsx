@@ -118,8 +118,9 @@ export default function ThemeManagement() {
             (label, index) => (
               <button
                 key={index}
-                className={`tabs__tab ${activeTab === index ? "tabs__tab--active" : ""
-                  }`}
+                className={`tabs__tab ${
+                  activeTab === index ? "tabs__tab--active" : ""
+                }`}
                 onClick={() => handleTabChange(index)}
               >
                 {label}
@@ -313,106 +314,6 @@ export default function ThemeManagement() {
                           )
                         }
                         placeholder="e.g., 16px"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                <div className="theme-designer__section">
-                  <h3>Chat Settings</h3>
-                  <div className="theme-designer__chat-grid">
-                    <div className="theme-designer__chat-item">
-                      <label>Wallpaper</label>
-                      <input
-                        type="file"
-                        accept="image/*"
-                        onChange={(e) =>
-                          handleThemePropertyChange(
-                            "chat",
-                            "wallpaper",
-                            e.target.files[0]
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="theme-designer__chat-item">
-                      <label>Message Delete Time</label>
-                      <select
-                        value={currentTheme.chat.messageDeleteTime}
-                        onChange={(e) =>
-                          handleThemePropertyChange(
-                            "chat",
-                            "messageDeleteTime",
-                            e.target.value
-                          )
-                        }
-                      >
-                        {messageDeleteTimeOptions.map((option) => (
-                          <option key={option.value} value={option.value}>
-                            {option.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-
-                    <div className="theme-designer__chat-item">
-                      <label>Message Disappearing Timer</label>
-                      <input
-                        type="checkbox"
-                        checked={currentTheme.chat.messageDisappearingTimer}
-                        onChange={(e) =>
-                          handleThemePropertyChange(
-                            "chat",
-                            "messageDisappearingTimer",
-                            e.target.checked
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="theme-designer__chat-item">
-                      <label>Clear on Screen Off</label>
-                      <input
-                        type="checkbox"
-                        checked={currentTheme.chat.clearOnScreenOff}
-                        onChange={(e) =>
-                          handleThemePropertyChange(
-                            "chat",
-                            "clearOnScreenOff",
-                            e.target.checked
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="theme-designer__chat-item">
-                      <label>Allow Screenshots</label>
-                      <input
-                        type="checkbox"
-                        checked={currentTheme.chat.screenshotAllowed}
-                        onChange={(e) =>
-                          handleThemePropertyChange(
-                            "chat",
-                            "screenshotAllowed",
-                            e.target.checked
-                          )
-                        }
-                      />
-                    </div>
-
-                    <div className="theme-designer__chat-item">
-                      <label>Allow Media Save to Gallery</label>
-                      <input
-                        type="checkbox"
-                        checked={currentTheme.chat.mediaSaveAllowed}
-                        onChange={(e) =>
-                          handleThemePropertyChange(
-                            "chat",
-                            "mediaSaveAllowed",
-                            e.target.checked
-                          )
-                        }
                       />
                     </div>
                   </div>

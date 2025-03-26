@@ -40,6 +40,9 @@ import {
   Phone,
   Book,
   Lock,
+  UserCircle,
+  UsersRound,
+  MapPin,
 } from "lucide-react";
 
 const navigation = [
@@ -47,10 +50,10 @@ const navigation = [
   {
     name: "User Management",
     href: "/users",
-    icon: Users,
+    icon: UserCircle,
     submenu: [
-      { name: "Users", href: "/users", icon: UserCheck },
-      { name: "User Location", href: "/userManagement", icon: UserCheck },
+      { name: "Users", href: "/users", icon: UsersRound },
+      { name: "User Location", href: "/userManagement", icon: MapPin },
     ],
   },
   { name: "Support & Tickets", href: "/support", icon: MessageSquare },
@@ -221,8 +224,9 @@ export function Sidebar() {
       )}
 
       <div
-        className={`${styles.sidebar} ${isOpen ? styles.sidebarOpen : styles.sidebarClosed
-          }`}
+        className={`${styles.sidebar} ${
+          isOpen ? styles.sidebarOpen : styles.sidebarClosed
+        }`}
       >
         <div className={styles.header}>
           <span className={styles.headerTitle}>Admin Panel</span>
@@ -238,8 +242,9 @@ export function Sidebar() {
                 <div key={item.name}>
                   <Link
                     href={item.href}
-                    className={`${styles.navItem} ${isActive ? styles.navItemActive : ""
-                      }`}
+                    className={`${styles.navItem} ${
+                      isActive ? styles.navItemActive : ""
+                    }`}
                     onClick={(e) => {
                       if (item.submenu) {
                         e.preventDefault();
@@ -248,8 +253,9 @@ export function Sidebar() {
                     }}
                   >
                     <item.icon
-                      className={`${styles.navItemIcon} ${isActive ? styles.navItemIconActive : ""
-                        }`}
+                      className={`${styles.navItemIcon} ${
+                        isActive ? styles.navItemIconActive : ""
+                      }`}
                       aria-hidden="true"
                     />
                     {item.name}
@@ -268,8 +274,9 @@ export function Sidebar() {
                           <Link
                             key={subItem.name}
                             href={subItem.href}
-                            className={`${styles.submenuItem} ${isSubItemActive ? styles.submenuItemActive : ""
-                              }`}
+                            className={`${styles.submenuItem} ${
+                              isSubItemActive ? styles.submenuItemActive : ""
+                            }`}
                           >
                             <subItem.icon
                               className={styles.navItemIcon}

@@ -32,13 +32,13 @@
     padding: 0.4rem 0.8rem;
     color: #ebeef3;
     text-decoration: none;
-    font-size: 0.85rem;
+    font-size: 0.65rem;
     border-radius: 0.25rem;
     transition: all 0.2s;
     white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    margin: 0.5rem 0rem;
+    margin: 0.1rem 1rem;
 }
 
 .submenuItem:hover {
@@ -148,8 +148,8 @@
 
 .navItemIcon {
     margin-right: 0.875rem;
-    height: 1.25rem;
-    width: 1.25rem;
+    height: 1rem;
+    width: 1rem;
     flex-shrink: 0;
     color: rgba(255, 255, 255, 0.8);
     transition: color 0.2s ease-in-out;
