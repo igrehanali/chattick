@@ -22,6 +22,7 @@ const AnalyzeFeatureSuggestions = () => {
     const [selectedCategory, setSelectedCategory] = useState("All");
 
     // Mock data - Replace with actual API data
+    // Add this to the existing suggestionsData object
     const suggestionsData = {
         monthlySubmissions: [
             { month: "Jan", count: 45, implemented: 15 },
@@ -51,6 +52,46 @@ const AnalyzeFeatureSuggestions = () => {
                 { category: "Performance", implemented: 20, total: 55 }
             ]
         },
+        detailedMetrics: {
+            engagement: [
+                {
+                    suggestion: "Dark Mode Support",
+                    category: "UI/UX",
+                    votes: 850,
+                    comments: 120,
+                    status: "Implemented",
+                    timeToImplement: "45 days",
+                    priority: "High"
+                },
+                {
+                    suggestion: "Voice Messages",
+                    category: "Chat Features",
+                    votes: 720,
+                    comments: 95,
+                    status: "In Progress",
+                    timeToImplement: "30 days",
+                    priority: "Medium"
+                },
+                {
+                    suggestion: "Group Video Calls",
+                    category: "Chat Features",
+                    votes: 680,
+                    comments: 88,
+                    status: "Under Review",
+                    timeToImplement: "--",
+                    priority: "High"
+                },
+                {
+                    suggestion: "Custom Emojis",
+                    category: "UI/UX",
+                    votes: 550,
+                    comments: 75,
+                    status: "Pending",
+                    timeToImplement: "--",
+                    priority: "Low"
+                }
+            ]
+        },
         statusBreakdown: [
             { status: "Implemented", count: 130 },
             { status: "In Progress", count: 85 },
@@ -63,7 +104,7 @@ const AnalyzeFeatureSuggestions = () => {
         "January", "February", "March", "April", "May", "June",
         "July", "August", "September", "October", "November", "December"
     ];
-    
+
     const years = Array.from({ length: 5 }, (_, i) => new Date().getFullYear() - i);
 
     const categories = ["All", "UI/UX", "Chat Features", "Payments", "Security", "Performance"];
@@ -228,9 +269,44 @@ const AnalyzeFeatureSuggestions = () => {
                         </ResponsiveContainer>
                     </div>
                 </div>
+                <div className="detailed-analysis">
+                    <h2>Detailed Feature Request Analysis</h2>
+                    <table className="analysis-table">
+                        <thead>
+                            <tr>
+                                <th>Feature Request</th>
+                                <th>Category</th>
+                                <th>Votes</th>
+                                <th>Comments</th>
+                                <th>Status</th>
+                                <th>Implementation Time</th>
+                                <th>Priority</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {suggestionsData.detailedMetrics.engagement.map((item, index) => (
+                                <tr key={index}>
+                                    <td>{item.suggestion}</td>
+                                    <td>{item.category}</td>
+                                    <td>{item.votes}</td>
+                                    <td>{item.comments}</td>
+                                    <td>
+                                        <span className={`status-badge ${item.status?.toLowerCase()}`}>
+                                            {item.status}
+                                        </span>
+                                    </td>
+                                    <td>{item.timeToImplement}</td>
+                                    <td>{item.priority}</td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </AdminLayout>
     );
 };
+
+// Add this new component inside the main return statement, after the charts-grid
 
 export default AnalyzeFeatureSuggestions;

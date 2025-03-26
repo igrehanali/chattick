@@ -232,9 +232,6 @@ const PaymentAnalytics = () => {
             </ResponsiveContainer>
           </div>
 
-
-        </div>
-        <div className="charts-section">
           <div className="chart-container">
             <h3>Profit Margin Trend</h3>
             <ResponsiveContainer width="100%" height={300}>
