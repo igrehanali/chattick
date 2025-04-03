@@ -7,6 +7,7 @@ import { LogIn } from "lucide-react";
 import toast from "react-hot-toast";
 import Image from "next/image";
 import "./styles.css";
+import Link from "next/link";
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -15,17 +16,37 @@ export default function LoginPage() {
     password: "",
   });
   const [showPassword, setShowPassword] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const success = await login(formData.email, formData.password);
-    if (!success) {
-      toast.error(
-        "Invalid credentials - Please check your email and password and try again.",
-        {
-          duration: 3000,
-        }
-      );
+    if (!formData.email || !formData.password) {
+      toast.error("Please fill in all required fields", {
+        duration: 3000,
+      });
+      return;
+    }
+    setIsLoading(true);
+    try {
+      const success = await login(formData.email, formData.password);
+      if (!success) {
+        toast.error(
+          "Invalid credentials - Please check your email and password and try again.",
+          {
+            duration: 3000,
+          }
+        );
+      } else {
+        toast.success("Login successful!", {
+          duration: 2000,
+        });
+      }
+    } catch (error) {
+      toast.error("An error occurred during login. Please try again.", {
+        duration: 3000,
+      });
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -111,9 +132,9 @@ export default function LoginPage() {
             </div>
 
             <div>
-              <a href="#" className="forgot-password">
+              <Link href="/auth/forgot-password" className="forgot-password">
                 Forgot your password?
-              </a>
+              </Link>
             </div>
           </div>
 
@@ -122,8 +143,16 @@ export default function LoginPage() {
               type="submit"
               className="submit-button"
               onClick={handleSubmit}
+              disabled={isLoading}
             >
-              Sign in
+              {isLoading ? (
+                <>
+                  <span className="loading-spinner"></span>
+                  Signing in...
+                </>
+              ) : (
+                "Sign in"
+              )}
             </Button>
           </div>
         </form>

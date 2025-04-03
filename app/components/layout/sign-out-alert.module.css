@@ -2,89 +2,145 @@
     position: fixed;
     inset: 0;
     z-index: 1000;
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.75);
     backdrop-filter: blur(8px);
     display: flex;
     align-items: center;
     justify-content: center;
+    width: 100vw;
+    height: 100vh;
+    animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .dialog {
-    background-color: var(--background);
-    border-radius: 0.75rem;
-    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+    background-color: #1a1a1a;
+    border-radius: 1.25rem;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5),
+        0 8px 24px -8px rgba(0, 0, 0, 0.3),
+        0 0 1px 0 rgba(0, 0, 0, 0.2),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.05);
     width: 100%;
-    max-width: 28rem;
-    padding: 2rem;
-    animation: slideIn 0.2s ease-out;
+    max-width: 30rem;
+    padding: 2.75rem;
+    animation: slideIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
     border: 1px solid var(--border);
+    transform-origin: center;
+    will-change: transform, opacity;
 }
 
 .header {
     text-align: center;
-    margin-bottom: 1.5rem;
+    margin-bottom: 2rem;
 }
 
 .title {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--foreground);
-    margin-bottom: 0.5rem;
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #ffffff;
+    margin-bottom: 0.75rem;
+    letter-spacing: -0.025em;
 }
 
 .description {
-    color: var(--muted-foreground);
-    font-size: 0.875rem;
+    color: #a3a3a3;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+    max-width: 90%;
+    margin: 0 auto;
 }
 
 .footer {
     display: flex;
     justify-content: flex-end;
-    gap: 0.75rem;
-    margin-top: 1.5rem;
+    gap: 1rem;
+    margin-top: 2rem;
 }
 
 .button {
-    padding: 0.625rem 1.25rem;
-    border-radius: 0.5rem;
-    font-size: 0.875rem;
+    padding: 0.875rem 1.75rem;
+    border-radius: 0.875rem;
+    font-size: 0.9375rem;
     font-weight: 600;
-    transition: all 0.2s;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
     cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    letter-spacing: 0.01em;
+    user-select: none;
+}
+
+.button::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-color: transparent;
+    transition: background-color 0.2s;
+}
+
+.button:active {
+    transform: scale(0.98);
 }
 
 .cancelButton {
-    background-color: transparent;
-    border: 1px solid var(--border);
-    color: var(--foreground);
-}
-
-.cancelButton:hover {
-    background-color: var(--accent);
-    color: var(--accent-foreground);
-}
-
-.confirmButton {
-    background-color: var(--destructive);
-    color: var(--destructive-foreground);
-    border: none;
+    background-color: #2a2a2a;
+    border: 1px solid #404040;
+    color: #ffffff;
     box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
 }
 
-.confirmButton:hover {
-    background-color: var(--destructive);
-    opacity: 0.9;
-    transform: translateY(-1px);
+.cancelButton:hover::after {
+    background-color: rgba(0, 0, 0, 0.06);
+}
+
+.cancelButton:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.confirmButton {
+    background-color: #dc2626;
+    color: #ffffff;
+    border: none;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1),
+        0 1px 2px -1px rgba(0, 0, 0, 0.1),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.1);
+}
+
+.confirmButton:hover::after {
+    background-color: rgba(255, 255, 255, 0.12);
+}
+
+.confirmButton:focus-visible {
+    outline: 2px solid var(--destructive);
+    outline-offset: 2px;
+}
+
+.confirmButton:active {
+    transform: scale(0.98);
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
 }
 
 @keyframes slideIn {
     from {
         opacity: 0;
-        transform: translateY(-10px);
+        transform: scale(0.96) translateY(-12px);
+    }
+
+    50% {
+        transform: scale(1.02) translateY(2px);
     }
 
     to {
         opacity: 1;
-        transform: translateY(0);
+        transform: scale(1) translateY(0);
     }
 }

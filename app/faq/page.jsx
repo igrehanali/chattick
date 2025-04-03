@@ -56,12 +56,12 @@ export default function FAQPage() {
   const [showAnalytics, setShowAnalytics] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
   const [confirmConfig, setConfirmConfig] = useState({
-    title: '',
-    message: '',
-    confirmText: '',
-    cancelText: '',
-    onConfirm: () => { },
-    variant: 'default'
+    title: "",
+    message: "",
+    confirmText: "",
+    cancelText: "",
+    onConfirm: () => {},
+    variant: "default",
   });
 
   const handleAddNewFAQ = () => {
@@ -84,7 +84,6 @@ export default function FAQPage() {
     setIsCategoryModalOpen(true);
   };
 
-
   const filteredFAQs = faqs.filter(
     (faq) =>
       (selectedCategory === "all" || faq.category === selectedCategory) &&
@@ -93,7 +92,15 @@ export default function FAQPage() {
   );
 
   // Update the ConfirmPopup component
-  const ConfirmPopup = ({ title, message, onConfirm, onCancel, confirmText, cancelText, variant }) => {
+  const ConfirmPopup = ({
+    title,
+    message,
+    onConfirm,
+    onCancel,
+    confirmText,
+    cancelText,
+    variant,
+  }) => {
     return (
       <div className={styles.modalOverlay}>
         <div className={styles.modalContent}>
@@ -101,10 +108,10 @@ export default function FAQPage() {
           <p className={styles.modalMessage}>{message}</p>
           <div className={styles.modalActions}>
             <Button variant="outline" onClick={onCancel}>
-              {cancelText || 'Cancel'}
+              {cancelText || "Cancel"}
             </Button>
             <Button variant={variant} onClick={onConfirm}>
-              {confirmText || 'Confirm'}
+              {confirmText || "Confirm"}
             </Button>
           </div>
         </div>
@@ -115,30 +122,34 @@ export default function FAQPage() {
   // Update the handlers
   const handleDeleteFAQ = (id) => {
     setConfirmConfig({
-      title: 'Delete FAQ',
-      message: 'Are you sure you want to delete this FAQ?',
-      confirmText: 'Delete',
-      variant: 'destructive',
+      title: "Delete FAQ",
+      message: "Are you sure you want to delete this FAQ?",
+      confirmText: "Delete",
+      variant: "destructive",
       onConfirm: () => {
         setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq.id !== id));
         setShowConfirm(false);
-      }
+      },
     });
     setShowConfirm(true);
   };
 
   const handleToggleVisibility = (faq) => {
     setConfirmConfig({
-      title: `${faq.isVisible ? 'Hide' : 'Show'} FAQ`,
-      message: `Are you sure you want to ${faq.isVisible ? 'hide' : 'show'} this FAQ?`,
-      confirmText: faq.isVisible ? 'Hide' : 'Show',
-      variant: 'default',
+      title: `${faq.isVisible ? "Hide" : "Show"} FAQ`,
+      message: `Are you sure you want to ${
+        faq.isVisible ? "hide" : "show"
+      } this FAQ?`,
+      confirmText: faq.isVisible ? "Hide" : "Show",
+      variant: "default",
       onConfirm: () => {
-        setFaqs(faqs.map(f =>
-          f.id === faq.id ? { ...f, isVisible: !f.isVisible } : f
-        ));
+        setFaqs(
+          faqs.map((f) =>
+            f.id === faq.id ? { ...f, isVisible: !f.isVisible } : f
+          )
+        );
         setShowConfirm(false);
-      }
+      },
     });
     setShowConfirm(true);
   };
@@ -152,28 +163,32 @@ export default function FAQPage() {
     const associatedFAQs = faqs.filter((faq) => faq.category === id);
     if (associatedFAQs.length > 0) {
       setConfirmConfig({
-        title: 'Cannot Delete Category',
-        message: `Cannot delete category "${categoryToDelete.name}" because it has ${associatedFAQs.length} associated FAQ${associatedFAQs.length === 1 ? '' : 's'}. Please reassign or delete the associated FAQs first.`,
-        confirmText: 'OK',
-        variant: 'default',
-        onConfirm: () => setShowConfirm(false)
+        title: "Cannot Delete Category",
+        message: `Cannot delete category "${
+          categoryToDelete.name
+        }" because it has ${associatedFAQs.length} associated FAQ${
+          associatedFAQs.length === 1 ? "" : "s"
+        }. Please reassign or delete the associated FAQs first.`,
+        confirmText: "OK",
+        variant: "default",
+        onConfirm: () => setShowConfirm(false),
       });
       setShowConfirm(true);
       return;
     }
 
     setConfirmConfig({
-      title: 'Delete Category',
+      title: "Delete Category",
       message: `Are you sure you want to delete the category "${categoryToDelete.name}"?\n\nThis action cannot be undone and will permanently remove this category from the system.`,
-      confirmText: 'Delete',
-      variant: 'destructive',
+      confirmText: "Delete",
+      variant: "destructive",
       onConfirm: () => {
         setCategories(categories.filter((category) => category.id !== id));
         if (selectedCategory === id) {
           setSelectedCategory("all");
         }
         setShowConfirm(false);
-      }
+      },
     });
     setShowConfirm(true);
   };
@@ -213,8 +228,6 @@ export default function FAQPage() {
             </Button>
           </div>
         </div>
-
-
 
         {showAnalytics && <FAQAnalytics faqs={faqs} categories={categories} />}
 
@@ -265,17 +278,6 @@ export default function FAQPage() {
         <div className={styles.faqSection}>
           <h2 className={styles.sectionTitle}>FAQs</h2>
           <div className={styles.controls}>
-            <div className={styles.searchWrapper}>
-              <FiSearch className={styles.searchIcon} />
-              <input
-                type="text"
-                placeholder="Search FAQs..."
-                className={styles.searchInput}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
-            </div>
-
             <select
               className={styles.categoryFilter}
               value={selectedCategory}
@@ -313,10 +315,11 @@ export default function FAQPage() {
                     </td>
                     <td className={styles.tableCell}>
                       <span
-                        className={`${styles.badge} ${faq.isVisible
-                          ? styles.badgeVisible
-                          : styles.badgeHidden
-                          }`}
+                        className={`${styles.badge} ${
+                          faq.isVisible
+                            ? styles.badgeVisible
+                            : styles.badgeHidden
+                        }`}
                       >
                         {faq.isVisible ? "Visible" : "Hidden"}
                       </span>
@@ -324,10 +327,11 @@ export default function FAQPage() {
                     <td className={styles.tableCell}>
                       <button
                         onClick={() => handleToggleVisibility(faq)}
-                        className={`${styles.visibilityButton} ${faq.isVisible ? styles.visible : styles.hidden
-                          }`}
+                        className={`${styles.visibilityButton} ${
+                          faq.isVisible ? styles.visible : styles.hidden
+                        }`}
                       >
-                        {faq.isVisible ? 'Published' : 'Draft'}
+                        {faq.isVisible ? "Published" : "Draft"}
                       </button>
                     </td>
                     <td className={styles.tableCell}>
@@ -356,7 +360,7 @@ export default function FAQPage() {
             isOpen={isFAQModalOpen}
             onClose={() => setIsFAQModalOpen(false)}
             faq={currentFaq}
-            categories={categories}  // Add this line to pass categories
+            categories={categories} // Add this line to pass categories
             onSave={(formData) => {
               if (currentFaq) {
                 setFaqs(

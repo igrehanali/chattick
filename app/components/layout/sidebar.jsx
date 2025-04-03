@@ -43,6 +43,9 @@ import {
   UserCircle,
   UsersRound,
   MapPin,
+  TurtleIcon,
+  FileQuestionIcon,
+  BookIcon,
 } from "lucide-react";
 
 const navigation = [
@@ -59,7 +62,15 @@ const navigation = [
   { name: "Support & Tickets", href: "/support", icon: MessageSquare },
   { name: "Subscription & Payments", href: "/subscriptions", icon: CreditCard },
   { name: "Contests & Rewards", href: "/contests", icon: Trophy },
-  { name: "Surveys & FAQs", href: "/faq", icon: HelpCircle },
+  {
+    name: "Surveys & FAQs",
+    href: "/faqs",
+    icon: HelpCircle,
+    submenu: [
+      { name: "Surveys & FAQs", href: "/faq", icon: FileQuestionIcon },
+      { name: "Tutorials", href: "/tutorials", icon: BookIcon },
+    ],
+  },
   { name: "System Settings", href: "/settings", icon: Settings },
   { name: "Notifications & Policies", href: "/notifications", icon: Bell },
   { name: "Themes & Customization", href: "/themes", icon: Palette },
