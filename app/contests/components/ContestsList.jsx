@@ -1,39 +1,29 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Search, Edit, Trash2, Plus } from "lucide-react";
 import styles from "../page.module.css";
 import ContestModal from "./ContestModal";
 import ContestProfile from "./ContestProfile";
 import PrizePoolModal from "./PrizePoolModal";
+import { contestService } from "@/lib/services/contest-service";
 
 export default function ContestsList() {
   const [showProfiles, setShowProfiles] = useState(false);
-  const [contests, setContests] = useState([
-    {
-      id: 1,
-      title: "Summer Photo Contest",
-      status: "Unpublished",
-      frequency: "Weekly",
-      registrationStartDateTime: "2024-02-01",
-      registrationEndDateTime: "2024-02-15",
-      startDateTime: "2024-02-16",
-      endDateTime: "2024-02-28",
-      minParticipants: 10,
-    },
-    {
-      id: 2,
-      title: "Best Story Contest",
-      status: "Unpublished",
-      frequency: "Monthly",
-      registrationStartDateTime: "2024-03-01",
-      registrationEndDateTime: "2024-03-15",
-      startDateTime: "2024-03-16",
-      endDateTime: "2024-03-31",
-      minParticipants: 20,
-    },
-  ]);
+  const [contests, setContests] = useState([]);
+
+  useEffect(() => {
+    const loadContests = async () => {
+      try {
+        const contestsData = await contestService.getAllContests();
+        setContests(contestsData);
+      } catch (error) {
+        console.error("Error loading contests:", error);
+      }
+    };
+    loadContests();
+  }, []);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentContest, setCurrentContest] = useState(null);
   const [searchQuery, setSearchQuery] = useState("");
@@ -44,8 +34,8 @@ export default function ContestsList() {
       minParticipants: 50,
       maxParticipants: 100,
       prizePool: 1000,
-      numberOfWinners: 3
-    }
+      numberOfWinners: 3,
+    },
   ]);
 
   const handleCreateContest = () => {
@@ -58,23 +48,35 @@ export default function ContestsList() {
     setIsModalOpen(true);
   };
 
-  const handleDeleteContest = (id) => {
+  const handleDeleteContest = async (id) => {
     if (window.confirm("Are you sure you want to delete this contest?")) {
-      setContests(contests.filter((contest) => contest.id !== id));
+      try {
+        await contestService.deleteContest(id);
+        setContests(contests.filter((contest) => contest.id !== id));
+      } catch (error) {
+        console.error("Error deleting contest:", error);
+      }
     }
   };
 
-  const handleSaveContest = (formData) => {
-    if (currentContest) {
-      setContests(
-        contests.map((c) =>
-          c.id === currentContest.id ? { ...c, ...formData } : c
-        )
-      );
-    } else {
-      setContests([...contests, { id: Date.now(), ...formData }]);
+  const handleSaveContest = async (formData) => {
+    try {
+      if (currentContest) {
+        const updatedContest = await contestService.updateContest(
+          currentContest.id,
+          formData
+        );
+        setContests(
+          contests.map((c) => (c.id === currentContest.id ? updatedContest : c))
+        );
+      } else {
+        const newContest = await contestService.createContest(formData);
+        setContests([...contests, newContest]);
+      }
+      setIsModalOpen(false);
+    } catch (error) {
+      console.error("Error saving contest:", error);
     }
-    setIsModalOpen(false);
   };
 
   const handlePublishContest = (id) => {
@@ -99,10 +101,10 @@ export default function ContestsList() {
 
   const formatDate = (dateString) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit'
+    return date.toLocaleDateString("en-US", {
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
     });
   };
 
@@ -121,7 +123,7 @@ export default function ContestsList() {
   };
 
   const handleDeletePrizePool = (id) => {
-    setPrizePools(prizePools.filter(pool => pool.id !== id));
+    setPrizePools(prizePools.filter((pool) => pool.id !== id));
   };
 
   return (
@@ -171,8 +173,9 @@ export default function ContestsList() {
                   <td>{contest.title}</td>
                   <td>
                     <span
-                      className={`${styles.status} ${styles[contest.status.toLowerCase()]
-                        }`}
+                      className={`${styles.status} ${
+                        styles[contest.status.toLowerCase()]
+                      }`}
                     >
                       {contest.status}
                     </span>
@@ -180,11 +183,11 @@ export default function ContestsList() {
                   <td>{contest.frequency}</td>
 
                   <td>
-                    {formatDate(contest.registrationStartDateTime)} -{' '}
+                    {formatDate(contest.registrationStartDateTime)} -{" "}
                     {formatDate(contest.registrationEndDateTime)}
                   </td>
                   <td>
-                    {formatDate(contest.startDateTime)} -{' '}
+                    {formatDate(contest.startDateTime)} -{" "}
                     {formatDate(contest.endDateTime)}
                   </td>
                   <td>{contest.minParticipants}</td>
@@ -271,7 +274,9 @@ export default function ContestsList() {
             <tbody>
               {prizePools.map((pool) => (
                 <tr key={pool.id}>
-                  <td>{pool.minParticipants} - {pool.maxParticipants}</td>
+                  <td>
+                    {pool.minParticipants} - {pool.maxParticipants}
+                  </td>
                   <td>{pool.prizePool}</td>
                   <td>{pool.numberOfWinners}</td>
                   <td>

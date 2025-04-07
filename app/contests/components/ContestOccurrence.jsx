@@ -1,24 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Search, Eye, Trophy } from "lucide-react";
 import styles from "../page.module.css";
+import { contestService } from "@/lib/services/contest-service";
 
 export default function ContestOccurrence() {
-  const [occurrences, setOccurrences] = useState([
-    {
-      id: 1,
-      contestId: 1,
-      occurrenceId: "CO-2024-02-01",
-      startDateTime: "2024-02-01T10:00",
-      endDateTime: "2024-02-01T18:00",
-      status: "Registering",
-      participantsCount: 0,
-      prizePool: 0,
-      winnersCount: 0,
-    },
-  ]);
+  const [occurrences, setOccurrences] = useState([]);
+
+  useEffect(() => {
+    const loadOccurrences = async () => {
+      try {
+        const occurrencesData = await contestService.getAllOccurrences();
+        setOccurrences(occurrencesData);
+      } catch (error) {
+        console.error("Error loading occurrences:", error);
+      }
+    };
+    loadOccurrences();
+  }, []);
   const [searchQuery, setSearchQuery] = useState("");
 
   const getStatusClass = (status) => {

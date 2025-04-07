@@ -1,27 +1,30 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../page.module.css";
 import { FiSearch, FiDownload } from "react-icons/fi";
+import { surveyService } from "@/lib/services/survey-service";
+import { toast } from "react-hot-toast";
 
 export default function SurveyResponses({ surveyId, onClose }) {
-  const [responses, setResponses] = useState([
-    // Mock data - replace with actual API call
-    {
-      id: 1,
-      respondent: "User A",
-      submittedAt: "2024-01-20T10:30:00",
-      answers: [
-        { question: "How satisfied are you?", answer: "Very Satisfied" },
-        { question: "Would you recommend us?", answer: "Yes" },
-      ],
-    },
-    // Add more mock responses
-  ]);
+  const [responses, setResponses] = useState([]);
+
+  useEffect(() => {
+    loadResponses();
+  }, [surveyId]);
+
+  const loadResponses = async () => {
+    try {
+      const data = await surveyService.getSurveyResponses(surveyId);
+      setResponses(data);
+    } catch (error) {
+      console.error("Error loading responses:", error);
+      toast.error("Failed to load survey responses");
+    }
+  };
   const [searchQuery, setSearchQuery] = useState("");
 
   const handleExportResponses = () => {
-    // TODO: Implement CSV export functionality
     console.log("Exporting responses...");
   };
 

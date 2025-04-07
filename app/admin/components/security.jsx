@@ -1,8 +1,9 @@
 import { Button } from "@/app/components/ui/button";
 import React, { useState, useEffect } from "react";
+import { adminService } from "@/lib/services/admin-service";
 import "./security.css";
+
 const Security = () => {
-  // State for security settings
   const [securitySettings, setSecuritySettings] = useState({
     enable2FA: "Enabled",
     passwordLength: 8,
@@ -11,23 +12,32 @@ const Security = () => {
   });
 
   const [message, setMessage] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Load settings from localStorage on mount
   useEffect(() => {
-    const savedSettings = localStorage.getItem("securitySettings");
-    if (savedSettings) {
-      setSecuritySettings(JSON.parse(savedSettings));
-    }
+    loadSecuritySettings();
   }, []);
 
-  // Handle input changes
+  const loadSecuritySettings = async () => {
+    try {
+      const settings = await adminService.getSecuritySettings();
+      setSecuritySettings(settings);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load security settings");
+      console.error("Error loading security settings:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setSecuritySettings({ ...securitySettings, [name]: value });
   };
 
-  // Handle form submission
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (securitySettings.passwordLength < 6) {
@@ -45,11 +55,14 @@ const Security = () => {
       return;
     }
 
-    // Save settings to localStorage
-    localStorage.setItem("securitySettings", JSON.stringify(securitySettings));
-
-    // Display confirmation message
-    setMessage("Security settings updated successfully!");
+    try {
+      await adminService.updateSecuritySettings(securitySettings);
+      setMessage("Security settings updated successfully!");
+      setError(null);
+    } catch (err) {
+      setError("Failed to update security settings");
+      console.error("Error updating security settings:", err);
+    }
   };
 
   return (

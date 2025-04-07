@@ -1,6 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "./roles.css";
 import { Button } from "@/app/components/ui/button";
+import { adminService } from "@/lib/services/admin-service";
+import { useAuth } from "@/app/contexts/auth-context";
 
 const FEATURES = [
   { id: 1, title: "Manage Users", description: "User management and profiles" },
@@ -17,35 +19,11 @@ const PERMISSION_TYPES = [
   { value: "update", label: "Update" },
 ];
 
-const getCurrentTimestamp = () => new Date().toISOString();
-
 const RolesTab = () => {
-  const [roles, setRoles] = useState([
-    {
-      id: 1,
-      name: "Billing Admin",
-      permissions: [{ featureId: 2, types: ["read", "write", "update"] }],
-      lastModified: getCurrentTimestamp(),
-      modifiedBy: "System",
-    },
-    {
-      id: 2,
-      name: "Support Admin",
-      permissions: [{ featureId: 3, types: ["read", "write"] }],
-      lastModified: getCurrentTimestamp(),
-      modifiedBy: "System",
-    },
-    {
-      id: 3,
-      name: "Contests Admin",
-      permissions: [{ featureId: 4, types: ["read", "write", "update"] }],
-      lastModified: getCurrentTimestamp(),
-      modifiedBy: "System",
-    },
-  ]);
-
-  const [auditLog, setAuditLog] = useState([]);
-
+  const { user } = useAuth();
+  const [roles, setRoles] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
   const [formData, setFormData] = useState({
     name: "",
     permissions: FEATURES.map((feature) => ({
@@ -54,6 +32,44 @@ const RolesTab = () => {
     })),
   });
   const [editingId, setEditingId] = useState(null);
+  const [auditLog, setAuditLog] = useState([]);
+
+  useEffect(() => {
+    loadAuditLog();
+  }, []);
+
+  const loadAuditLog = async () => {
+    try {
+      const logs = await adminService.getActivityLogs();
+      setAuditLog(logs);
+    } catch (err) {
+      console.error("Error loading audit log:", err);
+    }
+  };
+
+  useEffect(() => {
+    if (error) {
+      const timer = setTimeout(() => setError(null), 5000);
+      return () => clearTimeout(timer);
+    }
+  }, [error]);
+
+  useEffect(() => {
+    loadRoles();
+  }, []);
+
+  const loadRoles = async () => {
+    try {
+      const rolesList = await adminService.getAllRoles();
+      setRoles(rolesList);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load roles");
+      console.error("Error loading roles:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, name: e.target.value });
@@ -75,60 +91,64 @@ const RolesTab = () => {
     }));
   };
 
-  const logAuditTrail = (action, roleId, details) => {
-    const logEntry = {
-      timestamp: getCurrentTimestamp(),
-      action,
-      roleId,
-      details,
-      performedBy: "Super Admin", // In real app, this would be the logged-in admin
-    };
-    setAuditLog((prev) => [logEntry, ...prev]);
+  const logAuditTrail = async (action, roleId, details) => {
+    try {
+      await adminService.logActivity({
+        username: user?.email || "System",
+        action,
+        roleId,
+        details,
+        performedBy: user?.id || "System",
+      });
+    } catch (err) {
+      console.error("Error logging activity:", err);
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const timestamp = getCurrentTimestamp();
-
-    if (editingId) {
-      // Update existing role
-      setRoles(
-        roles.map((role) =>
-          role.id === editingId
-            ? {
-                ...role,
-                name: formData.name,
-                permissions: formData.permissions.filter(
-                  (p) => p.types.length > 0
-                ),
-                lastModified: timestamp,
-                modifiedBy: "Super Admin",
-              }
-            : role
-        )
-      );
-      logAuditTrail("update", editingId, `Updated role: ${formData.name}`);
-      setEditingId(null);
-    } else {
-      // Add new role
-      const newRole = {
-        id: roles.length + 1,
+    try {
+      const roleData = {
         name: formData.name,
         permissions: formData.permissions.filter((p) => p.types.length > 0),
-        lastModified: timestamp,
-        modifiedBy: "Super Admin",
+        modifiedBy: user?.email || "Super Admin",
       };
-      setRoles([...roles, newRole]);
-      logAuditTrail("create", newRole.id, `Created new role: ${newRole.name}`);
-    }
 
-    setFormData({
-      name: "",
-      permissions: FEATURES.map((feature) => ({
-        featureId: feature.id,
-        types: [],
-      })),
-    });
+      if (editingId) {
+        // Update existing role
+        const updatedRole = await adminService.updateRole(editingId, roleData);
+        setRoles(
+          roles.map((role) => (role.id === editingId ? updatedRole : role))
+        );
+        await logAuditTrail(
+          "update",
+          editingId,
+          `Updated role: ${formData.name}`
+        );
+        setEditingId(null);
+      } else {
+        // Add new role
+        const newRole = await adminService.createRole(roleData);
+        setRoles([...roles, newRole]);
+        await logAuditTrail(
+          "create",
+          newRole.id,
+          `Created new role: ${newRole.name}`
+        );
+      }
+
+      setFormData({
+        name: "",
+        permissions: FEATURES.map((feature) => ({
+          featureId: feature.id,
+          types: [],
+        })),
+      });
+      setError(null);
+    } catch (err) {
+      setError("Failed to save role");
+      console.error("Error saving role:", err);
+    }
   };
 
   const handleEdit = (role) => {
@@ -143,137 +163,152 @@ const RolesTab = () => {
     setEditingId(role.id);
   };
 
-  const handleDelete = (id) => {
-    const roleToDelete = roles.find((role) => role.id === id);
-    setRoles(roles.filter((role) => role.id !== id));
-    logAuditTrail("delete", id, `Deleted role: ${roleToDelete.name}`);
+  const handleDelete = async (id) => {
+    try {
+      const roleToDelete = roles.find((role) => role.id === id);
+      await adminService.deleteRole(id);
+      setRoles(roles.filter((role) => role.id !== id));
+      await logAuditTrail("delete", id, `Deleted role: ${roleToDelete.name}`);
+      setError(null);
+    } catch (err) {
+      setError("Failed to delete role");
+      console.error("Error deleting role:", err);
+    }
   };
 
   return (
     <div className="roles-container">
-      <div className="roles-form">
-        <h3>{editingId ? "Edit Role" : "Add New Role"}</h3>
-        <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <label>Role Name</label>
-            <input
-              type="text"
-              value={formData.name}
-              onChange={handleInputChange}
-              required
-            />
+      {loading ? (
+        <div className="loading">Loading roles...</div>
+      ) : error ? (
+        <div className="error-message">{error}</div>
+      ) : (
+        <>
+          <div className="roles-form">
+            <h3>{editingId ? "Edit Role" : "Add New Role"}</h3>
+            <form onSubmit={handleSubmit}>
+              <div className="form-group">
+                <label>Role Name</label>
+                <input
+                  type="text"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  required
+                />
+              </div>
+
+              <div className="permissions-grid">
+                <table>
+                  <thead>
+                    <tr>
+                      <th>Feature</th>
+                      {PERMISSION_TYPES.map((type) => (
+                        <th key={type.value}>{type.label}</th>
+                      ))}
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {FEATURES.map((feature) => (
+                      <tr key={feature.id}>
+                        <td>{feature.title}</td>
+                        {PERMISSION_TYPES.map((type) => (
+                          <td key={type.value}>
+                            <input
+                              type="checkbox"
+                              checked={
+                                formData.permissions
+                                  .find((p) => p.featureId === feature.id)
+                                  ?.types?.includes(type.value) ?? false
+                              }
+                              onChange={(e) =>
+                                handlePermissionChange(
+                                  feature.id,
+                                  type.value,
+                                  e.target.checked
+                                )
+                              }
+                            />
+                          </td>
+                        ))}
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <Button type="submit" className="submit-button">
+                {editingId ? "Update Role" : "Add Role"}
+              </Button>
+            </form>
           </div>
 
-          <div className="permissions-grid">
-            <table>
+          {/* Roles Table */}
+          <div className="roles-table-container">
+            <table className="roles-table">
               <thead>
                 <tr>
-                  <th>Feature</th>
-                  {PERMISSION_TYPES.map((type) => (
-                    <th key={type.value}>{type.label}</th>
-                  ))}
+                  <th>Role Name</th>
+                  <th>Permissions</th>
+                  <th>Last Modified</th>
+                  <th>Modified By</th>
+                  <th>Actions</th>
                 </tr>
               </thead>
               <tbody>
-                {FEATURES.map((feature) => (
-                  <tr key={feature.id}>
-                    <td>{feature.title}</td>
-                    {PERMISSION_TYPES.map((type) => (
-                      <td key={type.value}>
-                        <input
-                          type="checkbox"
-                          checked={
-                            formData.permissions
-                              .find((p) => p.featureId === feature.id)
-                              ?.types?.includes(type.value) ?? false
-                          }
-                          onChange={(e) =>
-                            handlePermissionChange(
-                              feature.id,
-                              type.value,
-                              e.target.checked
-                            )
-                          }
-                        />
-                      </td>
-                    ))}
+                {roles.map((role) => (
+                  <tr key={role.id}>
+                    <td>{role.name}</td>
+                    <td>
+                      {role.permissions
+                        .map((p) => {
+                          const feature = FEATURES.find(
+                            (f) => f.id === p.featureId
+                          );
+                          return feature
+                            ? `${feature.title} (${p.types.join(", ")})`
+                            : "";
+                        })
+                        .join("; ")}
+                    </td>
+                    <td>{new Date(role.lastModified).toLocaleString()}</td>
+                    <td>{role.modifiedBy}</td>
+                    <td>
+                      <button
+                        className="edit-button"
+                        onClick={() => handleEdit(role)}
+                      >
+                        Edit
+                      </button>
+                      <button
+                        className="delete-button"
+                        onClick={() => handleDelete(role.id)}
+                      >
+                        Delete
+                      </button>
+                    </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
 
-          <Button type="submit" className="submit-button">
-            {editingId ? "Update Role" : "Add Role"}
-          </Button>
-        </form>
-      </div>
-
-      {/* Roles Table */}
-      <div className="roles-table-container">
-        <table className="roles-table">
-          <thead>
-            <tr>
-              <th>Role Name</th>
-              <th>Permissions</th>
-              <th>Last Modified</th>
-              <th>Modified By</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {roles.map((role) => (
-              <tr key={role.id}>
-                <td>{role.name}</td>
-                <td>
-                  {role.permissions
-                    .map((p) => {
-                      const feature = FEATURES.find(
-                        (f) => f.id === p.featureId
-                      );
-                      return feature
-                        ? `${feature.title} (${p.types.join(", ")})`
-                        : "";
-                    })
-                    .join("; ")}
-                </td>
-                <td>{new Date(role.lastModified).toLocaleString()}</td>
-                <td>{role.modifiedBy}</td>
-                <td>
-                  <button
-                    className="edit-button"
-                    onClick={() => handleEdit(role)}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDelete(role.id)}
-                  >
-                    Delete
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      <div className="audit-log">
-        <h3>Audit Log</h3>
-        <div className="audit-entries">
-          {auditLog.map((entry, index) => (
-            <div key={index} className="audit-entry">
-              <span className="audit-timestamp">
-                {new Date(entry.timestamp).toLocaleString()}
-              </span>
-              <span className="audit-action">{entry.action}</span>
-              <span className="audit-details">{entry.details}</span>
-              <span className="audit-user">{entry.performedBy}</span>
+          <div className="audit-log">
+            <h3>Audit Log</h3>
+            <div className="audit-entries">
+              {auditLog.map((entry, index) => (
+                <div key={index} className="audit-entry">
+                  <span className="audit-timestamp">
+                    {new Date(entry.timestamp?.seconds * 1000).toLocaleString()}
+                  </span>
+                  <span className="audit-action">{entry.action}</span>
+                  <span className="audit-details">{entry.details}</span>
+                  <span className="audit-user">{entry.performedBy}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
-      </div>
+          </div>
+        </>
+      )}
     </div>
   );
 };

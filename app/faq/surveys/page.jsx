@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../page.module.css";
 import {
   FiPlus,
@@ -13,32 +13,27 @@ import SurveyResponses from "../components/SurveyResponses";
 import SurveyAnalytics from "../components/SurveyAnalytics";
 import SurveyModal from "../components/SurveyModal";
 import { AdminLayout } from "../../components/layout/admin-layout";
-// import { ConfirmPopup } from "./../components";
 import Link from "next/link";
 import ConfirmDialog from "@/app/contests/components/ConfirmDialog";
+import { surveyService } from "@/lib/services/survey-service";
+import { toast } from "react-hot-toast";
 
 export default function SurveysPage() {
-  const [surveys, setSurveys] = useState([
-    {
-      id: 1,
-      title: "Survey 1",
-      description: "This is a sample survey.",
-      startDate: "2023-06-01",
-      endDate: "2023-06-30",
-      isActive: true,
+  const [surveys, setSurveys] = useState([]);
 
-    },
-    {
-      id: 2,
-      title: "Survey 2",
-      description: "This is a sample survey.",
-      startDate: "2023-06-01",
-      endDate: "2023-06-30",
-      isActive: true,
+  useEffect(() => {
+    loadSurveys();
+  }, []);
 
-    },
-
-  ]);
+  const loadSurveys = async () => {
+    try {
+      const data = await surveyService.getAllSurveys();
+      setSurveys(data);
+    } catch (error) {
+      console.error("Error loading surveys:", error);
+      toast.error("Failed to load surveys");
+    }
+  };
   const [searchQuery, setSearchQuery] = useState("");
   const [isSurveyModalOpen, setIsSurveyModalOpen] = useState(false);
   const [isResponsesModalOpen, setIsResponsesModalOpen] = useState(false);
@@ -60,12 +55,19 @@ export default function SurveysPage() {
 
   const handleDeleteSurvey = (id) => {
     setConfirmConfig({
-      title: 'Delete Survey',
-      message: 'Are you sure you want to delete this Survey?',
-      onConfirm: () => {
-        setSurveys(surveys.filter(survey => survey.id !== id)); // Fixed: changed rewards to surveys
-        setShowConfirm(false);
-      }
+      title: "Delete Survey",
+      message: "Are you sure you want to delete this Survey?",
+      onConfirm: async () => {
+        try {
+          await surveyService.deleteSurvey(id);
+          setSurveys(surveys.filter((survey) => survey.id !== id));
+          toast.success("Survey deleted successfully");
+          setShowConfirm(false);
+        } catch (error) {
+          console.error("Error deleting survey:", error);
+          toast.error("Failed to delete survey");
+        }
+      },
     });
     setShowConfirm(true);
   };
@@ -153,10 +155,11 @@ export default function SurveysPage() {
                   </td>
                   <td className={styles.tableCell}>
                     <span
-                      className={`${styles.badge} ${survey.isActive
-                        ? styles.badgeActive
-                        : styles.badgeInactive
-                        }`}
+                      className={`${styles.badge} ${
+                        survey.isActive
+                          ? styles.badgeActive
+                          : styles.badgeInactive
+                      }`}
                     >
                       {survey.isActive ? "Active" : "Inactive"}
                     </span>
@@ -203,19 +206,29 @@ export default function SurveysPage() {
           isOpen={isSurveyModalOpen}
           onClose={() => setIsSurveyModalOpen(false)}
           survey={currentSurvey}
-          onSave={(formData) => {
-            if (currentSurvey) {
-              // TODO: Implement update survey API call
-              setSurveys(
-                surveys.map((s) =>
-                  s.id === currentSurvey.id ? { ...s, ...formData } : s
-                )
-              );
-            } else {
-              // TODO: Implement create survey API call
-              setSurveys([...surveys, { id: Date.now(), ...formData }]);
+          onSave={async (formData) => {
+            try {
+              if (currentSurvey) {
+                const updatedSurvey = await surveyService.updateSurvey(
+                  currentSurvey.id,
+                  formData
+                );
+                setSurveys(
+                  surveys.map((s) =>
+                    s.id === currentSurvey.id ? { ...s, ...updatedSurvey } : s
+                  )
+                );
+                toast.success("Survey updated successfully");
+              } else {
+                const newSurvey = await surveyService.createSurvey(formData);
+                setSurveys([...surveys, newSurvey]);
+                toast.success("Survey created successfully");
+              }
+              setIsSurveyModalOpen(false);
+            } catch (error) {
+              console.error("Error saving survey:", error);
+              toast.error("Failed to save survey");
             }
-            setIsSurveyModalOpen(false);
           }}
         />
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import {
   FiPlus,
@@ -13,40 +13,33 @@ import FAQModal from "./components/FAQModal";
 import CategoryModal from "./components/CategoryModal";
 import { AdminLayout } from "../components/layout/admin-layout";
 import Link from "next/link";
+import { faqService } from "@/lib/services/faq-service";
 import { Button } from "../components/ui/button";
+import Loader from "@/lib/loader";
 
 export default function FAQPage() {
-  const [faqs, setFaqs] = useState([
-    {
-      id: 1,
-      question: "How do I reset my password?",
-      answer:
-        "You can reset your password by clicking the 'Forgot Password' link on the login page and following the instructions sent to your email.",
-      category: 1,
-      isVisible: true,
-    },
-    {
-      id: 2,
-      question: "What payment methods do you accept?",
-      answer:
-        "We accept all major credit cards, PayPal, and bank transfers for payment processing.",
-      category: 2,
-      isVisible: true,
-    },
-    {
-      id: 3,
-      question: "How can I contact technical support?",
-      answer:
-        "You can reach our technical support team through the help desk portal or by emailing support@example.com.",
-      category: 3,
-      isVisible: true,
-    },
-  ]);
-  const [categories, setCategories] = useState([
-    { id: 1, name: "Account" },
-    { id: 2, name: "Billing" },
-    { id: 3, name: "Technical Support" },
-  ]);
+  const [faqs, setFaqs] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [categories, setCategories] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setIsLoading(true);
+        const [faqsData, categoriesData] = await Promise.all([
+          faqService.getAllFAQs(),
+          faqService.getAllCategories(),
+        ]);
+        setFaqs(faqsData);
+        setCategories(categoriesData);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
   const [searchQuery, setSearchQuery] = useState("");
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);
@@ -126,9 +119,14 @@ export default function FAQPage() {
       message: "Are you sure you want to delete this FAQ?",
       confirmText: "Delete",
       variant: "destructive",
-      onConfirm: () => {
-        setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq.id !== id));
-        setShowConfirm(false);
+      onConfirm: async () => {
+        try {
+          await faqService.deleteFAQ(id);
+          setFaqs((prevFaqs) => prevFaqs.filter((faq) => faq.id !== id));
+          setShowConfirm(false);
+        } catch (error) {
+          console.error("Error deleting FAQ:", error);
+        }
       },
     });
     setShowConfirm(true);
@@ -142,13 +140,15 @@ export default function FAQPage() {
       } this FAQ?`,
       confirmText: faq.isVisible ? "Hide" : "Show",
       variant: "default",
-      onConfirm: () => {
-        setFaqs(
-          faqs.map((f) =>
-            f.id === faq.id ? { ...f, isVisible: !f.isVisible } : f
-          )
-        );
-        setShowConfirm(false);
+      onConfirm: async () => {
+        try {
+          const updatedFaq = { ...faq, isVisible: !faq.isVisible };
+          await faqService.updateFAQ(faq.id, updatedFaq);
+          setFaqs(faqs.map((f) => (f.id === faq.id ? updatedFaq : f)));
+          setShowConfirm(false);
+        } catch (error) {
+          console.error("Error updating FAQ visibility:", error);
+        }
       },
     });
     setShowConfirm(true);
@@ -192,8 +192,9 @@ export default function FAQPage() {
     });
     setShowConfirm(true);
   };
-
-  // Update the render section
+  if (isLoading) {
+    return <Loader />;
+  }
   return (
     <AdminLayout>
       {showConfirm && (
@@ -214,10 +215,10 @@ export default function FAQPage() {
             </Link>
           </div>
           <div className={styles.headerButtons}>
-            <Button onClick={() => setShowAnalytics(!showAnalytics)}>
+            {/* <Button onClick={() => setShowAnalytics(!showAnalytics)}>
               <FiBarChart2 className={styles.buttonIcon} />
               {showAnalytics ? "Hide Analytics" : "Show Analytics"}
-            </Button>
+            </Button> */}
             <Button onClick={handleAddNewCategory}>
               <FiPlus className={styles.buttonIcon} />
               Add Category
@@ -361,17 +362,24 @@ export default function FAQPage() {
             onClose={() => setIsFAQModalOpen(false)}
             faq={currentFaq}
             categories={categories} // Add this line to pass categories
-            onSave={(formData) => {
-              if (currentFaq) {
-                setFaqs(
-                  faqs.map((f) =>
-                    f.id === currentFaq.id ? { ...f, ...formData } : f
-                  )
-                );
-              } else {
-                setFaqs([...faqs, { id: Date.now(), ...formData }]);
+            onSave={async (formData) => {
+              try {
+                if (currentFaq) {
+                  const updatedFaq = await faqService.updateFAQ(
+                    currentFaq.id,
+                    formData
+                  );
+                  setFaqs(
+                    faqs.map((f) => (f.id === currentFaq.id ? updatedFaq : f))
+                  );
+                } else {
+                  const newFaq = await faqService.createFAQ(formData);
+                  setFaqs([...faqs, newFaq]);
+                }
+                setIsFAQModalOpen(false);
+              } catch (error) {
+                console.error("Error saving FAQ:", error);
               }
-              setIsFAQModalOpen(false);
             }}
           />
 
@@ -381,37 +389,31 @@ export default function FAQPage() {
             category={currentCategory}
             onSave={async (formData) => {
               try {
-                if (currentCategory) {
-                  // TODO: Implement update category API call
-                  const isDuplicate = categories.some(
-                    (c) =>
-                      c.name.toLowerCase() === formData.name.toLowerCase() &&
-                      c.id !== currentCategory.id
+                const isDuplicate = await faqService.checkCategoryExists(
+                  formData.name
+                );
+                if (
+                  isDuplicate &&
+                  (!currentCategory || currentCategory.name !== formData.name)
+                ) {
+                  throw new Error(
+                    `A category with the name "${formData.name}" already exists`
                   );
-                  if (isDuplicate) {
-                    throw new Error(
-                      `A category with the name "${formData.name}" already exists`
-                    );
-                  }
+                }
+
+                if (currentCategory) {
+                  const updatedCategory = await faqService.updateCategory(
+                    currentCategory.id,
+                    formData
+                  );
                   setCategories(
                     categories.map((c) =>
-                      c.id === currentCategory.id ? { ...c, ...formData } : c
+                      c.id === currentCategory.id ? updatedCategory : c
                     )
                   );
                 } else {
-                  // TODO: Implement create category API call
-                  const isDuplicate = categories.some(
-                    (c) => c.name.toLowerCase() === formData.name.toLowerCase()
-                  );
-                  if (isDuplicate) {
-                    throw new Error(
-                      `A category with the name "${formData.name}" already exists`
-                    );
-                  }
-                  setCategories([
-                    ...categories,
-                    { id: Date.now(), ...formData },
-                  ]);
+                  const newCategory = await faqService.createCategory(formData);
+                  setCategories([...categories, newCategory]);
                 }
                 setIsCategoryModalOpen(false);
               } catch (error) {

@@ -1,63 +1,134 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { adminService } from "@/lib/services/admin-service";
+import { storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import "./accounts.css";
+import { toast } from "react-hot-toast";
 
 const AccountsTab = () => {
-  const [admins, setAdmins] = useState([
-    {
-      id: 1,
-      username: "admin1",
-      email: "admin1@example.com",
-      role: "Admin",
-      status: "Active",
-    },
-    {
-      id: 2,
-      username: "admin2",
-      email: "admin2@example.com",
-      role: "Admin",
-      status: "Disabled",
-    },
-  ]);
+  const [admins, setAdmins] = useState([]);
   const [formData, setFormData] = useState({
     username: "",
     email: "",
     role: "Admin",
+    password: "",
+    confirmPassword: "",
+    phoneNumber: "",
+    profileImage: "",
+    address: "",
   });
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   const roles = ["Admin", "Moderator", "Support"];
+
+  useEffect(() => {
+    loadAdmins();
+  }, []);
+
+  const loadAdmins = async () => {
+    try {
+      const adminList = await adminService.getAllAdmins();
+      setAdmins(adminList);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load admin accounts");
+      console.error("Error loading admins:", err);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const handleInputChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
-  const handleSubmit = (e) => {
+  const handleImageChange = async (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        setError("Image size should not exceed 5MB");
+        return;
+      }
+      if (!file.type.startsWith("image/")) {
+        setError("Please upload an image file");
+        return;
+      }
+      setFormData({ ...formData, profileImage: file });
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const newAdmin = {
-      id: admins.length + 1,
-      ...formData,
-      role: formData.role,
-      status: "Active",
-    };
-    setAdmins([...admins, newAdmin]);
-    setFormData({ username: "", email: "" });
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+    if (formData.password.length < 8) {
+      setError("Password must be at least 8 characters long");
+      return;
+    }
+
+    const loadingToast = toast.loading("Creating admin account...");
+    try {
+      let profileImageUrl = "";
+      if (formData.profileImage instanceof File) {
+        const storageRef = ref(
+          storage,
+          `admin-profiles/${Date.now()}-${formData.profileImage.name}`
+        );
+        const snapshot = await uploadBytes(storageRef, formData.profileImage);
+        profileImageUrl = await getDownloadURL(snapshot.ref);
+      }
+
+      const adminData = {
+        ...formData,
+        profileImage: profileImageUrl || formData.profileImage,
+      };
+
+      const newAdmin = await adminService.createAdmin(adminData);
+      setAdmins([...admins, newAdmin]);
+      setFormData({
+        username: "",
+        email: "",
+        role: "Admin",
+        password: "",
+        confirmPassword: "",
+        phoneNumber: "",
+        profileImage: "",
+        address: "",
+      });
+      setError(null);
+      toast.success("Admin account created successfully", { id: loadingToast });
+    } catch (err) {
+      setError("Failed to create admin account");
+      console.error("Error creating admin:", err);
+      toast.error("Failed to create admin account", { id: loadingToast });
+    }
   };
 
-  const toggleStatus = (adminId) => {
-    setAdmins(
-      admins.map((admin) => {
-        if (admin.id === adminId) {
-          const newStatus = admin.status === "Active" ? "Disabled" : "Active";
-          return { ...admin, status: newStatus };
-        }
-        return admin;
-      })
-    );
+  const toggleStatus = async (adminId) => {
+    try {
+      const newStatus = await adminService.toggleAdminStatus(adminId);
+      setAdmins(
+        admins.map((admin) => {
+          if (admin.id === adminId) {
+            return { ...admin, status: newStatus };
+          }
+          return admin;
+        })
+      );
+      setError(null);
+    } catch (err) {
+      setError("Failed to update admin status");
+      console.error("Error toggling admin status:", err);
+    }
   };
 
-  const resetPassword = (adminId) => {
-    // Implement password reset logic here
+  const resetPassword = async (adminId) => {
+    // Password reset will be implemented with Firebase Auth
     console.log(`Reset password for admin ${adminId}`);
   };
 
@@ -141,6 +212,67 @@ const AccountsTab = () => {
                 value={formData.email}
                 onChange={handleInputChange}
                 className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Password</label>
+              <input
+                type="password"
+                name="password"
+                value={formData.password}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+                minLength={8}
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Confirm Password</label>
+              <input
+                type="password"
+                name="confirmPassword"
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Phone Number</label>
+              <input
+                type="tel"
+                name="phoneNumber"
+                value={formData.phoneNumber}
+                onChange={handleInputChange}
+                className="form-input"
+                required
+              />
+            </div>
+            <div className="form-group">
+              <label className="form-label">Profile Image</label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleImageChange}
+                className="form-input"
+              />
+              {formData.profileImage && (
+                <p className="text-sm text-gray-500">
+                  {formData.profileImage instanceof File
+                    ? `Selected: ${formData.profileImage.name}`
+                    : `Current: ${formData.profileImage}`}
+                </p>
+              )}
+            </div>
+            <div className="form-group">
+              <label className="form-label">Address</label>
+              <textarea
+                name="address"
+                value={formData.address}
+                onChange={handleInputChange}
+                className="form-input"
+                rows="3"
                 required
               />
             </div>

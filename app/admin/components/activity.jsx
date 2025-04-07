@@ -1,33 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { adminService } from "@/lib/services/admin-service";
 import "./Activity.css";
+import { toast } from "react-hot-toast";
 
 const Activity = () => {
-  // Mock Activity Logs
-  const [logs, setLogs] = useState([
-    {
-      id: 1,
-      username: "admin_john",
-      action: "User Deactivation",
-      timestamp: "2025-03-17 10:30:15",
-      ip: "192.168.1.10",
-    },
-    {
-      id: 2,
-      username: "admin_mary",
-      action: "Subscription Override",
-      timestamp: "2025-03-17 11:05:42",
-      ip: "192.168.1.25",
-    },
-    {
-      id: 3,
-      username: "admin_sam",
-      action: "Role Assignment",
-      timestamp: "2025-03-17 12:15:30",
-      ip: "192.168.1.40",
-    },
-  ]);
+  const [logs, setLogs] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   // State for filters
   const [filters, setFilters] = useState({
@@ -36,19 +17,63 @@ const Activity = () => {
     date: "",
   });
 
+  useEffect(() => {
+    loadActivityLogs();
+  }, [filters]);
+
+  const loadActivityLogs = async () => {
+    const loadingToast = toast.loading("Loading activity logs...");
+    try {
+      setLoading(true);
+      const activityLogs = await adminService.getActivityLogs(filters);
+      setLogs(activityLogs);
+      setError(null);
+      toast.success("Activity logs loaded successfully", { id: loadingToast });
+    } catch (err) {
+      setError("Failed to load activity logs");
+      console.error("Error loading activity logs:", err);
+      toast.error("Failed to load activity logs", { id: loadingToast });
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Handle input changes
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFilters({ ...filters, [name]: value });
   };
 
-  // Filter logs
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp) return "";
+    if (timestamp.seconds) {
+      // Handle Firestore Timestamp
+      return new Date(timestamp.seconds * 1000).toLocaleString();
+    }
+    return new Date(timestamp).toLocaleString();
+  };
+
+  if (loading) {
+    return <div className="loading">Loading activity logs...</div>;
+  }
+
+  if (error) {
+    return <div className="error">{error}</div>;
+  }
+
   const filteredLogs = logs.filter((log) => {
-    return (
-      (filters.username === "" || log.username.includes(filters.username)) &&
-      (filters.action === "" || log.action.includes(filters.action)) &&
-      (filters.date === "" || log.timestamp.startsWith(filters.date))
-    );
+    const matchUsername =
+      log.username?.toLowerCase().includes(filters.username.toLowerCase()) ||
+      !filters.username;
+    const matchAction =
+      log.action?.toLowerCase().includes(filters.action.toLowerCase()) ||
+      !filters.action;
+    const matchDate =
+      !filters.date ||
+      (log.timestamp &&
+        new Date(log.timestamp.seconds * 1000).toLocaleDateString() ===
+          new Date(filters.date).toLocaleDateString());
+    return matchUsername && matchAction && matchDate;
   });
 
   return (
@@ -104,7 +129,7 @@ const Activity = () => {
                 <tr key={log.id}>
                   <td>{log.username}</td>
                   <td>{log.action}</td>
-                  <td>{log.timestamp}</td>
+                  <td>{formatTimestamp(log.timestamp)}</td>
                   <td>{log.ip}</td>
                   <td>
                     <button
@@ -119,7 +144,7 @@ const Activity = () => {
                           setLogs((prevLogs) =>
                             prevLogs.filter((l) => l.id !== log.id)
                           );
-                          alert(`Access revoked for ${log.username}`);
+                          toast.success(`Access revoked for ${log.username}`);
                         }
                       }}
                     >
@@ -129,8 +154,11 @@ const Activity = () => {
                       className="investigate-btn"
                       onClick={() => {
                         // In production, this would open a detailed investigation view
-                        alert(
-                          `Investigating activity:\n\nUser: ${log.username}\nAction: ${log.action}\nTime: ${log.timestamp}\nIP: ${log.ip}`
+                        toast(
+                          `Investigating activity for user: ${log.username}`,
+                          {
+                            icon: "🔍",
+                          }
                         );
                       }}
                     >

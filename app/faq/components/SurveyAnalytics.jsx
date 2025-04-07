@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "../page.module.css";
 import {
   BarChart,
@@ -17,30 +17,35 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { surveyService } from "@/lib/services/survey-service";
+import { toast } from "react-hot-toast";
 
 const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042"];
 
 export default function SurveyAnalytics({ surveyId, onClose }) {
-  // Mock data - replace with actual API call
-  const responseOverTime = [
-    { date: "2024-01-01", responses: 10 },
-    { date: "2024-01-02", responses: 15 },
-    { date: "2024-01-03", responses: 8 },
-    { date: "2024-01-04", responses: 20 },
-    { date: "2024-01-05", responses: 12 },
-  ];
+  const [analytics, setAnalytics] = useState({
+    responseOverTime: [],
+    questionDistribution: [],
+    completionStats: [],
+  });
 
-  const questionDistribution = [
-    { answer: "Very Satisfied", count: 45 },
-    { answer: "Satisfied", count: 30 },
-    { answer: "Neutral", count: 15 },
-    { answer: "Dissatisfied", count: 10 },
-  ];
+  useEffect(() => {
+    loadAnalytics();
+  }, [surveyId]);
 
-  const completionStats = [
-    { name: "Completed", value: 80 },
-    { name: "Abandoned", value: 20 },
-  ];
+  const loadAnalytics = async () => {
+    try {
+      const data = await surveyService.getSurveyAnalytics(surveyId);
+      setAnalytics({
+        responseOverTime: data.responseOverTime,
+        questionDistribution: data.questionDistribution,
+        completionStats: data.completionStats,
+      });
+    } catch (error) {
+      console.error("Error loading analytics:", error);
+      toast.error("Failed to load survey analytics");
+    }
+  };
 
   return (
     <div className={styles.modalContent}>

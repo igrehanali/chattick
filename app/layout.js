@@ -20,8 +20,11 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <html>
-      <body className={`${geistSans.variable} ${geistMono.variable}`}>
+    <html suppressHydrationWarning>
+      <body
+        suppressHydrationWarning
+        className={`${geistSans.variable} ${geistMono.variable}`}
+      >
         <AuthProvider>{children}</AuthProvider>
         <Toaster
           position="top-right"
