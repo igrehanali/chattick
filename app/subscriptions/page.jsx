@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import styles from "./page.module.css";
 import {
   CreditCard,
@@ -14,6 +14,7 @@ import {
 import SubscriptionTierForm from "./components/SubscriptionTierForm";
 
 import { AdminLayout } from "../components/layout/admin-layout";
+import { adminService } from "@/lib/services/admin-service";
 
 export default function SubscriptionsPage() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -24,13 +25,73 @@ export default function SubscriptionsPage() {
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [selectedCountry, setSelectedCountry] = useState("");
+  const [admin, setAdmin] = useState();
+  const [adminRole, setAdminRole] = useState();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const userData = JSON.parse(userStr);
+        const response = await adminService.getAdminById(userData.id);
+        setAdmin(response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (admin?.roleId) {
+        try {
+          const response = await adminService.getRoleById(admin.roleId);
+          setAdminRole(response);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [admin]);
+
+  const hasManageUsersPermission = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" && permission.types.includes("read")
+  );
+
+  const canUpdateUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" &&
+      permission.types.includes("update")
+  );
+
+  const canWriteUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" &&
+      permission.types.includes("write")
+  );
+
+  if (!hasManageUsersPermission) {
+    return (
+      <AdminLayout>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Access Denied</h2>
+          <p>You do not have permission to access this section.</p>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   const years = ["2023", "2024", "2025"];
   const months = [
     { value: "01", label: "January" },
     { value: "02", label: "February" },
     { value: "03", label: "March" },
-  ]
+  ];
   const countries = ["USA", "Canada", "UK"];
   const selectedPlan = "";
 
@@ -204,10 +265,15 @@ export default function SubscriptionsPage() {
         <div className={styles.plansContainer}>
           <div className={styles.plansHeader}>
             <h2>Subscription Plans</h2>
-            <button onClick={handleCreateTier} className={styles.createButton}>
-              <Plus className="w-4 h-4" />
-              Create New Tier
-            </button>
+            {canWriteUsers && (
+              <button
+                onClick={handleCreateTier}
+                className={styles.createButton}
+              >
+                <Plus className="w-4 h-4" />
+                Create New Tier
+              </button>
+            )}
           </div>
           <div className={styles.plansGrid}>
             {plans.map((plan, index) => (
@@ -222,26 +288,28 @@ export default function SubscriptionsPage() {
                     </li>
                   ))}
                 </ul>
-                <div className={styles.planActions}>
-                  <button
-                    onClick={() => handleEditTier(plan)}
-                    className={styles.actionButton}
-                  >
-                    Edit
-                  </button>
-                  <button
-                    onClick={() => handleDeactivateTier(index)}
-                    className={`${styles.actionButton} ${styles.deactivateButton}`}
-                  >
-                    Deactivate
-                  </button>
-                  <button
-                    onClick={() => handlePublishTier(index)}
-                    className={`${styles.actionButton} ${styles.publishButton}`}
-                  >
-                    Publish
-                  </button>
-                </div>
+                {canUpdateUsers && (
+                  <div className={styles.planActions}>
+                    <button
+                      onClick={() => handleEditTier(plan)}
+                      className={styles.actionButton}
+                    >
+                      Edit
+                    </button>
+                    <button
+                      onClick={() => handleDeactivateTier(index)}
+                      className={`${styles.actionButton} ${styles.deactivateButton}`}
+                    >
+                      Deactivate
+                    </button>
+                    <button
+                      onClick={() => handlePublishTier(index)}
+                      className={`${styles.actionButton} ${styles.publishButton}`}
+                    >
+                      Publish
+                    </button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -270,6 +338,13 @@ export default function SubscriptionsPage() {
         )}
 
         <div className={styles.filterContainer}>
+          <input
+            type="text"
+            placeholder="Search subscriptions..."
+            className={styles.searchInput}
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+          />
           <div className={styles.filterGroup}>
             <select
               value={selectedYear}
@@ -277,7 +352,9 @@ export default function SubscriptionsPage() {
               className={styles.filterSelect}
             >
               {years.map((year) => (
-                <option key={year} value={year}>{year}</option>
+                <option key={year} value={year}>
+                  {year}
+                </option>
               ))}
             </select>
 
@@ -288,7 +365,9 @@ export default function SubscriptionsPage() {
             >
               <option value="">All Months</option>
               {months.map((month) => (
-                <option key={month.value} value={month.value}>{month.label}</option>
+                <option key={month.value} value={month.value}>
+                  {month.label}
+                </option>
               ))}
             </select>
 
@@ -299,7 +378,9 @@ export default function SubscriptionsPage() {
             >
               <option value="">All Countries</option>
               {countries.map((country) => (
-                <option key={country} value={country}>{country}</option>
+                <option key={country} value={country}>
+                  {country}
+                </option>
               ))}
             </select>
 
@@ -310,23 +391,11 @@ export default function SubscriptionsPage() {
             >
               <option value="">All Plans</option>
               {plans.map((plan) => (
-                <option key={plan.name} value={plan.name}>{plan.name}</option>
+                <option key={plan.name} value={plan.name}>
+                  {plan.name}
+                </option>
               ))}
             </select>
-          </div>
-
-          <div className={styles.searchBar}>
-            <Search className="w-4 h-4 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Search subscriptions..."
-              className={styles.searchInput}
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-            />
-          </div>
-          <div className={styles.filterContainer}>
-            <Filter className="w-5 h-5 text-gray-400" />
             <select
               value={filterStatus}
               onChange={(e) => setFilterStatus(e.target.value)}
@@ -362,10 +431,11 @@ export default function SubscriptionsPage() {
                   <td className={styles.tableCell}>{subscription.endDate}</td>
                   <td className={styles.tableCell}>
                     <span
-                      className={`${styles.badge} ${subscription.status === "active"
-                        ? styles.badgeSuccess
-                        : styles.badgeError
-                        }`}
+                      className={`${styles.badge} ${
+                        subscription.status === "active"
+                          ? styles.badgeSuccess
+                          : styles.badgeError
+                      }`}
                     >
                       {subscription.status}
                     </span>

@@ -6,19 +6,17 @@ import styles from "./FAQModal.module.css";
 
 export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
   const [mounted, setMounted] = useState(false);
+  const [formData, setFormData] = useState({
+    question: "",
+    answer: "",
+    category: "",
+    isVisible: true,
+  });
 
   useEffect(() => {
     setMounted(true);
     return () => setMounted(false);
   }, []);
-
-  if (!mounted || !isOpen) return null;
-  const [formData, setFormData] = useState({
-    question: "",
-    answer: "",
-    category: "", // Make sure this exists
-    isVisible: true,
-  });
 
   useEffect(() => {
     if (faq) {
@@ -43,7 +41,7 @@ export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
     onSave(formData);
   };
 
-  if (!isOpen) return null;
+  if (!mounted || !isOpen) return null;
 
   return (
     <div className={styles.modalOverlay}>

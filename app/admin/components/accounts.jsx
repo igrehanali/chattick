@@ -13,6 +13,7 @@ const AccountsTab = () => {
     username: "",
     email: "",
     role: "Admin",
+    roleId: "",
     password: "",
     confirmPassword: "",
     phoneNumber: "",
@@ -21,8 +22,22 @@ const AccountsTab = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [availableRoles, setAvailableRoles] = useState([]);
 
-  const roles = ["Admin", "Moderator", "Support"];
+  useEffect(() => {
+    loadRoles();
+  }, []);
+
+  const loadRoles = async () => {
+    try {
+      const rolesList = await adminService.getAllRoles();
+      setAvailableRoles(rolesList);
+      setError(null);
+    } catch (err) {
+      setError("Failed to load roles");
+      console.error("Error loading roles:", err);
+    }
+  };
 
   useEffect(() => {
     loadAdmins();
@@ -94,6 +109,7 @@ const AccountsTab = () => {
         username: "",
         email: "",
         role: "Admin",
+        roleId: "",
         password: "",
         confirmPassword: "",
         phoneNumber: "",
@@ -280,14 +296,23 @@ const AccountsTab = () => {
               <label className="form-label">Role</label>
               <select
                 name="role"
-                value={formData.role}
-                onChange={handleInputChange}
+                value={formData.roleId}
+                onChange={(e) => {
+                  const selectedRole = availableRoles.find(
+                    (role) => role.id === e.target.value
+                  );
+                  setFormData((prev) => ({
+                    ...prev,
+                    role: selectedRole.name,
+                    roleId: selectedRole.id,
+                  }));
+                }}
                 className="form-input"
                 required
               >
-                {roles.map((role) => (
-                  <option key={role} value={role}>
-                    {role}
+                {availableRoles.map((role) => (
+                  <option key={role.id} value={role.id}>
+                    {role.name}
                   </option>
                 ))}
               </select>

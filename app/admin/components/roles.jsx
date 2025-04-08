@@ -3,6 +3,7 @@ import "./roles.css";
 import { Button } from "@/app/components/ui/button";
 import { adminService } from "@/lib/services/admin-service";
 import { useAuth } from "@/app/contexts/auth-context";
+import { toast } from "react-hot-toast";
 
 const FEATURES = [
   { id: 1, title: "Manage Users", description: "User management and profiles" },
@@ -27,7 +28,7 @@ const RolesTab = () => {
   const [formData, setFormData] = useState({
     name: "",
     permissions: FEATURES.map((feature) => ({
-      featureId: feature.id,
+      featureTitle: feature.title,
       types: [],
     })),
   });
@@ -59,13 +60,16 @@ const RolesTab = () => {
   }, []);
 
   const loadRoles = async () => {
+    const loadingToast = toast.loading("Loading roles...");
     try {
       const rolesList = await adminService.getAllRoles();
       setRoles(rolesList);
       setError(null);
+      toast.success("Roles loaded successfully", { id: loadingToast });
     } catch (err) {
       setError("Failed to load roles");
       console.error("Error loading roles:", err);
+      toast.error("Failed to load roles", { id: loadingToast });
     } finally {
       setLoading(false);
     }
@@ -75,11 +79,11 @@ const RolesTab = () => {
     setFormData({ ...formData, name: e.target.value });
   };
 
-  const handlePermissionChange = (featureId, permissionType, checked) => {
+  const handlePermissionChange = (featureTitle, permissionType, checked) => {
     setFormData((prev) => ({
       ...prev,
       permissions: prev.permissions.map((permission) =>
-        permission.featureId === featureId
+        permission.featureTitle === featureTitle
           ? {
               ...permission,
               types: checked
@@ -107,6 +111,9 @@ const RolesTab = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const loadingToast = toast.loading(
+      editingId ? "Updating role..." : "Creating role..."
+    );
     try {
       const roleData = {
         name: formData.name,
@@ -115,7 +122,6 @@ const RolesTab = () => {
       };
 
       if (editingId) {
-        // Update existing role
         const updatedRole = await adminService.updateRole(editingId, roleData);
         setRoles(
           roles.map((role) => (role.id === editingId ? updatedRole : role))
@@ -126,21 +132,26 @@ const RolesTab = () => {
           `Updated role: ${formData.name}`
         );
         setEditingId(null);
+        toast.success(`Role "${formData.name}" updated successfully`, {
+          id: loadingToast,
+        });
       } else {
-        // Add new role
         const newRole = await adminService.createRole(roleData);
         setRoles([...roles, newRole]);
         await logAuditTrail(
           "create",
           newRole.id,
-          `Created new role: ${newRole.name}`
+          `Created new role: ${formData.name}`
         );
+        toast.success(`Role "${formData.name}" created successfully`, {
+          id: loadingToast,
+        });
       }
 
       setFormData({
         name: "",
         permissions: FEATURES.map((feature) => ({
-          featureId: feature.id,
+          featureTitle: feature.title,
           types: [],
         })),
       });
@@ -148,6 +159,7 @@ const RolesTab = () => {
     } catch (err) {
       setError("Failed to save role");
       console.error("Error saving role:", err);
+      toast.error("Failed to save role", { id: loadingToast });
     }
   };
 
@@ -155,24 +167,32 @@ const RolesTab = () => {
     setFormData({
       name: role.name,
       permissions: FEATURES.map((feature) => ({
-        featureId: feature.id,
+        featureTitle: feature.title,
         types:
-          role.permissions.find((p) => p.featureId === feature.id)?.types || [],
+          role.permissions.find((p) => p.featureTitle === feature.title)
+            ?.types || [],
       })),
     });
     setEditingId(role.id);
   };
 
   const handleDelete = async (id) => {
+    const roleToDelete = roles.find((role) => role.id === id);
+    const loadingToast = toast.loading(
+      `Deleting role "${roleToDelete.name}"...`
+    );
     try {
-      const roleToDelete = roles.find((role) => role.id === id);
       await adminService.deleteRole(id);
       setRoles(roles.filter((role) => role.id !== id));
       await logAuditTrail("delete", id, `Deleted role: ${roleToDelete.name}`);
       setError(null);
+      toast.success(`Role "${roleToDelete.name}" deleted successfully`, {
+        id: loadingToast,
+      });
     } catch (err) {
       setError("Failed to delete role");
       console.error("Error deleting role:", err);
+      toast.error("Failed to delete role", { id: loadingToast });
     }
   };
 
@@ -209,7 +229,7 @@ const RolesTab = () => {
                   </thead>
                   <tbody>
                     {FEATURES.map((feature) => (
-                      <tr key={feature.id}>
+                      <tr key={feature.title}>
                         <td>{feature.title}</td>
                         {PERMISSION_TYPES.map((type) => (
                           <td key={type.value}>
@@ -217,12 +237,12 @@ const RolesTab = () => {
                               type="checkbox"
                               checked={
                                 formData.permissions
-                                  .find((p) => p.featureId === feature.id)
+                                  .find((p) => p.featureTitle === feature.title)
                                   ?.types?.includes(type.value) ?? false
                               }
                               onChange={(e) =>
                                 handlePermissionChange(
-                                  feature.id,
+                                  feature.title,
                                   type.value,
                                   e.target.checked
                                 )
@@ -260,14 +280,7 @@ const RolesTab = () => {
                     <td>{role.name}</td>
                     <td>
                       {role.permissions
-                        .map((p) => {
-                          const feature = FEATURES.find(
-                            (f) => f.id === p.featureId
-                          );
-                          return feature
-                            ? `${feature.title} (${p.types.join(", ")})`
-                            : "";
-                        })
+                        .map((p) => `${p.featureTitle} (${p.types.join(", ")})`)
                         .join("; ")}
                     </td>
                     <td>{new Date(role.lastModified).toLocaleString()}</td>

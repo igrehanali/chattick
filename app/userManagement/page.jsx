@@ -35,14 +35,12 @@ const LocationsPage = () => {
 
   const handleSaveLocation = (formData) => {
     if (currentLocation) {
-      // Update existing location
       setLocations(
         locations.map((loc) =>
           loc.id === currentLocation.id ? { ...loc, ...formData } : loc
         )
       );
     } else {
-      // Add new location
       const newLocation = {
         id: Date.now(),
         ...formData,

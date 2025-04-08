@@ -1,190 +1,207 @@
 "use client";
 
-import React, { useState } from "react";
-import { Editor, EditorState, RichUtils, convertToRaw, convertFromRaw } from 'draft-js';
-import 'draft-js/dist/Draft.css';
-import styles from "./notifications.module.css";
-import toast from "react-hot-toast";
+import React, { useEffect, useState } from "react";
 import { AdminLayout } from "../components/layout/admin-layout";
 import { Button } from "../components/ui/button";
+import { db, storage } from "@/lib/firebase";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  deleteDoc,
+  doc,
+  query,
+  where,
+} from "firebase/firestore";
+import {
+  ref,
+  uploadBytes,
+  getDownloadURL,
+  deleteObject,
+} from "firebase/storage";
+import toast from "react-hot-toast";
+import styles from "./page.module.css";
+
+const TABS = [
+  { label: "Terms", value: "terms" },
+  { label: "Privacy", value: "privacy" },
+  { label: "About", value: "about" },
+];
 
 export default function NotificationsPage() {
-  const [terms, setTerms] = useState(EditorState.createEmpty());
-  const [privacy, setPrivacy] = useState(EditorState.createEmpty());
-  const [about, setAbout] = useState(EditorState.createEmpty());
+  const [pdfFile, setPdfFile] = useState(null);
   const [activeTab, setActiveTab] = useState("terms");
+  const [uploadedPDFs, setUploadedPDFs] = useState([]);
+  const [selectedPDF, setSelectedPDF] = useState(null);
 
-  const handleKeyCommand = (command, editorState) => {
-    const newState = RichUtils.handleKeyCommand(editorState, command);
-    if (newState) {
-      handleEditorChange(newState);
-      return 'handled';
-    }
-    return 'not-handled';
-  };
+  const fetchPDFs = async (type) => {
+    const q = query(collection(db, "legalDocs"), where("type", "==", type));
+    const snapshot = await getDocs(q);
+    const files = snapshot.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+    setUploadedPDFs(files);
 
-  const handleEditorChange = (newState) => {
-    switch (activeTab) {
-      case 'terms':
-        setTerms(newState);
-        break;
-      case 'privacy':
-        setPrivacy(newState);
-        break;
-      case 'about':
-        setAbout(newState);
-        break;
+    // Auto-display the only (or first) PDF
+    if (files.length > 0) {
+      setSelectedPDF(files[0].url);
+    } else {
+      setSelectedPDF(null);
     }
   };
 
-  const handleBlockType = (blockType) => {
-    handleEditorChange(RichUtils.toggleBlockType(activeTab === 'terms' ? terms : activeTab === 'privacy' ? privacy : about, blockType));
+  useEffect(() => {
+    fetchPDFs(activeTab);
+  }, [activeTab]);
+
+  const handleFileChange = (e) => {
+    setPdfFile(e.target.files[0]);
   };
 
-  const handleInlineStyle = (inlineStyle) => {
-    handleEditorChange(RichUtils.toggleInlineStyle(activeTab === 'terms' ? terms : activeTab === 'privacy' ? privacy : about, inlineStyle));
+  const deletePreviousPDF = async () => {
+    if (uploadedPDFs.length > 0) {
+      const existing = uploadedPDFs[0];
+      await deleteDoc(doc(db, "legalDocs", existing.id));
+
+      const fileRef = ref(
+        storage,
+        existing.url.split("/o/")[1].split("?")[0].replace(/%2F/g, "/")
+      );
+      await deleteObject(fileRef);
+    }
   };
 
-  const renderEditor = (editorState) => (
-    <div className={styles.editorWrapper}>
-      <div className={styles.toolbar}>
-        <div className={styles.toolbarGroup}>
-          <button onClick={() => handleInlineStyle('BOLD')} className={styles.toolbarButton}>
-            <strong>B</strong>
-          </button>
-          <button onClick={() => handleInlineStyle('ITALIC')} className={styles.toolbarButton}>
-            <em>I</em>
-          </button>
-          <button onClick={() => handleInlineStyle('UNDERLINE')} className={styles.toolbarButton}>
-            <u>U</u>
-          </button>
-          <button onClick={() => handleInlineStyle('STRIKETHROUGH')} className={styles.toolbarButton}>
-            <s>S</s>
-          </button>
-        </div>
+  const handleUpload = async () => {
+    if (!pdfFile)
+      return toast.error("Please select a PDF file", { duration: 3000 });
 
-        <div className={styles.toolbarGroup}>
-          <button onClick={() => handleBlockType('header-one')} className={styles.toolbarButton}>
-            H1
-          </button>
-          <button onClick={() => handleBlockType('header-two')} className={styles.toolbarButton}>
-            H2
-          </button>
-          <button onClick={() => handleBlockType('header-three')} className={styles.toolbarButton}>
-            H3
-          </button>
-        </div>
-
-        <div className={styles.toolbarGroup}>
-          <button onClick={() => handleBlockType('unordered-list-item')} className={styles.toolbarButton}>
-            • List
-          </button>
-          <button onClick={() => handleBlockType('ordered-list-item')} className={styles.toolbarButton}>
-            1. List
-          </button>
-          <button onClick={() => handleBlockType('blockquote')} className={styles.toolbarButton}>
-            Quote
-          </button>
-          <button onClick={() => handleBlockType('code-block')} className={styles.toolbarButton}>
-            Code
-          </button>
-        </div>
-      </div>
-      <div className={styles.editor}>
-        <Editor
-          editorState={editorState}
-          onChange={handleEditorChange}
-          handleKeyCommand={handleKeyCommand}
-          placeholder="Start typing here..."
-        />
-      </div>
-    </div>
-  );
-
-  const handleSave = async (content) => {
+    const loadingToast = toast.loading(`Uploading ${pdfFile.name}...`);
     try {
-      toast.success("Users have been successfully notified.", {
-        duration: 3000,
-        position: "top-right",
+      // Delete existing one
+      await deletePreviousPDF();
+
+      const fileRef = ref(
+        storage,
+        `pdfs/${activeTab}_${Date.now()}_${pdfFile.name}`
+      );
+      const uploadResult = await uploadBytes(fileRef, pdfFile);
+      const downloadURL = await getDownloadURL(uploadResult.ref);
+
+      await addDoc(collection(db, "legalDocs"), {
+        name: pdfFile.name,
+        url: downloadURL,
+        type: activeTab,
+        uploadedAt: new Date(),
       });
-    } catch (error) {
-      toast.error("Failed to update content", {
+
+      setPdfFile(null);
+      toast.success("PDF uploaded successfully", {
+        id: loadingToast,
         duration: 3000,
-        position: "top-right",
+      });
+      fetchPDFs(activeTab);
+    } catch (error) {
+      console.error("Error uploading PDF:", error);
+      toast.error("Failed to upload PDF. Please try again.", {
+        id: loadingToast,
+        duration: 3000,
+      });
+    }
+  };
+
+  const handleDelete = async (fileId, fileUrl) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this PDF?"
+    );
+    if (!confirmDelete) return;
+
+    const loadingToast = toast.loading("Deleting PDF...");
+    try {
+      await deleteDoc(doc(db, "legalDocs", fileId));
+
+      const fileRef = ref(
+        storage,
+        fileUrl.split("/o/")[1].split("?")[0].replace(/%2F/g, "/")
+      );
+      await deleteObject(fileRef);
+
+      toast.success("PDF deleted successfully", {
+        id: loadingToast,
+        duration: 3000,
+      });
+      fetchPDFs(activeTab);
+    } catch (error) {
+      console.error("Error deleting PDF:", error);
+      toast.error("Failed to delete PDF. Please try again.", {
+        id: loadingToast,
+        duration: 3000,
       });
     }
   };
 
   return (
     <AdminLayout>
-      <div className="p-6">
-        <h1 className="text-2xl font-bold mb-6">Legal & Company Information</h1>
+      <div className="p-6 space-y-6">
+        <h1 className="text-2xl font-bold">Legal Documents Manager</h1>
 
-        <div className={styles.tabs}>
-          <div className={styles.tabsList}>
-            <button
-              className={`${styles.tabButton} ${activeTab === "terms" ? styles.active : ""
-                }`}
-              onClick={() => setActiveTab("terms")}
+        {/* Tabs */}
+        <div className="flex space-x-4">
+          {TABS.map((tab) => (
+            <Button
+              key={tab.value}
+              variant={activeTab === tab.value ? "default" : "outline"}
+              onClick={() => setActiveTab(tab.value)}
             >
-              Terms & Conditions
-            </button>
-            <button
-              className={`${styles.tabButton} ${activeTab === "privacy" ? styles.active : ""
-                }`}
-              onClick={() => setActiveTab("privacy")}
-            >
-              Privacy Policy
-            </button>
-            <button
-              className={`${styles.tabButton} ${activeTab === "about" ? styles.active : ""
-                }`}
-              onClick={() => setActiveTab("about")}
-            >
-              About Us
-            </button>
+              {tab.label}
+            </Button>
+          ))}
+        </div>
+
+        {/* PDF Viewer */}
+        {selectedPDF && (
+          <div className={styles.pdfViewer}>
+            <div className={styles.pdfContainer}>
+              <iframe
+                src={selectedPDF}
+                title="PDF Viewer"
+                className={styles.pdfFrame}
+              ></iframe>
+            </div>
           </div>
+        )}
 
-          <div className={styles.tabContent}>
-            {activeTab === "terms" && (
-              <div className={styles.tabPanel}>
-                <h2 className={styles.tabTitle}>Terms & Conditions</h2>
-                {renderEditor(terms)}
+        {/* Upload Area */}
+        <div className="space-y-4 pt-4">
+          <input
+            type="file"
+            accept="application/pdf"
+            onChange={handleFileChange}
+          />
+          <Button onClick={handleUpload}>Upload PDF to {activeTab}</Button>
+        </div>
+
+        {/* Uploaded PDF Info */}
+
+        <div className="mt-8">
+          <h2 className="text-xl font-semibold mb-4">
+            {uploadedPDFs.length === 0
+              ? "No document uploaded yet."
+              : `Uploaded ${activeTab} PDF`}
+          </h2>
+
+          {uploadedPDFs.length > 0 && (
+            <div className="flex justify-between items-center bg-gray-100 p-4 rounded">
+              <div>
+                <p className="font-medium">{uploadedPDFs[0].name}</p>
                 <Button
-                  className={styles.saveButton}
-                  onClick={() => handleSave(terms)}
+                  variant="destructive"
+                  onClick={() =>
+                    handleDelete(uploadedPDFs[0].id, uploadedPDFs[0].url)
+                  }
                 >
-                  Save Changes
+                  Delete
                 </Button>
               </div>
-            )}
-
-            {activeTab === "privacy" && (
-              <div className={styles.tabPanel}>
-                <h2 className={styles.tabTitle}>Privacy Policy</h2>
-                {renderEditor(privacy)}
-                <Button
-                  className={styles.saveButton}
-                  onClick={() => handleSave(privacy)}
-                >
-                  Save Changes
-                </Button>
-              </div>
-            )}
-
-            {activeTab === "about" && (
-              <div className={styles.tabPanel}>
-                <h2 className={styles.tabTitle}>About Us</h2>
-                {renderEditor(about)}
-                <Button
-                  className={styles.saveButton}
-                  onClick={() => handleSave(about)}
-                >
-                  Save Changes
-                </Button>
-              </div>
-            )}
-          </div>
+            </div>
+          )}
         </div>
       </div>
     </AdminLayout>

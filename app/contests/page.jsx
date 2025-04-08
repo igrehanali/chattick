@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
 import { Trophy, Users, Gift, CreditCard } from "lucide-react";
 import styles from "./page.module.css";
@@ -9,12 +9,72 @@ import RewardsList from "./components/RewardsList";
 import CreditsList from "./components/CreditsList";
 import GiftsManagement from "./components/GiftsManagement";
 import PointsBundleManagement from "./components/PointsBundleManagement";
-
+import { adminService } from "@/lib/services/admin-service";
 
 export default function ContestsPage() {
   const [activeTab, setActiveTab] = useState("contests");
+  const [admin, setAdmin] = useState();
+  const [adminRole, setAdminRole] = useState();
 
-  // Update the tabs array
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const userData = JSON.parse(userStr);
+        const response = await adminService.getAdminById(userData.id);
+        setAdmin(response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (admin?.roleId) {
+        try {
+          const response = await adminService.getRoleById(admin.roleId);
+          setAdminRole(response);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [admin]);
+
+  const hasManageUsersPermission = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Contests" &&
+      permission.types.includes("read")
+  );
+
+  const canUpdateUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Contests" &&
+      permission.types.includes("update")
+  );
+
+  const canWriteUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Contests" &&
+      permission.types.includes("write")
+  );
+
+  if (!hasManageUsersPermission) {
+    return (
+      <AdminLayout>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Access Denied</h2>
+          <p>You do not have permission to access this section</p>
+        </div>
+      </AdminLayout>
+    );
+  }
+
   const tabs = [
     { id: "contests", label: "Contests", icon: Trophy },
     { id: "contestants", label: "Contestants", icon: Users },
@@ -23,7 +83,6 @@ export default function ContestsPage() {
     { id: "rewards", label: "Rewards History", icon: Gift },
   ];
 
-  // Update the renderContent function
   const renderContent = () => {
     switch (activeTab) {
       case "contests":
@@ -53,8 +112,9 @@ export default function ContestsPage() {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={`${styles.button} ${activeTab === tab.id ? styles.activeButton : ""
-                }`}
+              className={`${styles.button} ${
+                activeTab === tab.id ? styles.activeButton : ""
+              }`}
               onClick={() => setActiveTab(tab.id)}
             >
               <tab.icon className={styles.buttonIcon} />

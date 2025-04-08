@@ -60,7 +60,7 @@ export default function LoginPage() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-
+  
   return (
     <div className="login-container fade-in-down">
       <div className="login-form-container">

@@ -1,7 +1,7 @@
-import React from "react";
+import React, { Suspense } from "react";
 import { Sidebar } from "./sidebar";
 import "@/styles/admin-layout.css";
-import { Bell, Search, UserCircle } from "lucide-react";
+import Loader from "@/lib/loader";
 
 export function AdminLayout({ children }) {
   return (
@@ -9,13 +9,14 @@ export function AdminLayout({ children }) {
       <Sidebar />
       <div className="admin-layout__main">
         <header className="admin-layout__header">
-          {/* Left Section: Logo & Search */}
           <div className="admin-layout__header-left">
             <span className="admin-layout__logo">Chattick AdminPanel</span>
           </div>
         </header>
 
-        <main className="admin-layout__main-content">{children}</main>
+        <main className="admin-layout__main-content">
+          <Suspense fallback={<Loader />}>{children}</Suspense>
+        </main>
       </div>
     </div>
   );

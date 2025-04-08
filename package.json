@@ -28,6 +28,8 @@
     "draft-js": "^0.11.7",
     "firebase": "^11.6.0",
     "framer-motion": "^12.4.12",
+    "html-to-draftjs": "^1.5.0",
+    "jspdf": "^3.0.1",
     "ldrs": "^1.1.6",
     "lucide-react": "^0.479.0",
     "next": "15.2.1",

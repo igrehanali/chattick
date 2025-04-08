@@ -1,10 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
-import { Button } from "@/app/components/ui/button";
-import { Users as UsersIcon, Plus, Search, Lock, MapPin } from "lucide-react";
-import Link from "next/link";
+import { adminService } from "@/lib/services/admin-service";
 import styles from "./users.module.css";
 
 const initialUsers = [
@@ -113,7 +111,68 @@ const initialUsers = [
 export default function UsersPage() {
   const [users, setUsers] = useState(initialUsers);
   const [searchQuery, setSearchQuery] = useState("");
+  const [admin, setAdmin] = useState();
+  const [adminRole, setAdminRole] = useState();
 
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const userData = JSON.parse(userStr);
+        const response = await adminService.getAdminById(userData.id);
+        setAdmin(response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (admin?.roleId) {
+        try {
+          const response = await adminService.getRoleById(admin.roleId);
+          setAdminRole(response);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [admin]);
+
+  const hasManageUsersPermission = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Manage Users" &&
+      permission.types.includes("read")
+  );
+
+  const canUpdateUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Manage Users" &&
+      permission.types.includes("update")
+  );
+
+  const canWriteUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Manage Users" &&
+      permission.types.includes("write")
+  );
+
+  if (!hasManageUsersPermission) {
+    return (
+      <AdminLayout>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Access Denied</h2>
+          <p>You do not have permission to access User Management.</p>
+        </div>
+      </AdminLayout>
+    );
+  }
+  const handleEditUser = (userId) => {};
   const handleBlockUser = (userId) => {
     if (window.confirm("Are you sure you want to block this user?")) {
       setUsers(
@@ -214,6 +273,30 @@ export default function UsersPage() {
                     <td className={styles.tableCell}>
                       {user.failedTransactions}
                     </td>
+                    {(canUpdateUsers || canWriteUsers) && (
+                      <td className={styles.tableCell}>
+                        <div className={styles.actionButtons}>
+                          {canUpdateUsers && (
+                            <button
+                              onClick={() => handleBlockUser(user.hdid)}
+                              className={styles.actionButton}
+                            >
+                              {user.subscriptionStatus === "Blocked"
+                                ? "Unblock"
+                                : "Block"}
+                            </button>
+                          )}
+                          {canWriteUsers && (
+                            <button
+                              onClick={() => handleResetPassword(user.hdid)}
+                              className={styles.actionButton}
+                            >
+                              Reset Password
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    )}
                   </tr>
                 ))}
               </tbody>

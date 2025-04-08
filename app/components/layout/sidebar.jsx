@@ -47,6 +47,7 @@ import {
   FileQuestionIcon,
   BookIcon,
 } from "lucide-react";
+import { adminService } from "@/lib/services/admin-service";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
@@ -166,6 +167,44 @@ export function Sidebar() {
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutAlert, setShowSignOutAlert] = useState(false);
   const { logout } = useAuth();
+  const [admin, setAdmin] = useState();
+  const [adminRole, setAdminRole] = useState();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const userData = JSON.parse(userStr);
+        const response = await adminService.getAdminById(userData.id);
+        setAdmin(response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (admin?.roleId) {
+        try {
+          const response = await adminService.getRoleById(admin.roleId);
+          setAdminRole(response);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [admin]);
+
+  const hasManageUsersPermission = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Analytics" &&
+      permission.types.includes("read")
+  );
 
   // Initialize expandedItems based on current path
   const [expandedItems, setExpandedItems] = useState(() => {
@@ -248,6 +287,13 @@ export function Sidebar() {
             {navigation.map((item) => {
               const isActive = pathname.startsWith(item.href);
               const isExpanded = expandedItems.includes(item.name);
+
+              if (
+                item.name === "Analytics & Insights" &&
+                !hasManageUsersPermission
+              ) {
+                return null;
+              }
 
               return (
                 <div key={item.name}>

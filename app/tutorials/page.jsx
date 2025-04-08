@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Select } from "@/app/components/ui/select";
@@ -9,67 +9,27 @@ import styles from "./tutorials.module.css";
 import Link from "next/link";
 import TutorialModal from "./components/TutorialModal";
 import { AdminLayout } from "../components/layout/admin-layout";
+import { tutorialService } from "@/lib/services/tutorial-service";
 
 export default function TutorialsPage() {
-  const [tutorials, setTutorials] = useState([
-    {
-      id: 1,
-      title: "Getting Started Guide",
-      description: "Learn the basics of using our platform",
-      type: "pdf",
-      url: "/tutorials/getting-started.pdf",
-      createdAt: "2024-01-15",
-      isVisible: true,
-    },
-    {
-      id: 2,
-      title: "Advanced Features Tutorial",
-      description: "Deep dive into advanced platform features",
-      type: "video",
-      url: "https://example.com/tutorial-video",
-      createdAt: "2024-01-20",
-      isVisible: true,
-    },
-    {
-      id: 3,
-      title: "React Performance Optimization",
-      description:
-        "Learn techniques to optimize your React applications for better performance",
-      type: "video",
-      url: "https://example.com/react-performance",
-      createdAt: "2024-02-01",
-      isVisible: true,
-    },
-    {
-      id: 4,
-      title: "State Management with Redux",
-      description:
-        "Master global state management using Redux in your React applications",
-      type: "pdf",
-      url: "/tutorials/redux-guide.pdf",
-      createdAt: "2024-02-05",
-      isVisible: false,
-    },
-    {
-      id: 5,
-      title: "Next.js API Routes",
-      description: "Build and deploy serverless API endpoints with Next.js",
-      type: "video",
-      url: "https://example.com/nextjs-api",
-      createdAt: "2024-02-10",
-      isVisible: true,
-    },
-    {
-      id: 6,
-      title: "Testing Best Practices",
-      description:
-        "Comprehensive guide to unit testing and integration testing in React",
-      type: "pdf",
-      url: "/tutorials/testing-guide.pdf",
-      createdAt: "2024-02-15",
-      isVisible: false,
-    },
-  ]);
+  const [tutorials, setTutorials] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  useEffect(() => {
+    loadTutorials();
+  }, []);
+
+  const loadTutorials = async () => {
+    try {
+      const data = await tutorialService.getAllTutorials();
+      setTutorials(data);
+    } catch (error) {
+      console.error("Error loading tutorials:", error);
+      toast.error("Failed to load tutorials");
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentTutorial, setCurrentTutorial] = useState(null);
@@ -93,15 +53,27 @@ export default function TutorialsPage() {
     }
   };
 
-  const handleToggleVisibility = (tutorial) => {
-    setTutorials(
-      tutorials.map((t) =>
-        t.id === tutorial.id ? { ...t, isVisible: !t.isVisible } : t
-      )
-    );
-    toast.success(
-      `Tutorial ${tutorial.isVisible ? "hidden" : "shown"} successfully`
-    );
+  const handleToggleVisibility = async (tutorial) => {
+    try {
+      const updatedTutorial = await tutorialService.updateTutorial(
+        tutorial.id,
+        {
+          ...tutorial,
+          isVisible: !tutorial.isVisible,
+        }
+      );
+      setTutorials(
+        tutorials.map((t) =>
+          t.id === tutorial.id ? { ...t, isVisible: !t.isVisible } : t
+        )
+      );
+      toast.success(
+        `Tutorial ${tutorial.isVisible ? "hidden" : "visible"} successfully`
+      );
+    } catch (error) {
+      console.error("Error updating tutorial visibility:", error);
+      toast.error("Failed to update tutorial visibility");
+    }
   };
 
   const filteredTutorials = tutorials.filter(
@@ -194,20 +166,31 @@ export default function TutorialsPage() {
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           tutorial={currentTutorial}
-          onSave={(formData) => {
-            if (currentTutorial) {
-              setTutorials(
-                tutorials.map((t) =>
-                  t.id === currentTutorial.id ? { ...t, ...formData } : t
-                )
-              );
-            } else {
-              setTutorials([
-                ...tutorials,
-                { id: tutorials.length + 1, ...formData },
-              ]);
+          onSave={async (formData) => {
+            try {
+              if (currentTutorial) {
+                const updatedTutorial = await tutorialService.updateTutorial(
+                  currentTutorial.id,
+                  formData
+                );
+                setTutorials(
+                  tutorials.map((t) =>
+                    t.id === currentTutorial.id ? updatedTutorial : t
+                  )
+                );
+                toast.success("Tutorial updated successfully");
+              } else {
+                const newTutorial = await tutorialService.createTutorial(
+                  formData
+                );
+                setTutorials([...tutorials, newTutorial]);
+                toast.success("Tutorial created successfully");
+              }
+              setIsModalOpen(false);
+            } catch (error) {
+              console.error("Error saving tutorial:", error);
+              toast.error("Failed to save tutorial");
             }
-            setIsModalOpen(false);
           }}
         />
       </div>

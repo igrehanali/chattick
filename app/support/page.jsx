@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
 import { Button } from "@/app/components/ui/button";
@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { CategoryManager } from "./components/category-manager";
 import styles from "./page.module.css";
+import { adminService } from "@/lib/services/admin-service";
 
 const tickets = [
   {
@@ -57,6 +58,66 @@ const getStatusIcon = (status) => {
 export default function SupportPage() {
   const router = useRouter();
   const [showCategories, setShowCategories] = useState(false);
+  const [admin, setAdmin] = useState();
+  const [adminRole, setAdminRole] = useState();
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const userData = JSON.parse(userStr);
+        const response = await adminService.getAdminById(userData.id);
+        setAdmin(response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (admin?.roleId) {
+        try {
+          const response = await adminService.getRoleById(admin.roleId);
+          setAdminRole(response);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [admin]);
+
+  const hasManageUsersPermission = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" && permission.types.includes("read")
+  );
+
+  const canUpdateUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" &&
+      permission.types.includes("update")
+  );
+
+  const canWriteUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" &&
+      permission.types.includes("write")
+  );
+
+  if (!hasManageUsersPermission) {
+    return (
+      <AdminLayout>
+        <div className={styles.header}>
+          <h2 className={styles.title}>Access Denied</h2>
+          <p>You do not have permission to access this section</p>
+        </div>
+      </AdminLayout>
+    );
+  }
 
   return (
     <AdminLayout>

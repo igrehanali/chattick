@@ -7,6 +7,7 @@ import { Select } from "@/app/components/ui/select";
 import { Label } from "@/app/components/ui/label";
 import styles from "../tutorials.module.css";
 import { createPortal } from "react-dom";
+import { tutorialService } from "@/lib/services/tutorial-service";
 
 export default function TutorialModal({ isOpen, onClose, tutorial, onSave }) {
   const [mounted, setMounted] = useState(false);
@@ -52,20 +53,39 @@ export default function TutorialModal({ isOpen, onClose, tutorial, onSave }) {
     }
   }, [tutorial]);
 
-  const handleSubmit = (e) => {
+  const [selectedFile, setSelectedFile] = useState(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSave({
-      ...formData,
-      createdAt: tutorial?.createdAt || new Date().toISOString().split("T")[0],
-    });
-    onClose();
+    setIsSubmitting(true);
+
+    try {
+      let result;
+      if (tutorial) {
+        result = await tutorialService.updateTutorial(
+          tutorial.id,
+          formData,
+          selectedFile
+        );
+      } else {
+        result = await tutorialService.createTutorial(formData, selectedFile);
+      }
+      onSave(result);
+      onClose();
+    } catch (error) {
+      console.error("Error saving tutorial:", error);
+      toast.error("Failed to save tutorial");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
     if (file) {
-      // In a real application, you would handle file upload to a server here
-      // For now, we'll just create a temporary URL
+      setSelectedFile(file);
+      // Create a temporary URL for preview
       setFormData((prev) => ({
         ...prev,
         url: URL.createObjectURL(file),

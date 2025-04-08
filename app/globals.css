@@ -226,11 +226,7 @@ button {
   box-shadow: var(--shadow-sm);
 }
 
-button:hover {
-  background: var(--primary-hover);
-  transform: translateY(-1px);
-  box-shadow: var(--shadow-md);
-}
+
 
 button:active {
   transform: translateY(0);

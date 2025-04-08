@@ -56,7 +56,7 @@
             var(--bg-gradient-from),
             var(--bg-gradient-via),
             var(--bg-gradient-to));
-    padding: 3rem 1rem;
+    /* padding: 3rem 1rem; */
 }
 
 @media (min-width: 640px) {
