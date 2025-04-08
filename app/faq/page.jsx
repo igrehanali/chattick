@@ -9,6 +9,7 @@ import {
   FiBarChart2,
 } from "react-icons/fi";
 import FAQAnalytics from "./components/FAQAnalytics";
+import ConfirmPopup from "./components/ConfirmPopup";
 import FAQModal from "./components/FAQModal";
 import CategoryModal from "./components/CategoryModal";
 import { AdminLayout } from "../components/layout/admin-layout";
@@ -84,33 +85,7 @@ export default function FAQPage() {
         faq.answer.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
-  // Update the ConfirmPopup component
-  const ConfirmPopup = ({
-    title,
-    message,
-    onConfirm,
-    onCancel,
-    confirmText,
-    cancelText,
-    variant,
-  }) => {
-    return (
-      <div className={styles.modalOverlay}>
-        <div className={styles.modalContent}>
-          <h2 className={styles.modalTitle}>{title}</h2>
-          <p className={styles.modalMessage}>{message}</p>
-          <div className={styles.modalActions}>
-            <Button variant="outline" onClick={onCancel}>
-              {cancelText || "Cancel"}
-            </Button>
-            <Button variant={variant} onClick={onConfirm}>
-              {confirmText || "Confirm"}
-            </Button>
-          </div>
-        </div>
-      </div>
-    );
-  };
+  // Import the ConfirmPopup component
 
   // Update the handlers
   const handleDeleteFAQ = (id) => {
@@ -192,76 +167,160 @@ export default function FAQPage() {
     });
     setShowConfirm(true);
   };
-  if (isLoading) {
-    return <Loader />;
-  }
-  return (
-    <AdminLayout>
-      {showConfirm && (
-        <ConfirmPopup
-          {...confirmConfig}
-          onCancel={() => setShowConfirm(false)}
-        />
-      )}
-      <div>
-        <div className={styles.header}>
-          <h1 className={styles.title}> Surveys & FAQs</h1>
-          <div className={styles.tabs}>
-            <Link href="/faq" className={styles.tabActive}>
-              FAQs
-            </Link>
-            <Link href="/faq/surveys" className={styles.tab}>
-              Surveys
-            </Link>
+  if (typeof window !== "undefined") { // Ensure this code runs only in the browser
+    if (isLoading) {
+      return <Loader />;
+    }
+    return (
+      <AdminLayout>
+        {showConfirm && (
+          <ConfirmPopup
+            {...confirmConfig}
+            onCancel={() => setShowConfirm(false)}
+          />
+        )}
+        <div>
+          <div className={styles.header}>
+            <h1 className={styles.title}> Surveys & FAQs</h1>
+            <div className={styles.tabs}>
+              <Link href="/faq" className={styles.tabActive}>
+                FAQs
+              </Link>
+              <Link href="/faq/surveys" className={styles.tab}>
+                Surveys
+              </Link>
+            </div>
+            <div className={styles.headerButtons}>
+              {/* <Button onClick={() => setShowAnalytics(!showAnalytics)}>
+                <FiBarChart2 className={styles.buttonIcon} />
+                {showAnalytics ? "Hide Analytics" : "Show Analytics"}
+              </Button> */}
+              <Button onClick={handleAddNewCategory}>
+                <FiPlus className={styles.buttonIcon} />
+                Add Category
+              </Button>
+              <Button onClick={handleAddNewFAQ}>
+                <FiPlus className={styles.buttonIcon} />
+                Add FAQ
+              </Button>
+            </div>
           </div>
-          <div className={styles.headerButtons}>
-            {/* <Button onClick={() => setShowAnalytics(!showAnalytics)}>
-              <FiBarChart2 className={styles.buttonIcon} />
-              {showAnalytics ? "Hide Analytics" : "Show Analytics"}
-            </Button> */}
-            <Button onClick={handleAddNewCategory}>
-              <FiPlus className={styles.buttonIcon} />
-              Add Category
-            </Button>
-            <Button onClick={handleAddNewFAQ}>
-              <FiPlus className={styles.buttonIcon} />
-              Add FAQ
-            </Button>
+    
+          {showAnalytics && <FAQAnalytics faqs={faqs} categories={categories} />}
+    
+          <div className={styles.categoriesSection}>
+            <h2 className={styles.sectionTitle}>Categories</h2>
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead className={styles.tableHeader}>
+                  <tr>
+                    <th className={styles.tableHeaderCell}>Name</th>
+                    <th className={styles.tableHeaderCell}>FAQ Count</th>
+                    <th className={styles.tableHeaderCell}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody className={styles.tableBody}>
+                  {categories.map((category) => {
+                    const faqCount = faqs.filter(
+                      (faq) => faq.category === category.id
+                    ).length;
+                    return (
+                      <tr key={category.id} className={styles.tableRow}>
+                        <td className={styles.tableCell}>{category.name}</td>
+                        <td className={styles.tableCell}>{faqCount}</td>
+                        <td className={styles.tableCell}>
+                          <div className={styles.actions}>
+                            <button
+                              onClick={() => handleEditCategory(category)}
+                              className={`${styles.actionButton} ${styles.editButton}`}
+                            >
+                              <FiEdit2 />
+                            </button>
+                            <button
+                              onClick={() => handleDeleteCategory(category.id)}
+                              className={`${styles.actionButton} ${styles.deleteButton}`}
+                            >
+                              <FiTrash2 />
+                            </button>
+                          </div>
+                        </td>
+                      </tr>
+                    );
+                  })}
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
-
-        {showAnalytics && <FAQAnalytics faqs={faqs} categories={categories} />}
-
-        <div className={styles.categoriesSection}>
-          <h2 className={styles.sectionTitle}>Categories</h2>
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead className={styles.tableHeader}>
-                <tr>
-                  <th className={styles.tableHeaderCell}>Name</th>
-                  <th className={styles.tableHeaderCell}>FAQ Count</th>
-                  <th className={styles.tableHeaderCell}>Actions</th>
-                </tr>
-              </thead>
-              <tbody className={styles.tableBody}>
-                {categories.map((category) => {
-                  const faqCount = faqs.filter(
-                    (faq) => faq.category === category.id
-                  ).length;
-                  return (
-                    <tr key={category.id} className={styles.tableRow}>
-                      <td className={styles.tableCell}>{category.name}</td>
-                      <td className={styles.tableCell}>{faqCount}</td>
+    
+          <div className={styles.faqSection}>
+            <h2 className={styles.sectionTitle}>FAQs</h2>
+            <div className={styles.controls}>
+              <select
+                className={styles.categoryFilter}
+                value={selectedCategory}
+                onChange={(e) => setSelectedCategory(e.target.value)}
+              >
+                <option value="all">All Categories</option>
+                {categories.map((category) => (
+                  <option key={category.id} value={category.id}>
+                    {category.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+    
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead className={styles.tableHeader}>
+                  <tr>
+                    <th className={styles.tableHeaderCell}>Question</th>
+                    <th className={styles.tableHeaderCell}>Answer</th>
+                    <th className={styles.tableHeaderCell}>Category</th>
+                    <th className={styles.tableHeaderCell}>Visibility</th>
+                    <th className={styles.tableHeaderCell}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody className={styles.tableBody}>
+                  {filteredFAQs.map((faq) => (
+                    <tr key={faq.id} className={styles.tableRow}>
+                      <td className={styles.tableCell}>{faq.question}</td>
+                      <td className={`${styles.tableCell} ${styles.answerCell}`}>
+                        {faq.answer}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {categories.find((c) => c.id === faq.category)?.name}
+                      </td>
+                      <td className={styles.tableCell}>
+                        <span
+                          className={`${styles.badge} ${
+                            faq.isVisible
+                              ? styles.badgeVisible
+                              : styles.badgeHidden
+                          }`}
+                        >
+                          {faq.isVisible ? "Visible" : "Hidden"}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>
+                        <button
+                          onClick={() => handleToggleVisibility(faq)}
+                          className={`${styles.visibilityButton} ${
+                            faq.isVisible ? styles.visible : styles.hidden
+                          }`}
+                        >
+                          {faq.isVisible ? "Published" : "Draft"}
+                        </button>
+                      </td>
                       <td className={styles.tableCell}>
                         <div className={styles.actions}>
                           <button
-                            onClick={() => handleEditCategory(category)}
+                            onClick={() => handleEditFAQ(faq)}
                             className={`${styles.actionButton} ${styles.editButton}`}
                           >
                             <FiEdit2 />
                           </button>
                           <button
-                            onClick={() => handleDeleteCategory(category.id)}
+                            onClick={() => handleDeleteFAQ(faq.id)}
                             className={`${styles.actionButton} ${styles.deleteButton}`}
                           >
                             <FiTrash2 />
@@ -269,160 +328,78 @@ export default function FAQPage() {
                         </div>
                       </td>
                     </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+    
+            <FAQModal
+              isOpen={isFAQModalOpen}
+              onClose={() => setIsFAQModalOpen(false)}
+              faq={currentFaq}
+              categories={categories} // Add this line to pass categories
+              onSave={async (formData) => {
+                try {
+                  if (currentFaq) {
+                    const updatedFaq = await faqService.updateFAQ(
+                      currentFaq.id,
+                      formData
+                    );
+                    setFaqs(
+                      faqs.map((f) => (f.id === currentFaq.id ? updatedFaq : f))
+                    );
+                  } else {
+                    const newFaq = await faqService.createFAQ(formData);
+                    setFaqs([...faqs, newFaq]);
+                  }
+                  setIsFAQModalOpen(false);
+                } catch (error) {
+                  console.error("Error saving FAQ:", error);
+                }
+              }}
+            />
+    
+            <CategoryModal
+              isOpen={isCategoryModalOpen}
+              onClose={() => setIsCategoryModalOpen(false)}
+              category={currentCategory}
+              onSave={async (formData) => {
+                try {
+                  const isDuplicate = await faqService.checkCategoryExists(
+                    formData.name
                   );
-                })}
-              </tbody>
-            </table>
+                  if (
+                    isDuplicate &&
+                    (!currentCategory || currentCategory.name !== formData.name)
+                  ) {
+                    throw new Error(
+                      `A category with the name "${formData.name}" already exists`
+                    );
+                  }
+    
+                  if (currentCategory) {
+                    const updatedCategory = await faqService.updateCategory(
+                      currentCategory.id,
+                      formData
+                    );
+                    setCategories(
+                      categories.map((c) =>
+                        c.id === currentCategory.id ? updatedCategory : c
+                      )
+                    );
+                  } else {
+                    const newCategory = await faqService.createCategory(formData);
+                    setCategories([...categories, newCategory]);
+                  }
+                  setIsCategoryModalOpen(false);
+                } catch (error) {
+                  throw error;
+                }
+              }}
+            />
           </div>
         </div>
-
-        <div className={styles.faqSection}>
-          <h2 className={styles.sectionTitle}>FAQs</h2>
-          <div className={styles.controls}>
-            <select
-              className={styles.categoryFilter}
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-            >
-              <option value="all">All Categories</option>
-              {categories.map((category) => (
-                <option key={category.id} value={category.id}>
-                  {category.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead className={styles.tableHeader}>
-                <tr>
-                  <th className={styles.tableHeaderCell}>Question</th>
-                  <th className={styles.tableHeaderCell}>Answer</th>
-                  <th className={styles.tableHeaderCell}>Category</th>
-                  <th className={styles.tableHeaderCell}>Visibility</th>
-                  <th className={styles.tableHeaderCell}>Actions</th>
-                </tr>
-              </thead>
-              <tbody className={styles.tableBody}>
-                {filteredFAQs.map((faq) => (
-                  <tr key={faq.id} className={styles.tableRow}>
-                    <td className={styles.tableCell}>{faq.question}</td>
-                    <td className={`${styles.tableCell} ${styles.answerCell}`}>
-                      {faq.answer}
-                    </td>
-                    <td className={styles.tableCell}>
-                      {categories.find((c) => c.id === faq.category)?.name}
-                    </td>
-                    <td className={styles.tableCell}>
-                      <span
-                        className={`${styles.badge} ${
-                          faq.isVisible
-                            ? styles.badgeVisible
-                            : styles.badgeHidden
-                        }`}
-                      >
-                        {faq.isVisible ? "Visible" : "Hidden"}
-                      </span>
-                    </td>
-                    <td className={styles.tableCell}>
-                      <button
-                        onClick={() => handleToggleVisibility(faq)}
-                        className={`${styles.visibilityButton} ${
-                          faq.isVisible ? styles.visible : styles.hidden
-                        }`}
-                      >
-                        {faq.isVisible ? "Published" : "Draft"}
-                      </button>
-                    </td>
-                    <td className={styles.tableCell}>
-                      <div className={styles.actions}>
-                        <button
-                          onClick={() => handleEditFAQ(faq)}
-                          className={`${styles.actionButton} ${styles.editButton}`}
-                        >
-                          <FiEdit2 />
-                        </button>
-                        <button
-                          onClick={() => handleDeleteFAQ(faq.id)}
-                          className={`${styles.actionButton} ${styles.deleteButton}`}
-                        >
-                          <FiTrash2 />
-                        </button>
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-
-          <FAQModal
-            isOpen={isFAQModalOpen}
-            onClose={() => setIsFAQModalOpen(false)}
-            faq={currentFaq}
-            categories={categories} // Add this line to pass categories
-            onSave={async (formData) => {
-              try {
-                if (currentFaq) {
-                  const updatedFaq = await faqService.updateFAQ(
-                    currentFaq.id,
-                    formData
-                  );
-                  setFaqs(
-                    faqs.map((f) => (f.id === currentFaq.id ? updatedFaq : f))
-                  );
-                } else {
-                  const newFaq = await faqService.createFAQ(formData);
-                  setFaqs([...faqs, newFaq]);
-                }
-                setIsFAQModalOpen(false);
-              } catch (error) {
-                console.error("Error saving FAQ:", error);
-              }
-            }}
-          />
-
-          <CategoryModal
-            isOpen={isCategoryModalOpen}
-            onClose={() => setIsCategoryModalOpen(false)}
-            category={currentCategory}
-            onSave={async (formData) => {
-              try {
-                const isDuplicate = await faqService.checkCategoryExists(
-                  formData.name
-                );
-                if (
-                  isDuplicate &&
-                  (!currentCategory || currentCategory.name !== formData.name)
-                ) {
-                  throw new Error(
-                    `A category with the name "${formData.name}" already exists`
-                  );
-                }
-
-                if (currentCategory) {
-                  const updatedCategory = await faqService.updateCategory(
-                    currentCategory.id,
-                    formData
-                  );
-                  setCategories(
-                    categories.map((c) =>
-                      c.id === currentCategory.id ? updatedCategory : c
-                    )
-                  );
-                } else {
-                  const newCategory = await faqService.createCategory(formData);
-                  setCategories([...categories, newCategory]);
-                }
-                setIsCategoryModalOpen(false);
-              } catch (error) {
-                throw error;
-              }
-            }}
-          />
-        </div>
-      </div>
-    </AdminLayout>
-  );
+      </AdminLayout>
+    );
+  };
 }

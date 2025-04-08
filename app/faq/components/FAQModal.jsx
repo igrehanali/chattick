@@ -1,14 +1,23 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import styles from "./FAQModal.module.css";
 
 export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted || !isOpen) return null;
   const [formData, setFormData] = useState({
-    question: '',
-    answer: '',
-    category: '',  // Make sure this exists
-    isVisible: true
+    question: "",
+    answer: "",
+    category: "", // Make sure this exists
+    isVisible: true,
   });
 
   useEffect(() => {
@@ -81,7 +90,9 @@ export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
               id="category"
               name="category"
               value={formData.category}
-              onChange={(e) => setFormData({ ...formData, category: e.target.value })}
+              onChange={(e) =>
+                setFormData({ ...formData, category: e.target.value })
+              }
               required
               className={styles.select}
             >
@@ -109,7 +120,11 @@ export default function FAQModal({ isOpen, onClose, faq, categories, onSave }) {
           </div>
 
           <div className={styles.buttonGroup}>
-            <button type="button" onClick={onClose} className={styles.cancelButton}>
+            <button
+              type="button"
+              onClick={onClose}
+              className={styles.cancelButton}
+            >
               Cancel
             </button>
             <button type="submit" className={styles.saveButton}>
