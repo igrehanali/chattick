@@ -13,6 +13,7 @@ import {
 } from "./utils/extendedData";
 import { Download } from "lucide-react";
 import "@/styles/dashboard.css";
+import { Button } from "../components/ui/button";
 
 export default function DashboardPage() {
   const [timeRange, setTimeRange] = useState("7");
@@ -66,8 +67,8 @@ export default function DashboardPage() {
   return (
     <AdminLayout>
       <div className="dashboard">
+        <h2 className="dashboard__title">Dashboard Overview</h2>
         <div className="dashboard__header">
-          <h2 className="dashboard__title">Dashboard Overview</h2>
           <div className="dashboard__controls">
             <select
               value={selectedCountry}
@@ -118,10 +119,10 @@ export default function DashboardPage() {
               <option value="365">Last year</option>
             </select>
 
-            <button onClick={handleExport} className="dashboard__export-btn">
+            <Button onClick={handleExport}>
               <Download size={16} />
               Export
-            </button>
+            </Button>
           </div>
         </div>
 

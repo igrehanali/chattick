@@ -7,13 +7,15 @@
 /* Sidebar Navigation */
 .sidebar {
     width: 260px;
-    background: linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%);
+    background: linear-gradient(180deg, #1e2a45 0%, #151521 100%);
+    border-left: 1px solid rgba(255, 255, 255, 0.05);
+    box-shadow: -4px 0 10px rgba(0, 0, 0, 0.2);
     padding: 24px 12px;
     display: flex;
     flex-direction: column;
     gap: 16px;
     border-radius: 16px;
-    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+    /* box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); */
 }
 
 .tab {
@@ -48,7 +50,7 @@
     box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
 }
 
- 
+
 .content {
     flex: 1;
     overflow-y: auto;
@@ -58,6 +60,9 @@
     max-height: calc(100vh - 100px);
     overflow-y: auto;
 }
+
+
+
 
 .content::-webkit-scrollbar {
     width: 6px;
@@ -116,3 +121,4 @@
         top: auto;
     }
 }
+

@@ -7,13 +7,16 @@
     z-index: 40;
     display: flex;
     flex-direction: column;
-    width: 18rem;
+    width: 16rem;
     height: 100vh;
-    background: linear-gradient(180deg, #1e1e2d 0%, #151521 100%);
+    background: linear-gradient(180deg, #2a3a4d 0%, #1a1c2e 100%);
     border-right: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     backdrop-filter: blur(10px);
+    border-right: 1px solid rgba(255, 255, 255, 0.04);
+    box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+
 }
 
 .navItemContent {
@@ -80,16 +83,21 @@
     align-items: center;
     height: 4.5rem;
     padding: 0 1.75rem;
-    background: rgba(255, 255, 255, 0.03);
-    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    background: rgba(24, 26, 38, 0.95);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
 }
 
 .headerTitle {
     font-size: 1.25rem;
     font-weight: 600;
-    color: #ffffff;
     letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #8b5cf6, #6366f1, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    color: transparent;
 }
 
 @media (max-width: 767px) {
@@ -101,7 +109,7 @@
 /* Navigation */
 .nav {
     flex: 1;
-    padding: 0.5rem 1rem;
+    padding: 0.5rem;
     overflow-y: auto;
     scrollbar-width: thin;
     scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
@@ -116,9 +124,11 @@
 }
 
 .nav::-webkit-scrollbar-thumb {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(139, 92, 246, 0.25);
+
     border-radius: 4px;
 }
+
 
 .navList {
     display: flex;
@@ -142,17 +152,19 @@
 }
 
 .navItem:hover {
-    background: rgba(255, 255, 255, 0.08);
+    background: rgba(255, 255, 255, 0.06);
     color: #ffffff;
+
     transform: translateX(4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .navItemActive {
-    background: linear-gradient(90deg, rgba(99, 102, 241, 0.15) 0%, rgba(99, 102, 241, 0.08) 100%);
-    color: #6366f1;
-    border-left: 3px solid #6366f1;
-    box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+    background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
+    color: #8b5cf6;
+    border-left: 3px solid #8b5cf6;
+    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+
 }
 
 .navItemIcon {
@@ -217,8 +229,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 1.5rem;
-    width: 1.5rem;
+    height: 1rem;
+    width: 1rem;
 }
 
 .navItem:hover .submenuToggle {
@@ -227,27 +239,7 @@
     transform: translateY(1px);
 }
 
-.mobileMenuButton {
-    display: none;
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 50;
-    padding: 0.75rem;
-    background: rgba(30, 30, 45, 0.95);
-    border-radius: 0.75rem;
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    cursor: pointer;
-    backdrop-filter: blur(8px);
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
-    transition: all 0.2s ease-in-out;
-}
 
-.mobileMenuButton:hover {
-    background: rgba(40, 40, 60, 0.95);
-    transform: translateY(-1px);
-    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.3);
-}
 
 .menuIcon {
     width: 1.5rem;
@@ -258,7 +250,7 @@
 
 .mobileMenuButton:hover .menuIcon {
     transform: scale(1.1);
-    color: white;
+    /* color: white; */
 }
 
 .overlay {
@@ -290,7 +282,7 @@
     top: -0.3rem;
     left: 1rem;
     z-index: 50;
-    padding: 0.625rem;
+    padding: 0.25rem;
     border-radius: 0.5rem;
     background: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(8px);
@@ -332,6 +324,7 @@
     .sidebar {
         position: static;
         transform: none;
+        width: 18rem;
     }
 
     .overlay {

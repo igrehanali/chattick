@@ -279,7 +279,7 @@ export function Sidebar() {
         }`}
       >
         <div className={styles.header}>
-          <span className={styles.headerTitle}>Admin Panel</span>
+          <span className={styles.headerTitle}>CHATTICK 💬</span>
         </div>
         {/* hfhgf */}
         <nav className={styles.nav}>
