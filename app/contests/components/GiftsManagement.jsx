@@ -5,21 +5,28 @@ import styles from "./GiftsManagement.module.css";
 import GiftModal from "./GiftModal";
 import ConfirmDialog from "./ConfirmDialog";
 import { contestService } from "@/lib/services/contest-service";
+import { toast } from "react-hot-toast";
 
 export default function GiftsManagement() {
   const [gifts, setGifts] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadGifts = async () => {
       try {
+        setLoading(true);
         const giftsData = await contestService.getAllGifts();
         setGifts(giftsData);
       } catch (error) {
         console.error("Error loading gifts:", error);
+        toast.error("Failed to load gifts");
+      } finally {
+        setLoading(false);
       }
     };
     loadGifts();
   }, []);
+
   const [activeTab, setActiveTab] = useState("gif");
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [currentGift, setCurrentGift] = useState(null);
@@ -41,32 +48,57 @@ export default function GiftsManagement() {
       title: "Delete Gift",
       message: "Are you sure you want to delete this gift?",
       onConfirm: async () => {
+        const loadingToast = toast.loading("Deleting gift...");
         try {
           await contestService.deleteGift(id);
           setGifts(gifts.filter((gift) => gift.id !== id));
           setShowConfirm(false);
+          toast.success("Gift deleted successfully", { id: loadingToast });
         } catch (error) {
           console.error("Error deleting gift:", error);
+          toast.error("Failed to delete gift", { id: loadingToast });
         }
       },
     });
     setShowConfirm(true);
   };
 
-  const handleToggleStatus = (id) => {
-    setGifts(
-      gifts.map((gift) =>
-        gift.id === id
-          ? {
-              ...gift,
-              status: gift.status === "active" ? "inactive" : "active",
-            }
-          : gift
-      )
+  const handleToggleStatus = async (id) => {
+    const gift = gifts.find((g) => g.id === id);
+    const newStatus = gift.status === "active" ? "inactive" : "active";
+    const loadingToast = toast.loading(
+      `${newStatus === "active" ? "Activating" : "Deactivating"} gift...`
     );
+
+    try {
+      await contestService.updateGift(id, { ...gift, status: newStatus });
+      setGifts(
+        gifts.map((g) => (g.id === id ? { ...g, status: newStatus } : g))
+      );
+      toast.success(
+        `Gift ${
+          newStatus === "active" ? "activated" : "deactivated"
+        } successfully`,
+        { id: loadingToast }
+      );
+    } catch (error) {
+      console.error("Error updating gift status:", error);
+      toast.error(
+        `Failed to ${newStatus === "active" ? "activate" : "deactivate"} gift`,
+        { id: loadingToast }
+      );
+    }
   };
 
   const filteredGifts = gifts.filter((gift) => gift.type === activeTab);
+
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading gifts...</div>
+      </div>
+    );
+  }
 
   return (
     <div className={styles.container}>
@@ -155,6 +187,9 @@ export default function GiftsManagement() {
           gift={currentGift}
           giftType={activeTab}
           onSave={async (formData) => {
+            const loadingToast = toast.loading(
+              currentGift ? "Updating gift..." : "Creating gift..."
+            );
             try {
               if (currentGift) {
                 const updatedGift = await contestService.updateGift(
@@ -166,6 +201,9 @@ export default function GiftsManagement() {
                     gift.id === currentGift.id ? updatedGift : gift
                   )
                 );
+                toast.success("Gift updated successfully", {
+                  id: loadingToast,
+                });
               } else {
                 const newGift = await contestService.createGift({
                   ...formData,
@@ -173,10 +211,17 @@ export default function GiftsManagement() {
                   status: "active",
                 });
                 setGifts([...gifts, newGift]);
+                toast.success("Gift created successfully", {
+                  id: loadingToast,
+                });
               }
               setIsModalOpen(false);
             } catch (error) {
               console.error("Error saving gift:", error);
+              toast.error(
+                `Failed to ${currentGift ? "update" : "create"} gift`,
+                { id: loadingToast }
+              );
             }
           }}
         />

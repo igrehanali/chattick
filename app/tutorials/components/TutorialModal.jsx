@@ -75,7 +75,7 @@ export default function TutorialModal({ isOpen, onClose, tutorial, onSave }) {
       onClose();
     } catch (error) {
       console.error("Error saving tutorial:", error);
-      toast.error("Failed to save tutorial");
+      // toast.error("Failed to save tutorial");
     } finally {
       setIsSubmitting(false);
     }
@@ -182,11 +182,24 @@ export default function TutorialModal({ isOpen, onClose, tutorial, onSave }) {
             </div>
 
             <div className={styles.formActions}>
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
                 Cancel
               </Button>
-              <Button type="submit">
-                {tutorial ? "Update" : "Create"} Tutorial
+              <Button type="submit" disabled={isSubmitting}>
+                {isSubmitting ? (
+                  <span className="flex items-center gap-2">
+                    <span className="loader" /> Saving...
+                  </span>
+                ) : tutorial ? (
+                  "Update Tutorial"
+                ) : (
+                  "Create Tutorial"
+                )}
               </Button>
             </div>
           </form>

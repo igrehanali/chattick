@@ -64,17 +64,6 @@ export default function ContestsPage() {
       permission.types.includes("write")
   );
 
-  if (!hasManageUsersPermission) {
-    return (
-      <AdminLayout>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Access Denied</h2>
-          <p>You do not have permission to access this section</p>
-        </div>
-      </AdminLayout>
-    );
-  }
-
   const tabs = [
     { id: "contests", label: "Contests", icon: Trophy },
     { id: "contestants", label: "Contestants", icon: Users },
@@ -102,29 +91,36 @@ export default function ContestsPage() {
 
   return (
     <AdminLayout>
-      <div>
+      {hasManageUsersPermission ? (
+        <div>
+          <div className={styles.header}>
+            <h2 className={styles.title}>Contests & Rewards Management</h2>
+          </div>
+
+          {/* ✅ Using button styles instead of old tab styles */}
+          <div className={styles.tabs}>
+            {tabs.map((tab) => (
+              <button
+                key={tab.id}
+                className={`${styles.button} ${
+                  activeTab === tab.id ? styles.activeButton : ""
+                }`}
+                onClick={() => setActiveTab(tab.id)}
+              >
+                <tab.icon className={styles.buttonIcon} />
+                {tab.label}
+              </button>
+            ))}
+          </div>
+
+          <div className={styles.content}>{renderContent()}</div>
+        </div>
+      ) : (
         <div className={styles.header}>
-          <h2 className={styles.title}>Contests & Rewards Management</h2>
+          <h2 className={styles.title}>Access Denied</h2>
+          <p>You do not have permission to access this section</p>
         </div>
-
-        {/* ✅ Using button styles instead of old tab styles */}
-        <div className={styles.tabs}>
-          {tabs.map((tab) => (
-            <button
-              key={tab.id}
-              className={`${styles.button} ${
-                activeTab === tab.id ? styles.activeButton : ""
-              }`}
-              onClick={() => setActiveTab(tab.id)}
-            >
-              <tab.icon className={styles.buttonIcon} />
-              {tab.label}
-            </button>
-          ))}
-        </div>
-
-        <div className={styles.content}>{renderContent()}</div>
-      </div>
+      )}
     </AdminLayout>
   );
 }

@@ -4,12 +4,13 @@ import { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Input } from "@/app/components/ui/input";
 import { Select } from "@/app/components/ui/select";
-import { toast } from "sonner";
+import { toast } from "react-hot-toast";
 import styles from "./tutorials.module.css";
 import Link from "next/link";
 import TutorialModal from "./components/TutorialModal";
 import { AdminLayout } from "../components/layout/admin-layout";
 import { tutorialService } from "@/lib/services/tutorial-service";
+import Loader from "@/lib/loader";
 
 export default function TutorialsPage() {
   const [tutorials, setTutorials] = useState([]);
@@ -39,6 +40,7 @@ export default function TutorialsPage() {
   const handleAddNew = () => {
     setCurrentTutorial(null);
     setIsModalOpen(true);
+   
   };
 
   const handleEdit = (tutorial) => {
@@ -46,10 +48,17 @@ export default function TutorialsPage() {
     setIsModalOpen(true);
   };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (tutorial) => {
     if (confirm("Are you sure you want to delete this tutorial?")) {
-      setTutorials(tutorials.filter((tutorial) => tutorial.id !== id));
-      toast.success("Tutorial deleted successfully");
+      try {
+        await tutorialService.deleteTutorial(tutorial.id);
+        console.log(tutorial.id);
+        setTutorials((prev) => prev.filter((t) => t.id !== tutorial.id));
+        toast.success("Tutorial deleted successfully");
+      } catch (error) {
+        console.error("Error deleting tutorial:", error);
+        toast.error("Failed to delete tutorial");
+      }
     }
   };
 
@@ -83,6 +92,14 @@ export default function TutorialsPage() {
         tutorial.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
+  if (isLoading) {
+    return (
+      <AdminLayout>
+        <Loader />
+      </AdminLayout>
+    );
+  }
+
   return (
     <AdminLayout>
       <div className={styles.container}>
@@ -115,51 +132,59 @@ export default function TutorialsPage() {
         </div>
 
         <div className={styles.tutorialGrid}>
-          {filteredTutorials.map((tutorial) => (
-            <div key={tutorial.id} className={styles.tutorialCard}>
-              <div className={styles.cardContent}>
-                <h3 className={styles.tutorialTitle}>{tutorial.title}</h3>
-                <p className={styles.tutorialDescription}>
-                  {tutorial.description}
-                </p>
-                <div className={styles.tutorialMeta}>
-                  <span className={styles.tutorialType}>
-                    {tutorial.type.toUpperCase()}
-                  </span>
-                  <span className={styles.tutorialDate}>
-                    {tutorial.createdAt}
-                  </span>
+          {filteredTutorials &&
+            filteredTutorials?.map((tutorial) => (
+              <div key={tutorial.id} className={styles.tutorialCard}>
+                <div className={styles.cardContent}>
+                  <h3 className={styles.tutorialTitle}>{tutorial.title}</h3>
+                  <p className={styles.tutorialDescription}>
+                    {tutorial.description}
+                  </p>
+                  <div className={styles.tutorialMeta}>
+                    <span className={styles.tutorialType}>
+                      {tutorial.type.toUpperCase()}
+                    </span>
+                    <span className={styles.tutorialDate}>
+                      {tutorial?.createdAt?.toDate().toLocaleString()}
+                    </span>
+                  </div>
+                </div>
+                <div className={styles.cardActions}>
+                  <Button
+                    variant="default"
+                    size="sm"
+                    onClick={() => window.open(tutorial.url, "_blank")}
+                  >
+                    View
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    size="sm"
+                    onClick={() => handleToggleVisibility(tutorial)}
+                    className={
+                      tutorial.isVisible ? styles.visible : styles.hidden
+                    }
+                  >
+                    {tutorial.isVisible ? "Published" : "Draft"}
+                  </Button>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => handleEdit(tutorial)}
+                  >
+                    Edit
+                  </Button>
+                  <Button
+                    variant="destructive"
+                    size="sm"
+                    onClick={() => handleDelete(tutorial)}
+                    className={styles.deleteButton}
+                  >
+                    Delete
+                  </Button>
                 </div>
               </div>
-              <div className={styles.cardActions}>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleToggleVisibility(tutorial)}
-                  className={
-                    tutorial.isVisible ? styles.visible : styles.hidden
-                  }
-                >
-                  {tutorial.isVisible ? "Published" : "Draft"}
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleEdit(tutorial)}
-                >
-                  Edit
-                </Button>
-                <Button
-                  variant="outline"
-                  size="sm"
-                  onClick={() => handleDelete(tutorial.id)}
-                  className={styles.deleteButton}
-                >
-                  Delete
-                </Button>
-              </div>
-            </div>
-          ))}
+            ))}
         </div>
 
         <TutorialModal
@@ -189,7 +214,6 @@ export default function TutorialsPage() {
               setIsModalOpen(false);
             } catch (error) {
               console.error("Error saving tutorial:", error);
-              toast.error("Failed to save tutorial");
             }
           }}
         />

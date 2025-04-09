@@ -1,59 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
 import { Plus, Edit2, Trash2, ChevronRight, FolderPlus } from "lucide-react";
+import { toast } from "react-hot-toast";
+import { supportCategoriesService } from "@/lib/services/support-categories-service";
 import styles from "./category-manager.module.css";
 
-const initialCategories = [
-  {
-    id: 1,
-    name: "Account Issues",
-    description: "Issues related to user accounts and access",
-    subcategories: [
-      {
-        id: 1,
-        name: "Login Problems",
-        description: "Issues with signing into accounts",
-      },
-      {
-        id: 2,
-        name: "Password Reset",
-        description: "Help with password recovery",
-      },
-      {
-        id: 3,
-        name: "Account Access",
-        description: "General account access issues",
-      },
-    ],
-  },
-  {
-    id: 2,
-    name: "Technical Support",
-    description: "General technical issues and troubleshooting",
-    subcategories: [
-      {
-        id: 4,
-        name: "Website Issues",
-        description: "Problems with website functionality",
-      },
-      {
-        id: 5,
-        name: "App Problems",
-        description: "Mobile and desktop app issues",
-      },
-      {
-        id: 6,
-        name: "Performance Issues",
-        description: "Speed and performance related problems",
-      },
-    ],
-  },
-];
-
 export function CategoryManager() {
-  const [categories, setCategories] = useState(initialCategories);
+  const [categories, setCategories] = useState([]);
   const [isAddingCategory, setIsAddingCategory] = useState(false);
   const [isAddingSubcategory, setIsAddingSubcategory] = useState(null);
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -61,71 +16,79 @@ export function CategoryManager() {
   const [newSubcategoryName, setNewSubcategoryName] = useState("");
   const [newSubcategoryDescription, setNewSubcategoryDescription] =
     useState("");
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleAddCategory = () => {
+  useEffect(() => {
+    const unsubscribe = supportCategoriesService.subscribeToCategories(
+      (updatedCategories) => {
+        setCategories(updatedCategories);
+        setIsLoading(false);
+      }
+    );
+
+    return () => unsubscribe();
+  }, []);
+
+  const handleAddCategory = async () => {
     if (newCategoryName.trim()) {
-      const newCategory = {
-        id: Date.now(),
-        name: newCategoryName.trim(),
-        description: newCategoryDescription.trim(),
-        subcategories: [],
-      };
-      setCategories([...categories, newCategory]);
-      setNewCategoryName("");
-      setNewCategoryDescription("");
-      setIsAddingCategory(false);
+      try {
+        const loadingToast = toast.loading("Adding category...");
+        await supportCategoriesService.addCategory({
+          name: newCategoryName.trim(),
+          description: newCategoryDescription.trim(),
+        });
+        toast.success("Category added successfully", { id: loadingToast });
+        setNewCategoryName("");
+        setNewCategoryDescription("");
+        setIsAddingCategory(false);
+      } catch (error) {
+        toast.error(error.message);
+      }
     }
   };
 
-  const handleAddSubcategory = (categoryId) => {
+  const handleAddSubcategory = async (categoryId) => {
     if (newSubcategoryName.trim()) {
-      setCategories(
-        categories.map((category) => {
-          if (category.id === categoryId) {
-            return {
-              ...category,
-              subcategories: [
-                ...category.subcategories,
-                {
-                  id: Date.now(),
-                  name: newSubcategoryName.trim(),
-                  description: newSubcategoryDescription.trim(),
-                },
-              ],
-            };
-          }
-          return category;
-        })
-      );
-      setNewSubcategoryName("");
-      setNewSubcategoryDescription("");
-      setIsAddingSubcategory(null);
+      try {
+        const loadingToast = toast.loading("Adding subcategory...");
+        await supportCategoriesService.addSubcategory(categoryId, {
+          name: newSubcategoryName.trim(),
+          description: newSubcategoryDescription.trim(),
+        });
+        toast.success("Subcategory added successfully", { id: loadingToast });
+        setNewSubcategoryName("");
+        setNewSubcategoryDescription("");
+        setIsAddingSubcategory(null);
+      } catch (error) {
+        toast.error(error.message);
+      }
     }
   };
 
-  const handleDeleteCategory = (categoryId) => {
+  const handleDeleteCategory = async (categoryId) => {
     if (window.confirm("Are you sure you want to delete this category?")) {
-      setCategories(
-        categories.filter((category) => category.id !== categoryId)
-      );
+      try {
+        const loadingToast = toast.loading("Deleting category...");
+        await supportCategoriesService.deleteCategory(categoryId);
+        toast.success("Category deleted successfully", { id: loadingToast });
+      } catch (error) {
+        toast.error(error.message);
+      }
     }
   };
 
-  const handleDeleteSubcategory = (categoryId, subcategoryId) => {
+  const handleDeleteSubcategory = async (categoryId, subcategoryId) => {
     if (window.confirm("Are you sure you want to delete this subcategory?")) {
-      setCategories(
-        categories.map((category) => {
-          if (category.id === categoryId) {
-            return {
-              ...category,
-              subcategories: category.subcategories.filter(
-                (sub) => sub.id !== subcategoryId
-              ),
-            };
-          }
-          return category;
-        })
-      );
+      try {
+        const loadingToast = toast.loading("Deleting subcategory...");
+        await supportCategoriesService.deleteSubcategory(
+          categoryId,
+          subcategoryId
+        );
+        toast.success("Subcategory deleted successfully", { id: loadingToast });
+      } catch (error) {
+        toast.error(error.message);
+      }
     }
   };
 

@@ -1,11 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "@/app/components/ui/button";
-import { Search, CheckCircle, XCircle } from "lucide-react";
+import { Search, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import styles from "../page.module.css";
+import { contestantsService } from "@/lib/services/contestants-service";
+import toast from "react-hot-toast";
 
 export default function ContestantsList() {
+  const [loading, setLoading] = useState(true);
   const [contestants, setContestants] = useState([
     {
       id: 1,
@@ -14,7 +17,7 @@ export default function ContestantsList() {
       email: "john@example.com",
       location: "United States",
       contest: "Summer Photo Contest",
-      submissionDate: "2024-02-15",
+      submissionDate: new Date("2024-02-15").getTime(),
       status: "Pending",
     },
     {
@@ -24,42 +27,83 @@ export default function ContestantsList() {
       email: "jane@example.com",
       location: "Canada",
       contest: "Summer Photo Contest",
-      submissionDate: "2024-02-14",
+      submissionDate: new Date("2024-02-14").getTime(),
       status: "Approved",
     },
   ]);
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredContestants = contestants.filter((contestant) =>
-    contestant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contestant.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contestant.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    contestant.contest.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredContestants = contestants.filter(
+    (contestant) =>
+      contestant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contestant.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contestant.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      contestant.contest.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   // Add these handler functions
-  const handleApprove = (id) => {
-    setContestants(
-      contestants.map((c) =>
-        c.id === id ? { ...c, status: "Approved" } : c
-      )
-    );
+  useEffect(() => {
+    loadContestants();
+  }, []);
+
+  const loadContestants = async () => {
+    try {
+      const contestantsData = await contestantsService.getAllContestants();
+      setContestants(contestantsData);
+    } catch (error) {
+      toast.error("Failed to load contestants");
+      console.error("Error loading contestants:", error);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDisapprove = (id) => {
-    setContestants(
-      contestants.map((c) =>
-        c.id === id ? { ...c, status: "Disapproved" } : c
-      )
-    );
+  const handleApprove = async (id) => {
+    const loadingToast = toast.loading("Approving contestant...");
+    try {
+      await contestantsService.updateContestantStatus(id, "Approved");
+      setContestants(
+        contestants.map((c) => (c.id === id ? { ...c, status: "Approved" } : c))
+      );
+      toast.success("Contestant approved successfully", { id: loadingToast });
+    } catch (error) {
+      console.error("Error approving contestant:", error);
+      toast.error("Failed to approve contestant", { id: loadingToast });
+    }
   };
 
-  const handleSuspend = (id) => {
-    setContestants(
-      contestants.map((c) =>
-        c.id === id ? { ...c, status: "Suspended" } : c
-      )
-    );
+  const handleDisapprove = async (id) => {
+    const loadingToast = toast.loading("Disapproving contestant...");
+    try {
+      await contestantsService.updateContestantStatus(id, "Disapproved");
+      setContestants(
+        contestants.map((c) =>
+          c.id === id ? { ...c, status: "Disapproved" } : c
+        )
+      );
+      toast.success("Contestant disapproved successfully", {
+        id: loadingToast,
+      });
+    } catch (error) {
+      console.error("Error disapproving contestant:", error);
+      toast.error("Failed to disapprove contestant", { id: loadingToast });
+    }
+  };
+
+  const handleSuspend = async (id) => {
+    const loadingToast = toast.loading("Suspending contestant...");
+    try {
+      await contestantsService.updateContestantStatus(id, "Suspended");
+      setContestants(
+        contestants.map((c) =>
+          c.id === id ? { ...c, status: "Suspended" } : c
+        )
+      );
+      toast.success("Contestant suspended successfully", { id: loadingToast });
+    } catch (error) {
+      console.error("Error suspending contestant:", error);
+      toast.error("Failed to suspend contestant", { id: loadingToast });
+    }
   };
 
   // Update the table structure
@@ -78,75 +122,94 @@ export default function ContestantsList() {
         </div>
       </div>
 
-      <div className={styles.tableWrapper}>
-        <table className={styles.table}>
-          <thead>
-            <tr>
-              <th>Profile</th>
-              <th>Name</th>
-              <th>Email</th>
-              <th>Location</th>
-              <th>Contest</th>
-              <th>Submission Date</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredContestants.map((contestant) => (
-              <tr key={contestant.id}>
-                <td>
-                  <img
-                    src={contestant.profilePic}
-                    alt={contestant.name}
-                    className={styles.profilePic}
-                  />
-                </td>
-                <td>{contestant.name}</td>
-                <td>{contestant.email}</td>
-                <td>{contestant.location}</td>
-                <td>{contestant.contest}</td>
-                <td>{contestant.submissionDate}</td>
-                <td>
-                  <span
-                    className={`${styles.status} ${styles[contestant.status.toLowerCase()]}`}
-                  >
-                    {contestant.status}
-                  </span>
-                </td>
-                <td>
-                  <div className={styles.actions}>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleApprove(contestant.id)}
-                      disabled={contestant.status === "Approved" || contestant.status === "Suspended"}
-                    >
-                      <CheckCircle className={styles.actionIcon} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleDisapprove(contestant.id)}
-                      disabled={contestant.status === "Disapproved" || contestant.status === "Suspended"}
-                    >
-                      <XCircle className={styles.actionIcon} />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => handleSuspend(contestant.id)}
-                      disabled={contestant.status === "Suspended"}
-                    >
-                      Block
-                    </Button>
-                  </div>
-                </td>
+      {loading ? (
+        <div className={styles.loadingContainer}>
+          <Loader2 className={styles.loadingSpinner} />
+          <p>Loading contestants, please wait...</p>
+        </div>
+      ) : filteredContestants.length === 0 ? (
+        <p className={styles.noContestantsMessage}>No contestants found.</p>
+      ) : (
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th>Profile</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Location</th>
+                <th>Contest</th>
+                <th>Submission Date</th>
+                <th>Status</th>
+                <th>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {filteredContestants.map((contestant) => (
+                <tr key={contestant.id}>
+                  <td>
+                    <img
+                      src={contestant.profilePic}
+                      alt={contestant.name}
+                      className={styles.profilePic}
+                    />
+                  </td>
+                  <td>{contestant.name}</td>
+                  <td>{contestant.email}</td>
+                  <td>{contestant.location}</td>
+                  <td>{contestant.contest}</td>
+                  <td>
+                    {new Date(contestant.submissionDate).toLocaleDateString()}
+                  </td>
+                  <td>
+                    <span
+                      className={`${styles.status} ${
+                        styles[contestant.status.toLowerCase()]
+                      }`}
+                    >
+                      {contestant.status}
+                    </span>
+                  </td>
+                  <td>
+                    <div className={styles.actions}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleApprove(contestant.id)}
+                        disabled={
+                          contestant.status === "Approved" ||
+                          contestant.status === "Suspended"
+                        }
+                      >
+                        <CheckCircle className={styles.actionIcon} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleDisapprove(contestant.id)}
+                        disabled={
+                          contestant.status === "Disapproved" ||
+                          contestant.status === "Suspended"
+                        }
+                      >
+                        <XCircle className={styles.actionIcon} />
+                      </Button>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleSuspend(contestant.id)}
+                        disabled={contestant.status === "Suspended"}
+                      >
+                        Block
+                      </Button>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
     </div>
   );
 }

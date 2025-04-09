@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styles from "./system-settings.module.css";
 import { Button } from "@/app/components/ui/button";
 import WithdrawalSettings from "./tabs/withdrawal-settings";
@@ -8,8 +8,11 @@ import ChatSettings from "./tabs/chat-settings";
 import UserLimitsSettings from "./tabs/user-limits-settings";
 import ReferralContestSettings from "./tabs/referral-contest-settings";
 import PaymentSettings from "./tabs/payment-settings";
+import { settingsService } from "@/lib/services/settings-service";
+import toast from "react-hot-toast";
 
 export default function SystemSettings() {
+  const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     withdrawal: {
       minPoints: 100,
@@ -52,6 +55,23 @@ export default function SystemSettings() {
   });
 
   const [activeTab, setActiveTab] = useState("withdrawal");
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    setIsLoading(true);
+    try {
+      const data = await settingsService.getSystemSettings();
+      setSettings(data);
+    } catch (error) {
+      toast.error("Failed to load settings");
+      console.error("Error loading settings:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleChange = (category, key, value) => {
     setSettings((prev) => ({
@@ -135,7 +155,23 @@ export default function SystemSettings() {
 
       {/* Save Button */}
       <div className={`${styles.flexBetween} ${styles.mt4}`}>
-        <Button>Save Settings</Button>
+        <Button
+          onClick={async () => {
+            setIsLoading(true);
+            try {
+              await settingsService.updateSystemSettings(settings);
+              toast.success("Settings saved successfully");
+            } catch (error) {
+              toast.error("Failed to save settings");
+              console.error("Error saving settings:", error);
+            } finally {
+              setIsLoading(false);
+            }
+          }}
+          disabled={isLoading}
+        >
+          {isLoading ? "Saving..." : "Save Settings"}
+        </Button>
       </div>
     </div>
   );

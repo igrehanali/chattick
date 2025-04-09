@@ -5,18 +5,24 @@ import { FiEdit2, FiTrash2, FiPlus } from "react-icons/fi";
 import styles from "./PointsBundleManagement.module.css";
 import PointsBundleModal from "./PointsBundleModal";
 import ConfirmDialog from "./ConfirmDialog";
-import { contestService } from "@/lib/services/contest-service";
+import { pointsBundleService } from "@/lib/services/points-bundle-service";
+import { toast } from "react-hot-toast";
 
 export default function PointsBundleManagement() {
   const [pointBundles, setPointBundles] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const loadPointsBundles = async () => {
       try {
-        const bundlesData = await contestService.getAllPointsBundles();
+        setLoading(true);
+        const bundlesData = await pointsBundleService.getAllPointsBundles();
         setPointBundles(bundlesData);
       } catch (error) {
         console.error("Error loading points bundles:", error);
+        toast.error("Failed to load points bundles");
+      } finally {
+        setLoading(false);
       }
     };
     loadPointsBundles();
@@ -41,31 +47,64 @@ export default function PointsBundleManagement() {
       title: "Delete Bundle",
       message: "Are you sure you want to delete this points bundle?",
       onConfirm: async () => {
+        const loadingToast = toast.loading("Deleting points bundle...");
         try {
-          await contestService.deletePointsBundle(id);
+          await pointsBundleService.deletePointsBundle(id);
           setPointBundles(pointBundles.filter((bundle) => bundle.id !== id));
           setShowConfirm(false);
+          toast.success("Points bundle deleted successfully", {
+            id: loadingToast,
+          });
         } catch (error) {
           console.error("Error deleting points bundle:", error);
+          toast.error("Failed to delete points bundle", { id: loadingToast });
         }
       },
     });
     setShowConfirm(true);
   };
 
-  const handleToggleStatus = (id) => {
-    setPointBundles(
-      pointBundles.map((bundle) =>
-        bundle.id === id
-          ? {
-              ...bundle,
-              status: bundle.status === "active" ? "inactive" : "active",
-            }
-          : bundle
-      )
+  const handleToggleStatus = async (id) => {
+    const bundle = pointBundles.find((b) => b.id === id);
+    const newStatus = bundle.status === "active" ? "inactive" : "active";
+    const loadingToast = toast.loading(
+      `${
+        newStatus === "active" ? "Activating" : "Deactivating"
+      } points bundle...`
     );
+
+    try {
+      await pointsBundleService.updatePointsBundle(id, {
+        ...bundle,
+        status: newStatus,
+      });
+      setPointBundles(
+        pointBundles.map((b) => (b.id === id ? { ...b, status: newStatus } : b))
+      );
+      toast.success(
+        `Points bundle ${
+          newStatus === "active" ? "activated" : "deactivated"
+        } successfully`,
+        { id: loadingToast }
+      );
+    } catch (error) {
+      console.error("Error updating points bundle status:", error);
+      toast.error(
+        `Failed to ${
+          newStatus === "active" ? "activate" : "deactivate"
+        } points bundle`,
+        { id: loadingToast }
+      );
+    }
   };
 
+  if (loading) {
+    return (
+      <div className={styles.container}>
+        <div className={styles.loading}>Loading points bundles...</div>
+      </div>
+    );
+  }
   return (
     <div className={styles.container}>
       <div className={styles.header}>
@@ -133,27 +172,40 @@ export default function PointsBundleManagement() {
           onClose={() => setIsModalOpen(false)}
           bundle={currentBundle}
           onSave={async (formData) => {
+            const loadingToast = toast.loading(
+              currentBundle
+                ? "Updating points bundle..."
+                : "Creating points bundle..."
+            );
             try {
               if (currentBundle) {
-                const updatedBundle = await contestService.updatePointsBundle(
-                  currentBundle.id,
-                  formData
-                );
+                const updatedBundle =
+                  await pointsBundleService.updatePointsBundle(
+                    currentBundle.id,
+                    formData
+                  );
                 setPointBundles(
                   pointBundles.map((bundle) =>
                     bundle.id === currentBundle.id ? updatedBundle : bundle
                   )
                 );
+                toast.success("Points bundle updated successfully", {
+                  id: loadingToast,
+                });
               } else {
-                const newBundle = await contestService.createPointsBundle({
+                const newBundle = await pointsBundleService.createPointsBundle({
                   ...formData,
                   status: "active",
                 });
                 setPointBundles([...pointBundles, newBundle]);
+                toast.success("Points bundle created successfully", {
+                  id: loadingToast,
+                });
               }
               setIsModalOpen(false);
             } catch (error) {
               console.error("Error saving points bundle:", error);
+              toast.error("Failed to save points bundle", { id: loadingToast });
             }
           }}
         />

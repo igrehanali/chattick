@@ -1,256 +1,267 @@
-.container {
-  padding: 2rem;
-}
+ .header {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 2rem;
+ }
 
-.header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-}
+ .title {
+   font-size: 2rem;
+   font-weight: 600;
+   color: var(--foreground);
+ }
 
-.title {
-  font-size: 2rem;
-  font-weight: 600;
-  color: var(--foreground);
-}
+ .tabs {
+   display: flex;
+   gap: 1rem;
+ }
 
-.tabs {
-  display: flex;
-  gap: 1rem;
-}
+ .tab,
+ .tabActive {
+   padding: 0.5rem 1rem;
+   border-radius: 0.5rem;
+   font-weight: 500;
+   transition: all 0.2s;
+ }
 
-.tab,
-.tabActive {
-  padding: 0.5rem 1rem;
-  border-radius: 0.5rem;
-  font-weight: 500;
-  transition: all 0.2s;
-}
+ .tab {
+   color: var(--muted-foreground);
+   background: transparent;
+ }
 
-.tab {
-  color: var(--muted-foreground);
-  background: transparent;
-}
+ .tab:hover {
+   background: var(--accent);
+ }
 
-.tab:hover {
-  background: var(--accent);
-}
+ .tabActive {
+   color: var(--accent-foreground);
+   background: var(--accent);
+ }
 
-.tabActive {
-  color: var(--accent-foreground);
-  background: var(--accent);
-}
+ .controls {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 2rem;
+   gap: 1rem;
+ }
 
-.controls {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 2rem;
-  gap: 1rem;
-}
+ .filters {
+   display: flex;
+   gap: 1rem;
+   flex: 1;
+ }
 
-.filters {
-  display: flex;
-  gap: 1rem;
-  flex: 1;
-}
+ .searchInput {
+   max-width: 300px;
+ }
 
-.searchInput {
-  max-width: 300px;
-}
+ .typeSelect {
+   width: 150px;
+ }
 
-.typeSelect {
-  width: 150px;
-}
+ .tutorialGrid {
+   display: grid;
+   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+   gap: 1.5rem;
+ }
 
-.tutorialGrid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 1.5rem;
-}
+ .tutorialCard {
+   background: #ffffff;
+   border: 1px solid var(--border);
+   border-radius: 0.75rem;
+   overflow: hidden;
+   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+   transition: all 0.2s;
+ }
 
-.tutorialCard {
-  background: var(--card);
-  border: 1px solid var(--border);
-  border-radius: 0.75rem;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-  transition: all 0.2s;
-}
 
-.tutorialCard:hover {
-  transform: translateY(-2px);
-}
 
-.cardContent {
-  padding: 1.5rem;
-}
+ .cardContent {
+   padding: 1.5rem;
+ }
 
-.tutorialTitle {
-  font-size: 1.25rem;
-  font-weight: 600;
-  margin-bottom: 0.5rem;
-  color: var(--foreground);
-}
+ .tutorialTitle {
+   font-size: 1.25rem;
+   font-weight: 600;
+   margin-bottom: 0.5rem;
+   color: var(--foreground);
+ }
 
-.tutorialDescription {
-  color: var(--muted-foreground);
-  margin-bottom: 1rem;
-  line-height: 1.5;
-}
+ .tutorialDescription {
+   color: var(--muted-foreground);
+   margin-bottom: 1rem;
+   line-height: 1.5;
+ }
 
-/* Modal Styles */
-.modalOverlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background-color: rgba(0, 0, 0, 0.75);
-  backdrop-filter: blur(1px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-  animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-}
+ /* Modal Styles */
+ .modalOverlay {
+   position: fixed;
+   top: 0;
+   left: 0;
+   right: 0;
+   bottom: 0;
+   background-color: rgba(0, 0, 0, 0.75);
+   backdrop-filter: blur(1px);
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   z-index: 1000;
+   animation: fadeIn 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+ }
 
-.modalContent {
-  background: #b8b8b8;
-  border-radius: 1rem;
-  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
-  width: 90%;
-  max-width: 550px;
-  max-height: 90vh;
-  overflow-y: auto;
-  position: relative;
-  animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-  border: 1px solid var(--border);
-}
+ .modalContent {
+   background: #b8b8b8;
+   border-radius: 1rem;
+   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+   width: 90%;
+   max-width: 550px;
+   max-height: 90vh;
+   overflow-y: auto;
+   position: relative;
+   animation: slideIn 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+   border: 1px solid var(--border);
+ }
 
-.modalHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 1.75rem 2rem;
-  border-bottom: 1px solid var(--border);
-  background: var(--background);
-  position: sticky;
-  top: 0;
-  z-index: 10;
-}
+ .modalHeader {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   padding: 1.75rem 2rem;
+   border-bottom: 1px solid var(--border);
+   background: var(--background);
+   position: sticky;
+   top: 0;
+   z-index: 10;
+ }
 
-.modalTitle {
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--foreground);
-  margin: 0;
-  line-height: 1.2;
-}
+ .modalTitle {
+   font-size: 1.5rem;
+   font-weight: 700;
+   color: var(--foreground);
+   margin: 0;
+   line-height: 1.2;
+ }
 
-.closeButton {
-  background: transparent;
-  border: none;
-  color: var(--muted-foreground);
-  font-size: 1.5rem;
-  cursor: pointer;
-  padding: 0.5rem;
-  line-height: 1;
-  transition: all 0.2s ease;
-  border-radius: 0.5rem;
-  margin: -0.5rem;
-}
+ .closeButton {
+   background: transparent;
+   border: none;
+   color: var(--muted-foreground);
+   font-size: 1.5rem;
+   cursor: pointer;
+   padding: 0.5rem;
+   line-height: 1;
+   transition: all 0.2s ease;
+   border-radius: 0.5rem;
+   margin: -0.5rem;
+ }
 
-.closeButton:hover {
-  color: var(--foreground);
-  background: var(--accent);
-}
+ .closeButton:hover {
+   color: var(--foreground);
+   background: var(--accent);
+ }
 
-.form {
-  padding: 2rem;
-}
+ .form {
+   padding: 2rem;
+ }
 
-.formGroup {
-  margin-bottom: 1.75rem;
-}
+ .formGroup {
+   margin-bottom: 1.75rem;
+ }
 
-.formActions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 1rem;
-  margin-top: 2.5rem;
-  padding-top: 1.5rem;
-  border-top: 1px solid var(--border);
-}
+ .formActions {
+   display: flex;
+   justify-content: flex-end;
+   gap: 1rem;
+   margin-top: 2.5rem;
+   padding-top: 1.5rem;
+   border-top: 1px solid var(--border);
+ }
 
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-  }
+ @keyframes fadeIn {
+   from {
+     opacity: 0;
+   }
 
-  to {
-    opacity: 1;
-  }
-}
+   to {
+     opacity: 1;
+   }
+ }
 
-@keyframes slideIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px) scale(0.95);
-  }
+ @keyframes slideIn {
+   from {
+     opacity: 0;
+     transform: translateY(-20px) scale(0.95);
+   }
 
-  to {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
-}
+   to {
+     opacity: 1;
+     transform: translateY(0) scale(1);
+   }
+ }
 
-.tutorialMeta {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 1rem;
-}
+ .tutorialMeta {
+   display: flex;
+   justify-content: space-between;
+   align-items: center;
+   margin-bottom: 1rem;
+ }
 
-.tutorialType {
-  background: var(--accent);
-  color: var(--accent-foreground);
-  padding: 0.25rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 0.875rem;
-  font-weight: 500;
-}
+ .tutorialType {
+   background: var(--accent);
+   color: var(--accent-foreground);
+   padding: 0.25rem 0.5rem;
+   border-radius: 0.25rem;
+   font-size: 0.875rem;
+   font-weight: 500;
+ }
 
-.tutorialDate {
-  color: var(--muted-foreground);
-  font-size: 0.875rem;
-}
+ .tutorialDate {
+   color: var(--muted-foreground);
+   font-size: 0.875rem;
+ }
 
-.cardActions {
-  display: flex;
-  gap: 0.5rem;
-  padding: 1rem 1.5rem;
-  background: var(--card-footer);
-  border-top: 1px solid var(--border);
-}
+ .cardActions {
+   display: flex;
+   gap: 0.2rem;
+   flex-wrap: wrap;
+   padding: 0rem 1rem;
+   background: var(--card-footer);
+   border-top: 1px solid var(--border);
+ }
 
-.visible {
-  color: var(--success);
-  border-color: var(--success);
-}
+ .visible {
+   color: var(--success);
+   border-color: var(--success);
+ }
 
-.hidden {
-  color: var(--warning);
-  border-color: var(--warning);
-}
+ .hidden {
+   color: var(--warning);
+   border-color: var(--warning);
+ }
 
-.deleteButton {
-  color: var(--destructive);
-  border-color: var(--destructive);
-}
+ .deleteButton {
+   color: var(--destructive);
+   border-color: var(--destructive);
+ }
 
-.deleteButton:hover {
-  background: var(--destructive);
-  color: var(--destructive-foreground);
-}
+ .deleteButton:hover {
+   background: var(--destructive);
+   color: var(--destructive-foreground);
+ }
+
+
+ .loader {
+   border: 2px solid #f3f3f3;
+   border-top: 2px solid #333;
+   border-radius: 50%;
+   width: 14px;
+   height: 14px;
+   animation: spin 0.7s linear infinite;
+ }
+
+ @keyframes spin {
+   to {
+     transform: rotate(360deg);
+   }
+ }

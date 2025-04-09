@@ -167,9 +167,14 @@ export default function FAQPage() {
     });
     setShowConfirm(true);
   };
-  if (typeof window !== "undefined") { // Ensure this code runs only in the browser
+  if (typeof window !== "undefined") {
+    // Ensure this code runs only in the browser
     if (isLoading) {
-      return <Loader />;
+      return (
+        <AdminLayout>
+          <Loader />
+        </AdminLayout>
+      );
     }
     return (
       <AdminLayout>
@@ -205,9 +210,11 @@ export default function FAQPage() {
               </Button>
             </div>
           </div>
-    
-          {showAnalytics && <FAQAnalytics faqs={faqs} categories={categories} />}
-    
+
+          {showAnalytics && (
+            <FAQAnalytics faqs={faqs} categories={categories} />
+          )}
+
           <div className={styles.categoriesSection}>
             <h2 className={styles.sectionTitle}>Categories</h2>
             <div className={styles.tableWrapper}>
@@ -251,7 +258,7 @@ export default function FAQPage() {
               </table>
             </div>
           </div>
-    
+
           <div className={styles.faqSection}>
             <h2 className={styles.sectionTitle}>FAQs</h2>
             <div className={styles.controls}>
@@ -268,7 +275,7 @@ export default function FAQPage() {
                 ))}
               </select>
             </div>
-    
+
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
                 <thead className={styles.tableHeader}>
@@ -284,7 +291,9 @@ export default function FAQPage() {
                   {filteredFAQs.map((faq) => (
                     <tr key={faq.id} className={styles.tableRow}>
                       <td className={styles.tableCell}>{faq.question}</td>
-                      <td className={`${styles.tableCell} ${styles.answerCell}`}>
+                      <td
+                        className={`${styles.tableCell} ${styles.answerCell}`}
+                      >
                         {faq.answer}
                       </td>
                       <td className={styles.tableCell}>
@@ -332,7 +341,7 @@ export default function FAQPage() {
                 </tbody>
               </table>
             </div>
-    
+
             <FAQModal
               isOpen={isFAQModalOpen}
               onClose={() => setIsFAQModalOpen(false)}
@@ -358,7 +367,7 @@ export default function FAQPage() {
                 }
               }}
             />
-    
+
             <CategoryModal
               isOpen={isCategoryModalOpen}
               onClose={() => setIsCategoryModalOpen(false)}
@@ -376,7 +385,7 @@ export default function FAQPage() {
                       `A category with the name "${formData.name}" already exists`
                     );
                   }
-    
+
                   if (currentCategory) {
                     const updatedCategory = await faqService.updateCategory(
                       currentCategory.id,
@@ -388,7 +397,9 @@ export default function FAQPage() {
                       )
                     );
                   } else {
-                    const newCategory = await faqService.createCategory(formData);
+                    const newCategory = await faqService.createCategory(
+                      formData
+                    );
                     setCategories([...categories, newCategory]);
                   }
                   setIsCategoryModalOpen(false);
@@ -401,5 +412,5 @@ export default function FAQPage() {
         </div>
       </AdminLayout>
     );
-  };
+  }
 }
