@@ -162,16 +162,6 @@ export default function UsersPage() {
       permission.types.includes("write")
   );
 
-  if (!hasManageUsersPermission) {
-    return (
-      <AdminLayout>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Access Denied</h2>
-          <p>You do not have permission to access User Management.</p>
-        </div>
-      </AdminLayout>
-    );
-  }
   const handleEditUser = (userId) => {};
   const handleBlockUser = (userId) => {
     if (window.confirm("Are you sure you want to block this user?")) {
@@ -203,107 +193,114 @@ export default function UsersPage() {
 
   return (
     <AdminLayout>
-      <div>
-        <div className={styles.header}>
-          <h2 className={styles.title}>Users Management</h2>
-        </div>
+      {hasManageUsersPermission ? (
+        <div>
+          <div className={styles.header}>
+            <h2 className={styles.title}>Users Management</h2>
+          </div>
 
-        <div className={styles.card}>
-          <div className={styles.searchContainer}>
-            <div className={styles.searchWrapper}>
-              <div className={styles.searchIcon}>
-                {/* <Search className="h-4 w-4 text-gray-400" /> */}
+          <div className={styles.card}>
+            <div className={styles.searchContainer}>
+              <div className={styles.searchWrapper}>
+                <div className={styles.searchIcon}>
+                  {/* <Search className="h-4 w-4 text-gray-400" /> */}
+                </div>
+                <input
+                  type="text"
+                  placeholder="Search users..."
+                  className={styles.searchInput}
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                />
               </div>
-              <input
-                type="text"
-                placeholder="Search users..."
-                className={styles.searchInput}
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-              />
+            </div>
+
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead className={styles.tableHeader}>
+                  <tr>
+                    <th className={styles.tableHeaderCell}>HDID</th>
+                    <th className={styles.tableHeaderCell}>
+                      Subscription Status
+                    </th>
+                    <th className={styles.tableHeaderCell}>Active Plan</th>
+                    <th className={styles.tableHeaderCell}>Start Date</th>
+                    <th className={styles.tableHeaderCell}>End Date</th>
+                    <th className={styles.tableHeaderCell}>Join Date</th>
+                    <th className={styles.tableHeaderCell}>Points Balance</th>
+                    <th className={styles.tableHeaderCell}>
+                      Failed Transactions
+                    </th>
+                  </tr>
+                </thead>
+                <tbody className={styles.tableBody}>
+                  {users.map((user) => (
+                    <tr key={user.hdid}>
+                      <td className={styles.tableCell}>{user.hdid}</td>
+                      <td className={styles.tableCell}>
+                        <span
+                          className={`${styles.status} ${
+                            user.subscriptionStatus === "Blocked"
+                              ? styles.blocked
+                              : ""
+                          }`}
+                        >
+                          {user.subscriptionStatus}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>{user.activePlan}</td>
+                      <td className={styles.tableCell}>
+                        {user.subscriptionStartDate}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {user.subscriptionEndDate}
+                      </td>
+                      <td className={styles.tableCell}>{user.joinDate}</td>
+                      <td className={styles.tableCell}>
+                        <span className={styles.encrypted}>
+                          {user.pointsBalanceEncrypted}
+                        </span>
+                      </td>
+                      <td className={styles.tableCell}>
+                        {user.failedTransactions}
+                      </td>
+                      {(canUpdateUsers || canWriteUsers) && (
+                        <td className={styles.tableCell}>
+                          <div className={styles.actionButtons}>
+                            {canUpdateUsers && (
+                              <button
+                                onClick={() => handleBlockUser(user.hdid)}
+                                className={styles.actionButton}
+                              >
+                                {user.subscriptionStatus === "Blocked"
+                                  ? "Unblock"
+                                  : "Block"}
+                              </button>
+                            )}
+                            {canWriteUsers && (
+                              <button
+                                onClick={() => handleResetPassword(user.hdid)}
+                                className={styles.actionButton}
+                              >
+                                Reset Password
+                              </button>
+                            )}
+                          </div>
+                        </td>
+                      )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
             </div>
           </div>
-
-          <div className={styles.tableWrapper}>
-            <table className={styles.table}>
-              <thead className={styles.tableHeader}>
-                <tr>
-                  <th className={styles.tableHeaderCell}>HDID</th>
-                  <th className={styles.tableHeaderCell}>
-                    Subscription Status
-                  </th>
-                  <th className={styles.tableHeaderCell}>Active Plan</th>
-                  <th className={styles.tableHeaderCell}>Start Date</th>
-                  <th className={styles.tableHeaderCell}>End Date</th>
-                  <th className={styles.tableHeaderCell}>Join Date</th>
-                  <th className={styles.tableHeaderCell}>Points Balance</th>
-                  <th className={styles.tableHeaderCell}>
-                    Failed Transactions
-                  </th>
-                </tr>
-              </thead>
-              <tbody className={styles.tableBody}>
-                {users.map((user) => (
-                  <tr key={user.hdid}>
-                    <td className={styles.tableCell}>{user.hdid}</td>
-                    <td className={styles.tableCell}>
-                      <span
-                        className={`${styles.status} ${
-                          user.subscriptionStatus === "Blocked"
-                            ? styles.blocked
-                            : ""
-                        }`}
-                      >
-                        {user.subscriptionStatus}
-                      </span>
-                    </td>
-                    <td className={styles.tableCell}>{user.activePlan}</td>
-                    <td className={styles.tableCell}>
-                      {user.subscriptionStartDate}
-                    </td>
-                    <td className={styles.tableCell}>
-                      {user.subscriptionEndDate}
-                    </td>
-                    <td className={styles.tableCell}>{user.joinDate}</td>
-                    <td className={styles.tableCell}>
-                      <span className={styles.encrypted}>
-                        {user.pointsBalanceEncrypted}
-                      </span>
-                    </td>
-                    <td className={styles.tableCell}>
-                      {user.failedTransactions}
-                    </td>
-                    {(canUpdateUsers || canWriteUsers) && (
-                      <td className={styles.tableCell}>
-                        <div className={styles.actionButtons}>
-                          {canUpdateUsers && (
-                            <button
-                              onClick={() => handleBlockUser(user.hdid)}
-                              className={styles.actionButton}
-                            >
-                              {user.subscriptionStatus === "Blocked"
-                                ? "Unblock"
-                                : "Block"}
-                            </button>
-                          )}
-                          {canWriteUsers && (
-                            <button
-                              onClick={() => handleResetPassword(user.hdid)}
-                              className={styles.actionButton}
-                            >
-                              Reset Password
-                            </button>
-                          )}
-                        </div>
-                      </td>
-                    )}
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
         </div>
-      </div>
+      ) : (
+        <div className={styles.header}>
+          <h2 className={styles.title}>Access Denied</h2>
+          <p>You do not have permission to access User Management.</p>
+        </div>
+      )}
     </AdminLayout>
   );
 }

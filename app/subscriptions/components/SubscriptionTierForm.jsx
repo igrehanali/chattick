@@ -1,80 +1,91 @@
 "use client";
-import { useState, useEffect } from 'react';
-import styles from './SubscriptionTierForm.module.css';
-import { Plus, X } from 'lucide-react';
+import { useState, useEffect } from "react";
+import styles from "./SubscriptionTierForm.module.css";
+import { Plus, X } from "lucide-react";
 
 export default function SubscriptionTierForm({ onSubmit, initialData }) {
   const [formData, setFormData] = useState({
-    title: '',
-    startDateTime: '',
-    endDateTime: '',
-    purchasePrice: '',
-    currency: 'USD',
-    renewalPoints: '',
+    title: "",
+    startDateTime: "",
+    endDateTime: "",
+    purchasePrice: "",
+    currency: "USD",
+    renewalPoints: "",
     features: [],
     limits: {
       withdrawals: {
-        perDay: '',
-        perMonth: ''
+        perDay: "",
+        perMonth: "",
       },
       points: {
-        monthlyAccumulation: '',
-        totalAccumulation: '',
-        purchaseLimit: ''
+        monthlyAccumulation: "",
+        totalAccumulation: "",
+        purchaseLimit: "",
       },
-      planPoints: '',
-      referralBonus: '',
-      groups: '',
-      contacts: '',
-      messages: '',
-      voiceCallDuration: '',
-      videoCallDuration: ''
+      planPoints: "",
+      referralBonus: "",
+      groups: "",
+      contacts: "",
+      messages: "",
+      voiceCallDuration: "",
+      videoCallDuration: "",
     },
-    newFeature: ''
+    newFeature: "",
   });
 
   useEffect(() => {
     if (initialData) {
-      setFormData(prev => ({ ...prev, ...initialData }));
+      setFormData((prev) => ({ ...prev, ...initialData }));
     }
   }, [initialData]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
-    if (name.includes('.')) {
-      const [parent, child] = name.split('.');
-      setFormData(prev => ({
+    if (name.includes(".")) {
+      const [parent, child] = name.split(".");
+      setFormData((prev) => ({
         ...prev,
         [parent]: {
           ...prev[parent],
-          [child]: value
-        }
+          [child]: value,
+        },
       }));
     } else {
-      setFormData(prev => ({ ...prev, [name]: value }));
+      setFormData((prev) => ({ ...prev, [name]: value }));
     }
   };
 
   const handleAddFeature = () => {
     if (formData.newFeature.trim()) {
-      setFormData(prev => ({
+      setFormData((prev) => ({
         ...prev,
         features: [...prev.features, prev.newFeature.trim()],
-        newFeature: ''
+        newFeature: "",
       }));
     }
   };
 
   const handleRemoveFeature = (index) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      features: prev.features.filter((_, i) => i !== index)
+      features: prev.features.filter((_, i) => i !== index),
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    onSubmit(formData);
+    try {
+      const subscriptionData = {
+        ...formData,
+        status: "active",
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+      await onSubmit(subscriptionData);
+    } catch (error) {
+      console.error("Error submitting subscription form:", error);
+      throw new Error(`Failed to submit subscription form: ${error.message}`);
+    }
   };
 
   return (
@@ -337,7 +348,7 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
 
       <div className={styles.formActions}>
         <button type="submit" className={styles.submitButton}>
-          {initialData ? 'Update Subscription' : 'Create Subscription'}
+          {initialData ? "Update Subscription" : "Create Subscription"}
         </button>
       </div>
     </form>
