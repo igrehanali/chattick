@@ -7,7 +7,6 @@ const ProcessPayment = () => {
 
     }
   ]
-  // dhfjhg
   return (
     <div>
       <div className={styles.searchBar}>
