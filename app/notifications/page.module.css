@@ -1,0 +1,23 @@
+.pdfViewer {
+    margin-top: 2rem;
+}
+
+.pdfViewer h2 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.pdfContainer {
+    width: 100%;
+    height: 80vh;
+    max-height: 80vh;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    overflow: hidden;
+}
+
+.pdfFrame {
+    width: 100%;
+    height: 100%;
+}

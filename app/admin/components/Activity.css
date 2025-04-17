@@ -1,0 +1,117 @@
+/* Container */
+.activity-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  /* Card */
+  .activity-card {
+    background: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    max-width: 900px;
+    width: 100%;
+  }
+  
+  /* Title & Description */
+  .activity-title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+  }
+  
+  .activity-description {
+    font-size: 0.875rem;
+    color: #374151;
+    margin-bottom: 1rem;
+  }
+  
+  /* Filters */
+  .filters {
+    display: flex;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+  }
+  
+  .filter-input {
+    flex: 1;
+    padding: 0.5rem;
+    border: 1px solid #d1d5db;
+    border-radius: 0.5rem;
+    transition: all 0.3s ease-in-out;
+  }
+  
+  .filter-input:focus {
+    outline: none;
+    border-color: #6366f1;
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
+  }
+  
+  /* Table */
+  .activity-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+  }
+  
+  .activity-table th,
+  .activity-table td {
+    border: 1px solid #d1d5db;
+    padding: 0.75rem;
+    text-align: left;
+  }
+  
+  .activity-table th {
+    background-color: #f3f4f6;
+    font-weight: 600;
+  }
+  
+  .no-results {
+    text-align: center;
+    padding: 1rem;
+  }
+  
+  /* Buttons */
+  .revoke-btn,
+  .investigate-btn {
+    padding: 0.4rem 0.8rem;
+    border: none;
+    border-radius: 0.5rem;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: background 0.2s ease-in-out;
+  }
+  
+  .revoke-btn {
+    background-color: #dc2626;
+    color: white;
+  }
+  
+  .revoke-btn:hover {
+    background-color: #b91c1c;
+  }
+  
+  .investigate-btn {
+    background-color: #6366f1;
+    color: white;
+    margin-left: 0.5rem;
+  }
+  
+  .investigate-btn:hover {
+    background-color: #4f46e5;
+  }
+  
+  /* Responsive */
+  @media (max-width: 768px) {
+    .filters {
+      flex-direction: column;
+    }
+  
+    .activity-table th,
+    .activity-table td {
+      font-size: 0.875rem;
+      padding: 0.5rem;
+    }
+  }

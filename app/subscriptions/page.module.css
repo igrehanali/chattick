@@ -1,0 +1,789 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.title {
+    font-size: 1.5rem;
+    font-weight: 600;
+}
+
+.statsGrid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+}
+
+@media (min-width: 640px) {
+    .statsGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .statsGrid {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+.statsCard {
+    background-color: white;
+    padding: 1.5rem;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+}
+
+.statsCard:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+}
+
+:global(.dark) .statsCard {
+    background-color: #1f2937;
+}
+
+.statsHeader {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.statsLabel {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #6b7280;
+}
+
+:global(.dark) .statsLabel {
+    color: #9ca3af;
+}
+
+.statsValue {
+    margin-top: 0.75rem;
+    font-size: 2rem;
+    font-weight: 700;
+    background: linear-gradient(45deg, #2563eb, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    line-height: 1;
+}
+
+.plansContainer {
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+:global(.dark) .plansContainer {
+    background-color: #1f2937;
+}
+
+.plansHeader {
+    padding: 1rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+:global(.dark) .plansHeader {
+    border-color: #374151;
+}
+
+.plansGrid {
+    display: grid;
+    grid-template-columns: repeat(1, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+}
+
+@media (min-width: 768px) {
+    .plansGrid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (min-width: 1024px) {
+    .plansGrid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+.planCard {
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    padding: 2rem;
+    transition: all 0.3s ease-in-out;
+    background-color: white;
+    position: relative;
+    overflow: hidden;
+}
+
+.planCard::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #2563eb, #3b82f6);
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.planCard:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.planCard:hover::before {
+    opacity: 1;
+}
+
+:global(.dark) .planCard {
+    border-color: #374151;
+}
+
+.planName {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+    background: linear-gradient(45deg, #1e40af, #3b82f6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.planPrice {
+    font-size: 2rem;
+    font-weight: 700;
+    color: #2563eb;
+    margin-bottom: 1rem;
+}
+
+.planFeatures {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 1.5rem 0;
+}
+
+.planFeature {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+    color: #6b7280;
+}
+
+.actionButton {
+    width: 100%;
+    padding: 0.5rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+    background-color: #1d4ed8;
+}
+
+.filterContainer {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+
+}
+
+:global(.dark) .filterContainer {
+    background-color: #1f2937;
+}
+
+.filterGroup {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+}
+
+.filterSelect {
+    padding: 0.625rem 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background-color: rgb(11, 11, 11);
+    color: #f9fafb;
+    border: #111827;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    appearance: none;
+    background-position: right 0.5rem center;
+    background-repeat: no-repeat;
+    background-size: 1.5em 1.5em;
+    padding-right: 2.5rem;
+    width: 200px;
+}
+
+.filterSelect:hover {
+    border-color: #2563eb;
+}
+
+:global(.dark) .filterSelect {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+}
+
+.filterSelect:focus {
+    outline: none;
+    border-color: #2563eb;
+    ring: 2px solid rgba(37, 99, 235, 0.2);
+}
+
+.searchBar {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    background-color: white;
+    padding: 0.75rem 1.25rem;
+    border-radius: 0.5rem;
+    border: 1px solid #e5e7eb;
+    transition: all 0.2s ease-in-out;
+}
+
+.searchBar:focus-within {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+:global(.dark) .searchBar {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+
+.searchInput {
+    flex: 1;
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.875rem;
+    color: #111827;
+    width: 60vw;
+}
+
+:global(.dark) .searchInput {
+    color: #f9fafb;
+}
+
+.createButton {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.createButton:hover {
+    background-color: #1d4ed8;
+}
+
+.planActions {
+    display: flex;
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.deactivateButton {
+    background-color: #dc2626;
+}
+
+.deactivateButton:hover {
+    background-color: #b91c1c;
+}
+
+.publishButton {
+    background-color: #059669;
+}
+
+.publishButton:hover {
+    background-color: #047857;
+}
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+}
+
+.modalContent {
+    background-color: white;
+    padding: 2.5rem;
+    border-radius: 1rem;
+    width: 100%;
+    max-width: 800px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+    box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+    transform: scale(0.95);
+    opacity: 0;
+    animation: modalFadeIn 0.3s ease-out forwards;
+}
+
+@keyframes modalFadeIn {
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+:global(.dark) .modalContent {
+    background-color: #1f2937;
+}
+
+.closeButton {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 0.375rem;
+}
+
+.closeButton:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+:global(.dark) .closeButton:hover {
+    background-color: #374151;
+    color: #f9fafb;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+}
+
+.formGroup label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+}
+
+:global(.dark) .formGroup label {
+    color: #9ca3af;
+}
+
+.formGroup input[type="text"],
+.formGroup input[type="number"],
+.formGroup input[type="datetime-local"] {
+    padding: 0.5rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    background-color: white;
+}
+
+:global(.dark) .formGroup input[type="text"],
+:global(.dark) .formGroup input[type="number"],
+:global(.dark) .formGroup input[type="datetime-local"] {
+    background-color: #1f2937;
+    border-color: #374151;
+    color: #f9fafb;
+}
+
+.featureInput {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.addButton {
+    padding: 0.5rem 1rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.featureList {
+    list-style: none;
+    padding: 0;
+    margin: 1rem 0 0 0;
+}
+
+.featureItem {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.5rem;
+    background-color: #f3f4f6;
+    border-radius: 0.375rem;
+    margin-bottom: 0.5rem;
+}
+
+:global(.dark) .featureItem {
+    background-color: #374151;
+}
+
+.removeButton {
+    background: none;
+    border: none;
+    color: #6b7280;
+    cursor: pointer;
+    padding: 0.25rem 0.5rem;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.removeButton:hover {
+    color: #dc2626;
+}
+
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    cursor: pointer;
+}
+
+.submitButton {
+    padding: 0.75rem 1.5rem;
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    border-radius: 0.375rem;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-top: 1rem;
+}
+
+.submitButton:hover {
+    background-color: #1d4ed8;
+}
+
+.clearButton {
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    color: #6b7280;
+    transition: all 0.2s;
+}
+
+.clearButton:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+:global(.dark) .clearButton:hover {
+    background-color: #374151;
+    color: #f9fafb;
+}
+
+.filterContainer {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    border: 1px solid #e5e7eb;
+}
+
+:global(.dark) .filterContainer {
+    background-color: #1f2937;
+    border-color: #374151;
+}
+
+.filterSelect {
+    border: none;
+    outline: none;
+    background: transparent;
+    font-size: 0.875rem;
+    color: #111827;
+    cursor: pointer;
+}
+
+:global(.dark) .filterSelect {
+    color: #f9fafb;
+}
+
+.tableContainer {
+    background-color: white;
+    border-radius: 0.75rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-top: 1rem;
+}
+
+:global(.dark) .tableContainer {
+    background-color: #1f2937;
+}
+
+.table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.tableHeader {
+    background-color: #f8fafc;
+    border-bottom: 2px solid #e5e7eb;
+}
+
+:global(.dark) .tableHeader {
+    background-color: #374151;
+}
+
+.tableHeaderCell {
+    padding: 1rem 1.5rem;
+    text-align: left;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    color: #4b5563;
+    white-space: nowrap;
+}
+
+.tableBody {
+    background-color: white;
+}
+
+:global(.dark) .tableBody {
+    background-color: #1f2937;
+}
+
+.tableRow {
+    border-bottom: 1px solid #e5e7eb;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.tableRow:hover {
+    background-color: #f8fafc;
+}
+
+:global(.dark) .tableRow:hover {
+    background-color: #374151;
+}
+
+:global(.dark) .tableRow {
+    border-color: #374151;
+}
+
+.tableCell {
+    padding: 1.25rem 1.5rem;
+    white-space: nowrap;
+    color: #111827;
+    font-size: 0.875rem;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badgeSuccess {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.badgeWarning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badgeError {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+:global(.dark) .badgeSuccess {
+    background-color: #065f46;
+    color: #86efac;
+}
+
+:global(.dark) .badgeWarning {
+    background-color: #78350f;
+    color: #fcd34d;
+}
+
+:global(.dark) .badgeError {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+}
+
+.actionButtons {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.actionButton {
+    padding: 0.5rem 0.5rem;
+    font-size: 0.75rem;
+    border-radius: 0.25rem;
+    background-color: #2563eb;
+    color: white;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+    background-color: #1d4ed8;
+}
+
+.cancelButton {
+    background-color: #dc2626;
+}
+
+.cancelButton:hover {
+    background-color: #b91c1c;
+}
+
+.renewButton {
+    background-color: #059669;
+}
+
+.renewButton:hover {
+    background-color: #047857;
+}
+
+.pagination {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 1rem;
+    padding: 1rem;
+    border-top: 1px solid #e5e7eb;
+}
+
+:global(.dark) .pagination {
+    border-color: #374151;
+}
+
+.paginationButton {
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    background-color: #f3f4f6;
+    color: #374151;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.paginationButton:hover:not(:disabled) {
+    background-color: #e5e7eb;
+}
+
+.paginationButton:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+:global(.dark) .paginationButton {
+    background-color: #374151;
+    color: #f9fafb;
+}
+
+:global(.dark) .paginationButton:hover:not(:disabled) {
+    background-color: #4b5563;
+}
+
+.pageInfo {
+    font-size: 0.875rem;
+    color: #6b7280;
+}
+
+:global(.dark) .pageInfo {
+    color: #9ca3af;
+}
+
+:global(.dark) .tableCell {
+    color: #f9fafb;
+}
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.badgeSuccess {
+    background-color: #dcfce7;
+    color: #15803d;
+}
+
+.badgeWarning {
+    background-color: #fef3c7;
+    color: #92400e;
+}
+
+.badgeError {
+    background-color: #fee2e2;
+    color: #b91c1c;
+}
+
+:global(.dark) .badgeSuccess {
+    background-color: #065f46;
+    color: #86efac;
+}
+
+:global(.dark) .badgeWarning {
+    background-color: #78350f;
+    color: #fcd34d;
+}
+
+:global(.dark) .badgeError {
+    background-color: #7f1d1d;
+    color: #fca5a5;
+}
