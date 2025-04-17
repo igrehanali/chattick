@@ -9,6 +9,7 @@ import { Button } from '@/app/components/ui/button'
 import ProcessPayment from './components/ProcessPayment';
 import ProcessWithdrawals from './components/ProcessWithdrawals';
 import ProcessRefund from './components/ProcessRefund';
+import TransactionLogs from './components/TransactionLogs';
 
 const management = () => {
   const [activeTab, setActiveTab] = useState('process payment');
@@ -18,6 +19,7 @@ const management = () => {
     { label: "Process Payment", value: "process payment" },
     { label: "Process Withdrawals", value: "process withdrawals" },
     { label: "process Refund", value: "process refund" },
+    { label: "Transaction Logs", value: "transaction logs" },
   ];
 
   // Manage Page on Active Tabs
@@ -29,6 +31,8 @@ const management = () => {
         return <ProcessWithdrawals />;
       case 'process refund':
         return <ProcessRefund />;
+      case 'transaction logs':
+        return <TransactionLogs />;
       default:
         return null;
     }
