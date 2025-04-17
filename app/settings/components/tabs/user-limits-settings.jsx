@@ -10,20 +10,6 @@ export default function UserLimitsSettings({ settings, handleChange }) {
         <h3 className={styles.cardTitle}>👥 User Limits</h3>
       </div>
       <div className={styles.cardContent}>
-        <label className={styles.label}>Accounts Allowed Per User</label>
-        <input
-          className={styles.input}
-          type="number"
-          value={settings.userLimits.accountsPerUser}
-          onChange={(e) =>
-            handleChange(
-              "userLimits",
-              "accountsPerUser",
-              Number(e.target.value)
-            )
-          }
-        />
-
         <div className={styles.checkboxGroup}>
           <label className={styles.checkboxLabel}>
             <input

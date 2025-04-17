@@ -163,7 +163,7 @@
     background: linear-gradient(90deg, rgba(99, 102, 241, 0.15), rgba(99, 102, 241, 0.05));
     color: #8b5cf6;
     border-left: 3px solid #8b5cf6;
-    box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+    /* box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3); */
 
 }
 

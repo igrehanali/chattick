@@ -6,6 +6,7 @@ import { Search, CheckCircle, XCircle, Loader2 } from "lucide-react";
 import styles from "../page.module.css";
 import { contestantsService } from "@/lib/services/contestants-service";
 import toast from "react-hot-toast";
+import ContestCreditManagement from "./ContestCreditManagement";
 
 export default function ContestantsList() {
   const [loading, setLoading] = useState(true);
@@ -210,6 +211,7 @@ export default function ContestantsList() {
           </table>
         </div>
       )}
+      <ContestCreditManagement />
     </div>
   );
 }

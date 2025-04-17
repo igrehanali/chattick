@@ -168,26 +168,35 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             <label>Per Day</label>
             <input
               type="number"
-              min='2'
-              max='2'
               name="limits.withdrawals.perDay"
               value={formData.limits.withdrawals.perDay}
               onChange={handleChange}
               required
-              min="0"
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Per Month</label>
+            <label htmlFor="monthlyAmount">Total Amount</label>
             <input
               type="number"
-              min='0'
-              max='6'
-              name="limits.withdrawals.perMonth"
-              value={formData.limits.withdrawals.perMonth}
+              id="monthlyAmount"
+              name="limits.withdrawals.totalAmount"
+              placeholder="e.g. 10000 PKR"
+              value={formData.limits.withdrawals.totalAmount}
               onChange={handleChange}
               required
-              min="0"
+            />
+          </div>
+
+          <div className={styles.formGroup}>
+            <label htmlFor="monthlyCount">No. of Withdrawals</label>
+            <input
+              type="number"
+              id="monthlyCount"
+              name="limits.withdrawals.transactionCount"
+              placeholder="e.g. 5"
+              value={formData.limits.withdrawals.transactionCount}
+              onChange={handleChange}
+              required
             />
           </div>
         </div>

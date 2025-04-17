@@ -46,11 +46,15 @@ import {
   TurtleIcon,
   FileQuestionIcon,
   BookIcon,
+  SettingsIcon,
+  MessageCircle,
 } from "lucide-react";
 import { adminService } from "@/lib/services/admin-service";
 
 const navigation = [
   { name: "Dashboard", href: "/dashboard", icon: LayoutDashboard },
+
+  // User Section
   {
     name: "User Management",
     href: "/users",
@@ -60,14 +64,23 @@ const navigation = [
       { name: "User Location", href: "/userManagement", icon: MapPin },
     ],
   },
-  { name: "Support & Tickets", href: "/support", icon: MessageSquare },
+
+  // Monetization Section
   {
-    name: "Subscription & Payments", href: "/subscriptions", icon: CreditCard, 
+    name: "Subscription & Payments",
+    href: "/subscriptions",
+    icon: CreditCard,
     submenu: [
       { name: "Subscriptions", href: "/subscriptions", icon: CreditCard },
-      { name: "Payment Management", href: "/subscriptions/management", icon: FileText },
+      {
+        name: "Payment Management",
+        href: "/subscriptions/management",
+        icon: FileText,
+      },
     ],
   },
+
+  // Engagement
   { name: "Contests & Rewards", href: "/contests", icon: Trophy },
   {
     name: "Surveys & FAQs",
@@ -78,10 +91,20 @@ const navigation = [
       { name: "Tutorials", href: "/tutorials", icon: BookIcon },
     ],
   },
-  { name: "System Settings", href: "/settings", icon: Settings },
-  { name: "Notifications & Policies", href: "/notifications", icon: Bell },
-  { name: "Themes & Customization", href: "/themes", icon: Palette },
-  { name: "Reports & Moderation", href: "/reports", icon: ShieldAlert },
+
+  // Support + Config
+  { name: "Support & Tickets", href: "/support", icon: MessageSquare },
+  {
+    name: "System Settings",
+    href: "/settings",
+    icon: Settings,
+    submenu: [
+      { name: "System Settings", href: "/settings", icon: SettingsIcon },
+      { name: "Chat setting", href: "/settings/chat", icon: MessageCircle },
+    ],
+  },
+
+  // Analytics — deep dive last
   {
     name: "Analytics & Insights",
     href: "/analytics",
@@ -165,7 +188,16 @@ const navigation = [
       },
     ],
   },
+
+  // Admin Controls
   { name: "Admin & Super Admin Management", href: "/admin", icon: UserCog },
+
+  // Visuals + Alerts
+  { name: "Themes & Customization", href: "/themes", icon: Palette },
+  { name: "Notifications & Policies", href: "/notifications", icon: Bell },
+
+  // Reports last
+  { name: "Reports & Moderation", href: "/reports", icon: ShieldAlert },
 ];
 
 export function Sidebar() {

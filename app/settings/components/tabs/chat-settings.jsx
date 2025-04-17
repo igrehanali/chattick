@@ -11,24 +11,79 @@ export default function ChatSettings({ settings, handleChange }) {
       </div>
       <div className={styles.cardContent}>
         <label className={styles.label}>Message Retention Period</label>
-        <select
-          className={styles.input}
-          value={settings.chat.messageRetention}
-          onChange={(e) =>
-            handleChange("chat", "messageRetention", e.target.value)
-          }
-        >
-          <option value="1 hour">1 Hour</option>
-          <option value="12 hours">12 Hours</option>
-          <option value="24 hours">24 Hours</option>
-          <option value="3 days">3 Days</option>
-          <option value="7 days">7 Days</option>
-          <option value="14 days">14 Days</option>
-          <option value="30 days">30 Days</option>
-          <option value="90 days">90 Days</option>
-          <option value="180 days">180 Days</option>
-          <option value="365 days">365 Days</option>
-        </select>
+        <div className={styles.multiSelectContainer}>
+          {/* Hours */}
+          <select
+            className={styles.input}
+            value={settings.chat.messageRetention.hours || ""}
+            onChange={(e) =>
+              handleChange("chat", "messageRetention", {
+                ...settings.chat.messageRetention,
+                hours: e.target.value,
+              })
+            }
+          >
+            <option value="">Hours</option>
+            <option value="1">1 Hour</option>
+            <option value="6">6 Hours</option>
+            <option value="12">12 Hours</option>
+            <option value="24">24 Hours</option>
+          </select>
+
+          {/* Days */}
+          <select
+            className={styles.input}
+            value={settings.chat.messageRetention.days || ""}
+            onChange={(e) =>
+              handleChange("chat", "messageRetention", {
+                ...settings.chat.messageRetention,
+                days: e.target.value,
+              })
+            }
+          >
+            <option value="">Days</option>
+            <option value="1">1 Day</option>
+            <option value="3">3 Days</option>
+            <option value="7">7 Days</option>
+            <option value="14">14 Days</option>
+            <option value="30">30 Days</option>
+          </select>
+
+          {/* Weeks */}
+          <select
+            className={styles.input}
+            value={settings.chat.messageRetention.weeks || ""}
+            onChange={(e) =>
+              handleChange("chat", "messageRetention", {
+                ...settings.chat.messageRetention,
+                weeks: e.target.value,
+              })
+            }
+          >
+            <option value="">Weeks</option>
+            <option value="1">1 Week</option>
+            <option value="2">2 Weeks</option>
+            <option value="4">4 Weeks</option>
+          </select>
+
+          {/* Months */}
+          <select
+            className={styles.input}
+            value={settings.chat.messageRetention.months || ""}
+            onChange={(e) =>
+              handleChange("chat", "messageRetention", {
+                ...settings.chat.messageRetention,
+                months: e.target.value,
+              })
+            }
+          >
+            <option value="">Months</option>
+            <option value="1">1 Month</option>
+            <option value="3">3 Months</option>
+            <option value="6">6 Months</option>
+            <option value="12">12 Months</option>
+          </select>
+        </div>
 
         <label className={styles.label}>Devices Allowed Per Account</label>
         <input
@@ -37,16 +92,6 @@ export default function ChatSettings({ settings, handleChange }) {
           value={settings.chat.devicesAllowed}
           onChange={(e) =>
             handleChange("chat", "devicesAllowed", Number(e.target.value))
-          }
-        />
-
-        <label className={styles.label}>Maximum File Size (MB)</label>
-        <input
-          className={styles.input}
-          type="number"
-          value={settings.chat.maxFileSize}
-          onChange={(e) =>
-            handleChange("chat", "maxFileSize", Number(e.target.value))
           }
         />
 

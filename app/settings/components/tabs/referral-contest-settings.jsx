@@ -10,33 +10,17 @@ export default function ReferralContestSettings({ settings, handleChange }) {
         <h3 className={styles.cardTitle}>🎯 Referral & Contests</h3>
       </div>
       <div className={styles.cardContent}>
-        <label className={styles.label}>Referral Bonus Points</label>
-        <input
-          className={styles.input}
-          type="number"
-          value={settings.referralContest.referralBonus}
-          onChange={(e) =>
-            handleChange("referralContest", "referralBonus", Number(e.target.value))
-          }
-        />
-
         <label className={styles.label}>Contest Entries Allowed</label>
         <input
           className={styles.input}
           type="number"
           value={settings.referralContest.contestEntries}
           onChange={(e) =>
-            handleChange("referralContest", "contestEntries", Number(e.target.value))
-          }
-        />
-
-        <label className={styles.label}>Contest Entry Fee</label>
-        <input
-          className={styles.input}
-          type="number"
-          value={settings.referralContest.contestFee}
-          onChange={(e) =>
-            handleChange("referralContest", "contestFee", Number(e.target.value))
+            handleChange(
+              "referralContest",
+              "contestEntries",
+              Number(e.target.value)
+            )
           }
         />
 
@@ -47,7 +31,11 @@ export default function ReferralContestSettings({ settings, handleChange }) {
           step="0.1"
           value={settings.referralContest.prizePoolFee}
           onChange={(e) =>
-            handleChange("referralContest", "prizePoolFee", Number(e.target.value))
+            handleChange(
+              "referralContest",
+              "prizePoolFee",
+              Number(e.target.value)
+            )
           }
         />
       </div>
