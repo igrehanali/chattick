@@ -1,16 +1,9 @@
-import React from "react";
+import React, { useState } from "react";
 import styles from "../management.module.css";
 
 const ProcessPayment = () => {
-  const paymentDataHead = [
-    "Customer Name",
-    "Withdrawal Status",
-    "Date Range",
-    "Costumer Info",
-    "Amount",
-    "Destination",
-    "Action",
-  ];
+  const [searchQuery, setSearchQuery] = useState("");
+
   const paymentTable = [
     {
       name: "ABCD",
@@ -28,7 +21,7 @@ const ProcessPayment = () => {
       status: {
         failed: "Failed",
         pending: "Pending",
-        Success: "Successful",
+        success: "Successful",
       },
       action: {
         active: "Active",
@@ -37,7 +30,7 @@ const ProcessPayment = () => {
     },
     {
       name: "EFGH",
-      email: "EFGH@gmail.com",
+      email: "efgh@gmail.com",
       amount: "$1000",
       paymentMethod: {
         bank: "Bank",
@@ -51,73 +44,7 @@ const ProcessPayment = () => {
       status: {
         failed: "Failed",
         pending: "Pending",
-        Success: "Successful",
-      },
-      action: {
-        active: "Active",
-        block: "Blocked",
-      },
-    },
-    {
-      name: "IJKL",
-      email: "IJKL@gmail.com",
-      amount: "$500",
-      paymentMethod: {
-        bank: "Bank",
-        wallet: "Wallet",
-      },
-      SubscriptionType: {
-        free: "Free",
-        basic: "Basic",
-        premium: "Premium",
-      },
-      status: {
-        failed: "Failed",
-        pending: "Pending",
-        Success: "Successful",
-      },
-      action: {
-        active: "Active",
-        block: "Blocked",
-      },
-    },
-    {
-      name: "MNOP",
-      email: "MNOP@gmail.com",
-      amount: "$700",
-      paymentMethod: {
-        bank: "Bank",
-        wallet: "Wallet",
-      },
-      SubscriptionType: {
-        free: "Free",
-        basic: "Basic",
-        premium: "Premium",
-      },
-      status: {
-        failed: "Failed",
-        pending: "Pending",
-        Success: "Successful",
-      },
-      action: {
-        active: "Active",
-        block: "Blocked",
-      },
-    },
-    {
-      name: "QRST",
-      email: "QRST@gmail.com",
-      amount: `$${900}`,
-      paymentMethod: "Bank",
-      SubscriptionType: {
-        free: "Free",
-        basic: "Basic",
-        premium: "Premium",
-      },
-      status: {
-        failed: "Failed",
-        pending: "Pending",
-        Success: "Successful",
+        success: "Successful",
       },
       action: {
         active: "Active",
@@ -125,20 +52,37 @@ const ProcessPayment = () => {
       },
     },
   ];
-  const filterPaymentTable = paymentTable.filter((item) => {
-    const amount = parseInt(item.amount.replace("$", ""));
+
+  const filteredData = paymentTable.filter((item) => {
+    const query = searchQuery.toLowerCase();
     return (
-      amount <= 1000 &&
-      (item.paymentMethod === "Bank" || item.paymentMethod.bank === "Bank")
+      item.name.toLowerCase().includes(query) ||
+      item.email.toLowerCase().includes(query) ||
+      item.amount.toLowerCase().includes(query) ||
+      Object.values(item.status).some((status) =>
+        status.toLowerCase().includes(query)
+      ) ||
+      Object.values(item.paymentMethod).some((method) =>
+        method.toLowerCase().includes(query)
+      ) ||
+      Object.values(item.SubscriptionType).some((type) =>
+        type.toLowerCase().includes(query)
+      ) ||
+      Object.values(item.action).some((act) =>
+        act.toLowerCase().includes(query)
+      )
     );
   });
+
   return (
     <div>
       <div className={styles.searchBar}>
         <input
           className={styles.Input}
           type="text"
-          placeholder="Search payment.."
+          placeholder="Search payment..."
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
       <div className={styles.tableContainer}>
@@ -155,23 +99,33 @@ const ProcessPayment = () => {
             </tr>
           </thead>
           <tbody className={styles.tableBody}>
-            {filterPaymentTable.map((payment, index) => (
-              <tr key={index} className={styles.tableRow}>
-                <td className={styles.tableCell}>{payment.name}</td>
-                <td className={styles.tableCell}>{payment.email}</td>
-                <td className={styles.tableCell}>{payment.amount}</td>
-                <td className={styles.tableCell}>
-                  {payment.paymentMethod === "Bank"
-                    ? "Bank"
-                    : payment.paymentMethod.bank}
+            {filteredData.length > 0 ? (
+              filteredData.map((item, index) => (
+                <tr key={index} className={styles.tableRow}>
+                  <td className={styles.tableCell}>{item.name}</td>
+                  <td className={styles.tableCell}>{item.email}</td>
+                  <td className={styles.tableCell}>{item.amount}</td>
+                  <td className={styles.tableCell}>
+                    {Object.values(item.paymentMethod).join(", ")}
+                  </td>
+                  <td className={styles.tableCell}>
+                    {Object.values(item.SubscriptionType).join(", ")}
+                  </td>
+                  <td className={styles.tableCell}>
+                    {Object.values(item.status).join(", ")}
+                  </td>
+                  <td className={styles.tableCell}>
+                    {Object.values(item.action).join(", ")}
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td className={styles.tableCell} colSpan="7" style={{ textAlign: "center" }}>
+                  No matching records found.
                 </td>
-                <td className={styles.tableCell}>
-                  {payment.SubscriptionType.basic}
-                </td>
-                <td className={styles.tableCell}>{payment.status.pending}</td>
-                <td className={styles.tableCell}>{payment.action.active}</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
