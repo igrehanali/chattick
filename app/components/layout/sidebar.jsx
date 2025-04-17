@@ -61,7 +61,13 @@ const navigation = [
     ],
   },
   { name: "Support & Tickets", href: "/support", icon: MessageSquare },
-  { name: "Subscription & Payments", href: "/subscriptions", icon: CreditCard },
+  {
+    name: "Subscription & Payments", href: "/subscriptions", icon: CreditCard, 
+    submenu: [
+      { name: "Subscriptions", href: "/subscriptions", icon: CreditCard },
+      { name: "Payment Management", href: "/subscriptions/management", icon: FileText },
+    ],
+  },
   { name: "Contests & Rewards", href: "/contests", icon: Trophy },
   {
     name: "Surveys & FAQs",

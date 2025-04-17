@@ -512,7 +512,6 @@ export default function SubscriptionsPage() {
               <thead className={styles.tableHeader}>
                 <tr>
                   <th className={styles.tableHeaderCell}>User HDID</th>
-                  <th className={styles.tableHeaderCell}>Customer</th>
                   <th className={styles.tableHeaderCell}>Plan</th>
                   <th className={styles.tableHeaderCell}>Start Date</th>
                   <th className={styles.tableHeaderCell}>End Date</th>
