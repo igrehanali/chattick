@@ -5,6 +5,7 @@ import React, { useState, useEffect } from 'react'
 import './style.css'
 import { MetricCard } from '@/app/dashboard/components/MetricCard';
 import { FaqsData } from '@/app/dashboard/utils/metrics';
+import { View } from 'lucide-react';
 
 function AnalyzeAnalyticFAQs() {
 
@@ -59,8 +60,18 @@ function AnalyzeAnalyticFAQs() {
         <h1>Analytic FAQs</h1>
 
         <div className='FAQ_Cards'>
-          {FaqsData.map((metric) => (
-            <MetricCard key={metric.name} {...metric} />
+          {FaqsData.map((data) => (
+            <div className='analytics_Card'>
+              <div className='name_icon'>
+                <p>{data.name}</p>
+                <div>
+                  {data.icon}
+                </div>
+              </div>
+              <div className='Total_views'>
+                <p>{data.value}</p>
+              </div>
+            </div>
           ))}
         </div>
 

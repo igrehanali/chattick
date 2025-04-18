@@ -161,28 +161,28 @@ export const FaqsData = [
     value: 1320,
     change: "+70.3%",
     trend: "up",
-    icon: View,
+    icon: <View color="#801ce3" />,
   },
   {
     name: "Avg Time",
     value: '09:12',
     change: "+55.8%",
     trend: "up",
-    icon: Clock,
+    icon: <Clock color="#801ce3" />,
   },
   {
     name: "Likes",
     value: 205,
     change: "+75.2%",
     trend: "up",
-    icon: ThumbsUp,
+    icon: <ThumbsUp color="#801ce3" />,
   },
   {
     name: "Dislikes",
     value: '132',
     change: "+15.2%",
     trend: "up",
-    icon: ThumbsDown,
+    icon: <ThumbsDown color="#801ce3" /> ,
   },
 
 ];

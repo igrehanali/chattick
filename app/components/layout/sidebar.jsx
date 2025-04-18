@@ -48,6 +48,7 @@ import {
   BookIcon,
   SettingsIcon,
   MessageCircle,
+  FileCog,
 } from "lucide-react";
 import { adminService } from "@/lib/services/admin-service";
 
@@ -72,6 +73,7 @@ const navigation = [
     icon: CreditCard,
     submenu: [
       { name: "Subscriptions", href: "/subscriptions", icon: CreditCard },
+      { name: "Manage Plans", href: "/subscriptions/managePlans", icon: FileCog },
       {
         name: "Payment Management",
         href: "/subscriptions/management",

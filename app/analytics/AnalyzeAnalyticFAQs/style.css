@@ -3,11 +3,31 @@
   align-items: center;
   gap: 10px;
   margin-top: 20px;
+  width: 100%;
+  padding: 10px;
+}
+.analytics_Card {
+  background: #ffff;
+  max-width: 320px;
+  width: 100%;
+  padding: 20px;
+}
+.Total_views p{
+  font-weight: 600;
+  font-size: 26px;
+}
+.name_icon p{
+  font-weight: 600;
+  font-size: 14px;
+}
+.name_icon {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 .searchBar {
   width: 300px;
   margin-top: 10px;
-
 }
 
 .Search {
