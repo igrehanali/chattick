@@ -60,12 +60,10 @@ const RolesTab = () => {
   }, []);
 
   const loadRoles = async () => {
-    const loadingToast = toast.loading("Loading roles...");
     try {
       const rolesList = await adminService.getAllRoles();
       setRoles(rolesList);
       setError(null);
-      toast.success("Roles loaded successfully", { id: loadingToast });
     } catch (err) {
       setError("Failed to load roles");
       console.error("Error loading roles:", err);

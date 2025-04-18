@@ -22,13 +22,11 @@ const Activity = () => {
   }, [filters]);
 
   const loadActivityLogs = async () => {
-    const loadingToast = toast.loading("Loading activity logs...");
     try {
       setLoading(true);
       const activityLogs = await adminService.getActivityLogs(filters);
       setLogs(activityLogs);
       setError(null);
-      toast.success("Activity logs loaded successfully", { id: loadingToast });
     } catch (err) {
       setError("Failed to load activity logs");
       console.error("Error loading activity logs:", err);

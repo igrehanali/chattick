@@ -5,6 +5,7 @@ import { AlertTriangle, Check, Edit2, Trash2, Plus } from "lucide-react";
 import styles from "./page.module.css";
 import { AdminLayout } from "../components/layout/admin-layout";
 import { Button } from "../components/ui/button";
+import { X } from "lucide-react";
 
 const initialReportCategories = [
   { id: 1, name: "Harassment" },
@@ -19,7 +20,20 @@ const initialReportedChats = [
     reportingUserHDID: "HD123",
     reportedUserHDID: "HD456",
     category: "Harassment",
-    chatLog: "This user has been sending threatening messages.",
+    chatLog: [
+      {
+        id: 1,
+        sender: "HD456",
+        message: "I will find you and make you regret this!",
+        timestamp: "2024-01-20T10:25:00Z",
+      },
+      {
+        id: 2,
+        sender: "HD456",
+        message: "You can't hide from me forever!",
+        timestamp: "2024-01-20T10:28:00Z",
+      },
+    ],
     timestamp: "2024-01-20T10:30:00Z",
     status: "pending",
     actionHistory: [],
@@ -29,8 +43,20 @@ const initialReportedChats = [
     reportingUserHDID: "HD789",
     reportedUserHDID: "HD101",
     category: "Spam",
-    chatLog:
-      "User keeps sending promotional links and unsolicited advertisements.",
+    chatLog: [
+      {
+        id: 1,
+        sender: "HD101",
+        message: "Buy now! Limited time offer: www.spam-link.com",
+        timestamp: "2024-01-20T11:40:00Z",
+      },
+      {
+        id: 2,
+        sender: "HD101",
+        message: "Don't miss out! Click here: www.another-spam.com",
+        timestamp: "2024-01-20T11:42:00Z",
+      },
+    ],
     timestamp: "2024-01-20T11:45:00Z",
     status: "pending",
     actionHistory: [],
@@ -40,7 +66,14 @@ const initialReportedChats = [
     reportingUserHDID: "HD202",
     reportedUserHDID: "HD303",
     category: "Inappropriate Content",
-    chatLog: "This user shared explicit content in a public chat room.",
+    chatLog: [
+      {
+        id: 1,
+        sender: "HD303",
+        message: "[Explicit content removed]",
+        timestamp: "2024-01-20T12:10:00Z",
+      },
+    ],
     timestamp: "2024-01-20T12:15:00Z",
     status: "resolved",
     actionHistory: ["User received warning on 2024-01-20T12:30:00Z"],
@@ -51,8 +84,20 @@ const initialReportedChats = [
     reportingUserHDID: "HD404",
     reportedUserHDID: "HD505",
     category: "Bug Report",
-    chatLog:
-      "Chat messages are not being delivered and showing error code 500.",
+    chatLog: [
+      {
+        id: 1,
+        sender: "HD505",
+        message: "Error 500: Message failed to send",
+        timestamp: "2024-01-20T13:15:00Z",
+      },
+      {
+        id: 2,
+        sender: "HD505",
+        message: "System: Message delivery failed",
+        timestamp: "2024-01-20T13:18:00Z",
+      },
+    ],
     timestamp: "2024-01-20T13:20:00Z",
     status: "pending",
     actionHistory: [],
@@ -62,7 +107,20 @@ const initialReportedChats = [
     reportingUserHDID: "HD606",
     reportedUserHDID: "HD707",
     category: "Harassment",
-    chatLog: "User is making discriminatory remarks and using hate speech.",
+    chatLog: [
+      {
+        id: 1,
+        sender: "HD707",
+        message: "[Hate speech content removed]",
+        timestamp: "2024-01-20T13:55:00Z",
+      },
+      {
+        id: 2,
+        sender: "HD707",
+        message: "[Discriminatory content removed]",
+        timestamp: "2024-01-20T13:58:00Z",
+      },
+    ],
     timestamp: "2024-01-20T14:00:00Z",
     status: "resolved",
     actionHistory: ["User blocked on 2024-01-20T14:30:00Z"],
@@ -128,6 +186,12 @@ export default function ReportsPage() {
     // TODO: API call to update report status and action
   };
 
+  const [selectedChatLog, setSelectedChatLog] = useState(null);
+
+  const handleViewChatLog = (report) => {
+    setSelectedChatLog(report);
+  };
+
   return (
     <AdminLayout>
       <div className={styles.container}>
@@ -180,9 +244,10 @@ export default function ReportsPage() {
             <table className={styles.reportsTable}>
               <thead>
                 <tr>
+                  <th>Report ID</th>
                   <th>Status</th>
                   <th>Category</th>
-                  <th>Reporting HDID</th>
+                  <th>Reporter ID</th>
                   <th>Reported HDID</th>
                   <th>Chat Log</th>
                   <th>Timestamp</th>
@@ -197,6 +262,7 @@ export default function ReportsPage() {
                       report.status === "resolved" ? styles.resolvedRow : ""
                     }
                   >
+                    <td>{report.id}</td>
                     <td>
                       {report.status === "resolved" ? (
                         <div className={styles.resolvedStatus}>
@@ -210,7 +276,16 @@ export default function ReportsPage() {
                     <td>{report.category}</td>
                     <td>{report.reportingUserHDID}</td>
                     <td>{report.reportedUserHDID}</td>
-                    <td className={styles.chatLogCell}>{report.chatLog}</td>
+                    <td className={styles.chatLogCell}>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => handleViewChatLog(report)}
+                        className={styles.viewLogButton}
+                      >
+                        View Log
+                      </Button>
+                    </td>
                     <td>{new Date(report.timestamp).toLocaleString()}</td>
                     <td>
                       {report.status === "pending" ? (
@@ -265,6 +340,80 @@ export default function ReportsPage() {
           </div>
         </section>
       </div>
+      {selectedChatLog && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setSelectedChatLog(null)}
+        >
+          <div
+            className={styles.modalContent}
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className={styles.modalHeader}>
+              <h3 className={styles.modalTitle}>Chat Log Details</h3>
+              <button
+                onClick={() => setSelectedChatLog(null)}
+                className={styles.closeButton}
+              >
+                <X size={20} />
+              </button>
+            </div>
+            <div className={styles.modalBody}>
+              <div className={styles.chatLogInfo}>
+                <div>
+                  <strong>Report ID:</strong> {selectedChatLog?.id}
+                </div>
+                <div>
+                  <strong>Category:</strong> {selectedChatLog?.category}
+                </div>
+                <div>
+                  <strong>Reporter ID:</strong>{" "}
+                  {selectedChatLog?.reportingUserHDID}
+                </div>
+                <div>
+                  <strong>Reported User:</strong>{" "}
+                  {selectedChatLog?.reportedUserHDID}
+                </div>
+                <div>
+                  <strong>Timestamp:</strong>{" "}
+                  {selectedChatLog &&
+                    new Date(selectedChatLog.timestamp).toLocaleString()}
+                </div>
+              </div>
+              <div className={styles.chatLogContent}>
+                <h4>Reported Messages:</h4>
+                <div className={styles.messageList}>
+                  {selectedChatLog?.chatLog.map((message) => (
+                    <div key={message.id} className={styles.messageItem}>
+                      <div className={styles.messageHeader}>
+                        <span className={styles.messageSender}>
+                          {message.sender}
+                        </span>
+                        <span className={styles.messageTime}>
+                          {new Date(message.timestamp).toLocaleString()}
+                        </span>
+                      </div>
+                      <div className={styles.messageText}>
+                        {message.message}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+              {selectedChatLog?.actionHistory.length > 0 && (
+                <div className={styles.actionHistory}>
+                  <h4>Action History:</h4>
+                  <ul>
+                    {selectedChatLog.actionHistory.map((action, index) => (
+                      <li key={index}>{action}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
     </AdminLayout>
   );
 }

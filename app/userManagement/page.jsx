@@ -5,71 +5,64 @@ import { AdminLayout } from "../components/layout/admin-layout";
 import styles from "./locations.module.css";
 import { Button } from "../components/ui/button";
 
-const LocationsPage = () => {
-  const [locations, setLocations] = useState([
-    { id: 1, name: "New York", address: "123 Broadway, NY", status: "active" },
-    {
-      id: 2,
-      name: "Los Angeles",
-      address: "456 Hollywood Blvd, LA",
-      status: "active",
-    },
+const AllowedLocationsPage = () => {
+  const [allowedCountries, setAllowedCountries] = useState([
+    { id: 1, name: "Pakistan", status: "active" },
+    { id: 2, name: "United States", status: "active" },
   ]);
   const [searchQuery, setSearchQuery] = useState("");
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const [currentCountry, setCurrentCountry] = useState(null);
 
-  const handleAddLocation = () => {
-    setCurrentLocation(null);
+  const handleAddCountry = () => {
+    setCurrentCountry(null);
     setIsModalOpen(true);
   };
 
-  const handleEditLocation = (location) => {
-    setCurrentLocation(location);
+  const handleEditCountry = (country) => {
+    setCurrentCountry(country);
     setIsModalOpen(true);
   };
 
-  const handleDeleteLocation = (locationId) => {
-    setLocations(locations.filter((loc) => loc.id !== locationId));
+  const handleDeleteCountry = (countryId) => {
+    setAllowedCountries(allowedCountries.filter((c) => c.id !== countryId));
   };
 
-  const handleSaveLocation = (formData) => {
-    if (currentLocation) {
-      setLocations(
-        locations.map((loc) =>
-          loc.id === currentLocation.id ? { ...loc, ...formData } : loc
+  const handleSaveCountry = (formData) => {
+    if (currentCountry) {
+      setAllowedCountries(
+        allowedCountries.map((c) =>
+          c.id === currentCountry.id ? { ...c, ...formData } : c
         )
       );
     } else {
-      const newLocation = {
+      const newCountry = {
         id: Date.now(),
         ...formData,
         status: "active",
       };
-      setLocations([...locations, newLocation]);
+      setAllowedCountries([...allowedCountries, newCountry]);
     }
     setIsModalOpen(false);
   };
 
-  const filteredLocations = locations.filter(
-    (location) =>
-      location.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      location.address.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCountries = allowedCountries.filter((country) =>
+    country.name.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <AdminLayout>
       <div className={styles.locationsContainer}>
         <div className={styles.header}>
-          <h1 className={styles.title}>Locations Management</h1>
-          <Button className={styles.addButton} onClick={handleAddLocation}>
-            + Add Location
+          <h1 className={styles.title}>Allowed Registration Countries</h1>
+          <Button className={styles.addButton} onClick={handleAddCountry}>
+            + Add Country
           </Button>
         </div>
 
         <input
           type="text"
-          placeholder="Search locations..."
+          placeholder="Search countries..."
           className={styles.searchBar}
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
@@ -78,28 +71,26 @@ const LocationsPage = () => {
         <table className={styles.table}>
           <thead>
             <tr>
-              <th className={styles.tableHeader}>Name</th>
-              <th className={styles.tableHeader}>Address</th>
+              <th className={styles.tableHeader}>Country</th>
               <th className={styles.tableHeader}>Status</th>
               <th className={styles.tableHeader}>Actions</th>
             </tr>
           </thead>
           <tbody>
-            {filteredLocations.map((location) => (
-              <tr key={location.id} className={styles.tableRow}>
-                <td className={styles.tableCell}>{location.name}</td>
-                <td className={styles.tableCell}>{location.address}</td>
-                <td className={styles.tableCell}>{location.status}</td>
+            {filteredCountries.map((country) => (
+              <tr key={country.id} className={styles.tableRow}>
+                <td className={styles.tableCell}>{country.name}</td>
+                <td className={styles.tableCell}>{country.status}</td>
                 <td className={styles.tableCell}>
                   <button
                     className={`${styles.actionButton} ${styles.editButton}`}
-                    onClick={() => handleEditLocation(location)}
+                    onClick={() => handleEditCountry(country)}
                   >
                     Edit
                   </button>
                   <button
                     className={`${styles.actionButton} ${styles.deleteButton}`}
-                    onClick={() => handleDeleteLocation(location.id)}
+                    onClick={() => handleDeleteCountry(country.id)}
                   >
                     Delete
                   </button>
@@ -112,10 +103,10 @@ const LocationsPage = () => {
         {isModalOpen && (
           <div className={styles.modalOverlay}>
             <div className={styles.modal}>
-              <h2>{currentLocation ? "Edit Location" : "Add Location"}</h2>
-              <LocationForm
-                location={currentLocation}
-                onSave={handleSaveLocation}
+              <h2>{currentCountry ? "Edit Country" : "Add Country"}</h2>
+              <CountryForm
+                country={currentCountry}
+                onSave={handleSaveCountry}
                 onCancel={() => setIsModalOpen(false)}
               />
             </div>
@@ -126,10 +117,9 @@ const LocationsPage = () => {
   );
 };
 
-const LocationForm = ({ location, onSave, onCancel }) => {
+const CountryForm = ({ country, onSave, onCancel }) => {
   const [formData, setFormData] = useState({
-    name: location?.name || "",
-    address: location?.address || "",
+    name: country?.name || "",
   });
 
   const handleSubmit = (e) => {
@@ -140,24 +130,12 @@ const LocationForm = ({ location, onSave, onCancel }) => {
   return (
     <form onSubmit={handleSubmit} className={styles.form}>
       <div className={styles.formGroup}>
-        <label className={styles.label}>Name</label>
+        <label className={styles.label}>Country Name</label>
         <input
           type="text"
           className={styles.input}
           value={formData.name}
           onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-          required
-        />
-      </div>
-      <div className={styles.formGroup}>
-        <label className={styles.label}>Address</label>
-        <input
-          type="text"
-          className={styles.input}
-          value={formData.address}
-          onChange={(e) =>
-            setFormData({ ...formData, address: e.target.value })
-          }
           required
         />
       </div>
@@ -177,4 +155,4 @@ const LocationForm = ({ location, onSave, onCancel }) => {
   );
 };
 
-export default LocationsPage;
+export default AllowedLocationsPage;
