@@ -1,18 +1,18 @@
 "use client";
 
-import { AdminLayout } from '@/app/components/layout/admin-layout'
-import React, { useState } from 'react'
-import styles from './management.module.css'
-import { Button } from '@/app/components/ui/button'
+import { AdminLayout } from "@/app/components/layout/admin-layout";
+import React, { useState } from "react";
+import styles from "./management.module.css";
+import { Button } from "@/app/components/ui/button";
 
 // Different Tabs
-import ProcessPayment from './components/Processpayment';
-import ProcessWithdrawals from './components/ProcessWithdrawals';
-import ProcessRefund from './components/ProcessRefund';
-import TransactionLogs from './components/TransactionLogs';
+import ProcessPayment from "./components/processpayment";
+import ProcessWithdrawals from "./components/processWithdrawals";
+import ProcessRefund from "./components/ProcessRefund";
+import TransactionLogs from "./components/TransactionLogs";
 
 const management = () => {
-  const [activeTab, setActiveTab] = useState('process payment');
+  const [activeTab, setActiveTab] = useState("process payment");
 
   // Manage Tabs
   const SubMenu = [
@@ -25,18 +25,18 @@ const management = () => {
   // Manage Page on Active Tabs
   const changeTheTab = () => {
     switch (activeTab) {
-      case 'process payment':
+      case "process payment":
         return <ProcessPayment />;
-      case 'process withdrawals':
+      case "process withdrawals":
         return <ProcessWithdrawals />;
-      case 'process refund':
+      case "process refund":
         return <ProcessRefund />;
-      case 'transaction logs':
+      case "transaction logs":
         return <TransactionLogs />;
       default:
         return null;
     }
-  }
+  };
 
   return (
     <AdminLayout>
@@ -46,18 +46,21 @@ const management = () => {
         </div>
         <div>
           {SubMenu.map((tab) => {
-            return <Button
-              key={tab.value}
-              variant={activeTab === tab.value ? "default" : "outline"}
-              onClick={() => setActiveTab(tab.value)}>{tab.label}</Button>
+            return (
+              <Button
+                key={tab.value}
+                variant={activeTab === tab.value ? "default" : "outline"}
+                onClick={() => setActiveTab(tab.value)}
+              >
+                {tab.label}
+              </Button>
+            );
           })}
         </div>
-        <div className={styles.tabs}>
-          {changeTheTab()}
-        </div>
+        <div className={styles.tabs}>{changeTheTab()}</div>
       </div>
     </AdminLayout>
-  )
-}
+  );
+};
 
-export default management
+export default management;
