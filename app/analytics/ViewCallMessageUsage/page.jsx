@@ -6,8 +6,9 @@ import {
     ResponsiveContainer, Cell
 } from "recharts";
 import { useState, useEffect } from "react";
-import { metrics } from "@/app/dashboard/utils/metrics";
+import { callsAndMsg } from "@/app/dashboard/utils/metrics";
 import './style.css';
+import { MetricCard } from "@/app/dashboard/components/MetricCard";
 
 const ViewCallMessageUsage = () => {
     const [selectedMonth, setSelectedMonth] = useState("");
@@ -137,7 +138,9 @@ const ViewCallMessageUsage = () => {
 
                 {/* ---> View Call Usage Data IN Chart Grid <---- */}
                 <div className='Detail_grid'>
-                    
+                    {callsAndMsg.map((metric) => (
+                        <MetricCard key={metric.name} {...metric} />
+                    ))}
                 </div>
 
                 <div className="charts-grid">

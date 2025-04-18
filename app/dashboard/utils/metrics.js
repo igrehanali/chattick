@@ -8,6 +8,10 @@ import {
   PhoneCall,
   Star,
   Percent,
+  Video,
+  PhoneOutgoing,
+  Hourglass,
+  Mail
 } from "lucide-react";
 
 import {
@@ -108,3 +112,43 @@ export const metrics = [
     icon: CreditCard,
   },
 ];
+
+export const callsAndMsg = [
+  {
+    name: "Total Calls",
+    value: generatePointsData().purchased.toLocaleString(),
+    change: "+10.3%",
+    trend: "up",
+    icon: PhoneCall,
+  },
+  {
+    name: "Messages ",
+    value: generatePointsData().purchased.toLocaleString(),
+    change: "+15.8%",
+    trend: "up",
+    icon: Mail,
+  },
+  {
+    name: "Audio Call",
+    value: generatePointsData().earned.toLocaleString(),
+    change: "+15.2%",
+    trend: "up",
+    icon: PhoneOutgoing,
+  },
+  {
+    name: "Video Call",
+    value: generatePointsData().earned.toLocaleString(),
+    change: "+15.2%",
+    trend: "up",
+    icon: Video,
+  },
+  {
+    name: "Traffic Hours",
+    value: '1,1649',
+    change: "+10.5%",
+    trend: "up",
+    icon: Hourglass,
+  },
+
+];
+

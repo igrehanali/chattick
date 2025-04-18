@@ -10,6 +10,11 @@
     border-color: #4f46e5;
     box-shadow: 0 0 0 1px #4f46e5;
 }
+.Detail_grid {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
 
 .charts-grid {
     display: grid;
@@ -33,6 +38,7 @@
     border-radius: 0.375rem;
     border: 1px solid #e2e8f0;
 }
+
 
 @media (max-width: 768px) {
     .charts-grid {
