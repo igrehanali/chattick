@@ -50,7 +50,7 @@ export default function ContestantsList() {
   const loadContestants = async () => {
     try {
       const contestantsData = await contestantsService.getAllContestants();
-      setContestants(contestantsData);
+      // setContestants(contestantsData);
     } catch (error) {
       toast.error("Failed to load contestants");
       console.error("Error loading contestants:", error);
@@ -107,6 +107,8 @@ export default function ContestantsList() {
     }
   };
 
+  console.log(contestants);
+
   // Update the table structure
   return (
     <div>
@@ -128,7 +130,7 @@ export default function ContestantsList() {
           <Loader2 className={styles.loadingSpinner} />
           <p>Loading contestants, please wait...</p>
         </div>
-      ) : filteredContestants.length === 0 ? (
+      ) : contestants.length === 0 ? (
         <p className={styles.noContestantsMessage}>No contestants found.</p>
       ) : (
         <div className={styles.tableWrapper}>
@@ -146,7 +148,7 @@ export default function ContestantsList() {
               </tr>
             </thead>
             <tbody>
-              {filteredContestants.map((contestant) => (
+              {contestants.map((contestant) => (
                 <tr key={contestant.id}>
                   <td>
                     <img
