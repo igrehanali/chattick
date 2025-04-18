@@ -6,6 +6,7 @@ import {
     ResponsiveContainer, Cell
 } from "recharts";
 import { useState, useEffect } from "react";
+import { metrics } from "@/app/dashboard/utils/metrics";
 import './style.css';
 
 const ViewCallMessageUsage = () => {
@@ -89,7 +90,7 @@ const ViewCallMessageUsage = () => {
         <AdminLayout>
             <div className="analytics-container">
                 <h1>Call & Message Usage Analytics</h1>
-
+                {/* ----> Selectors <---- */}
                 <div className="filters-section">
                     <select
                         value={selectedYear}
@@ -132,6 +133,11 @@ const ViewCallMessageUsage = () => {
                             <option key={plan} value={plan}>{plan}</option>
                         ))}
                     </select>
+                </div>
+
+                {/* ---> View Call Usage Data IN Chart Grid <---- */}
+                <div className='Detail_grid'>
+                    
                 </div>
 
                 <div className="charts-grid">

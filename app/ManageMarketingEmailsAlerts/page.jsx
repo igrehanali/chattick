@@ -1,5 +1,5 @@
 "use client";
-import { AdminLayout } from "../../components/layout/admin-layout";
+import { AdminLayout } from "../components/layout/admin-layout";
 import { useState } from "react";
 import './style.css';
 

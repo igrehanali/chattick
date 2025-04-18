@@ -104,6 +104,9 @@ const navigation = [
     ],
   },
 
+  // ----> Marketing Emails 
+  { name: "Marketing Emails", href: "/ManageMarketingEmailsAlerts", icon: MessageSquare },
+
   // Analytics — deep dive last
   {
     name: "Analytics & Insights",
@@ -180,11 +183,6 @@ const navigation = [
         name: "Notifications",
         href: "/analytics/AnalyzeNotificationAlert",
         icon: Bell,
-      },
-      {
-        name: "Marketing Emails",
-        href: "/analytics/ManageMarketingEmailsAlerts",
-        icon: Mail,
       },
     ],
   },
