@@ -60,14 +60,14 @@ export default function LoginPage() {
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
   };
-  
+
   return (
     <div className="login-container fade-in-down">
       <div className="login-form-container">
         <div className="logo-container">
           <div className="logo-wrapper scale-in">
             <Image
-              src="/logo.png"
+              src="https://i.ibb.co/jkrXCjj3/Logo.png"
               alt="Logo"
               fill
               className="object-contain"
