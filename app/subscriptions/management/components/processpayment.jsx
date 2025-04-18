@@ -3,79 +3,63 @@ import styles from "../management.module.css";
 
 const ProcessPayment = () => {
   const [searchQuery, setSearchQuery] = useState("");
-
+  // ----> Payment Data <----
   const paymentTable = [
     {
       name: "ABCD",
       email: "abcd@gmail.com",
       amount: "$1500",
-      paymentMethod: {
-        bank: "Bank",
-        wallet: "Wallet",
-      },
-      SubscriptionType: {
-        free: "Free",
-        basic: "Basic",
-        premium: "Premium",
-      },
-      status: {
-        failed: "Failed",
-        pending: "Pending",
-        success: "Successful",
-      },
-      action: {
-        active: "Active",
-        block: "Blocked",
-      },
+      paymentMethod: "Bank",
+      subscriptionType: "Basic",
+      status: "Pending",
+      action: "Active",
     },
     {
       name: "EFGH",
       email: "efgh@gmail.com",
       amount: "$1000",
-      paymentMethod: {
-        bank: "Bank",
-        wallet: "Wallet",
-      },
-      SubscriptionType: {
-        free: "Free",
-        basic: "Basic",
-        premium: "Premium",
-      },
-      status: {
-        failed: "Failed",
-        pending: "Pending",
-        success: "Successful",
-      },
-      action: {
-        active: "Active",
-        block: "Blocked",
-      },
+      paymentMethod: "Wallet",
+      subscriptionType: "Premium",
+      status: "Successful",
+      action: "Blocked",
+    },
+    {
+      name: "IJKL",
+      email: "IJKL@gmail.com",
+      amount: "$500",
+      paymentMethod: "Bank",
+      subscriptionType: "Basic",
+      status: "Pending",
+      action: "Active",
+    },
+    {
+      name: "LMNO",
+      email: "LMNO@gmail.com",
+      amount: "$7000",
+      paymentMethod: "Wallet",
+      subscriptionType: "Premium",
+      status: "Successful",
+      action: "Blocked",
     },
   ];
 
+  // ----> SearchBar Filter Functionality <----
   const filteredData = paymentTable.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
       item.name.toLowerCase().includes(query) ||
       item.email.toLowerCase().includes(query) ||
       item.amount.toLowerCase().includes(query) ||
-      Object.values(item.status).some((status) =>
-        status.toLowerCase().includes(query)
-      ) ||
-      Object.values(item.paymentMethod).some((method) =>
-        method.toLowerCase().includes(query)
-      ) ||
-      Object.values(item.SubscriptionType).some((type) =>
-        type.toLowerCase().includes(query)
-      ) ||
-      Object.values(item.action).some((act) =>
-        act.toLowerCase().includes(query)
-      )
+      item.status.toLowerCase().includes(query) ||
+      item.paymentMethod.toLowerCase().includes(query) ||
+      item.subscriptionType.toLowerCase().includes(query) ||
+      item.action.toLowerCase().includes(query)
     );
   });
 
   return (
     <div>
+      {/* ----> Search Bar  <---- */}
       <div className={styles.searchBar}>
         <input
           className={styles.Input}
@@ -85,8 +69,10 @@ const ProcessPayment = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+      {/* ----> Payment Process Table <---- */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
+          {/* ----> Table Head <---- */}
           <thead className={styles.tableHeader}>
             <tr>
               <th className={styles.tableHeaderCell}>Name</th>
@@ -98,6 +84,7 @@ const ProcessPayment = () => {
               <th className={styles.tableHeaderCell}>Action</th>
             </tr>
           </thead>
+          {/* ----> Table Body <---- */}
           <tbody className={styles.tableBody}>
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
@@ -105,18 +92,10 @@ const ProcessPayment = () => {
                   <td className={styles.tableCell}>{item.name}</td>
                   <td className={styles.tableCell}>{item.email}</td>
                   <td className={styles.tableCell}>{item.amount}</td>
-                  <td className={styles.tableCell}>
-                    {Object.values(item.paymentMethod).join(", ")}
-                  </td>
-                  <td className={styles.tableCell}>
-                    {Object.values(item.SubscriptionType).join(", ")}
-                  </td>
-                  <td className={styles.tableCell}>
-                    {Object.values(item.status).join(", ")}
-                  </td>
-                  <td className={styles.tableCell}>
-                    {Object.values(item.action).join(", ")}
-                  </td>
+                  <td className={styles.tableCell}>{item.paymentMethod}</td>
+                  <td className={styles.tableCell}>{item.subscriptionType}</td>
+                  <td className={styles.tableCell}>{item.status}</td>
+                  <td className={styles.tableCell}>{item.action}</td>
                 </tr>
               ))
             ) : (

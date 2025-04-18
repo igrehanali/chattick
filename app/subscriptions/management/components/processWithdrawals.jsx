@@ -4,6 +4,7 @@ import styles from '../management.module.css';
 const ProcessWithdrawals = () => {
   const [searchQuery, setSearchQuery] = useState('');
 
+  // ----> Withdrawals Data <----
   const withdrawalData = [
     {
       name: 'John Doe',
@@ -47,6 +48,7 @@ const ProcessWithdrawals = () => {
     }
   ];
 
+  // ----> SearchBar Filter Functionality <----
   const filteredData = withdrawalData.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -59,6 +61,7 @@ const ProcessWithdrawals = () => {
 
   return (
     <div>
+      {/* ----> SearchBar Input <---- */}
       <div className={styles.searchBar}>
         <input
           className={styles.Input}
@@ -68,8 +71,11 @@ const ProcessWithdrawals = () => {
           onChange={(e) => setSearchQuery(e.target.value)}
         />
       </div>
+      {/* ----> Table Data <---- */}
       <div className={styles.tableContainer}>
         <table className={styles.table}>
+
+          {/* ----> Table Head <---- */}
           <thead className={styles.tableHeader}>
             <tr>
               <th className={styles.tableHeaderCell}>Customer Info</th>
@@ -79,6 +85,8 @@ const ProcessWithdrawals = () => {
               <th className={styles.tableHeaderCell}>Action</th>
             </tr>
           </thead>
+          
+          {/* ----> Table Body <---- */}
           <tbody className={styles.tableBody}>
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
