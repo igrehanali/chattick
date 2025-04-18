@@ -184,6 +184,11 @@ const navigation = [
         href: "/analytics/AnalyzeNotificationAlert",
         icon: Bell,
       },
+      {
+        name: "Analytic FAQs",
+        href: "/analytics/AnalyzeAnalyticFAQs",
+        icon: FileQuestionIcon,
+      },
     ],
   },
 

@@ -11,7 +11,10 @@ import {
   Video,
   PhoneOutgoing,
   Hourglass,
-  Mail
+  Mail,
+  View,
+  Clock,
+  ThumbsUp, ThumbsDown,
 } from "lucide-react";
 
 import {
@@ -148,6 +151,38 @@ export const callsAndMsg = [
     change: "+10.5%",
     trend: "up",
     icon: Hourglass,
+  },
+
+];
+
+export const FaqsData = [
+  {
+    name: "Total Views",
+    value: 1320,
+    change: "+70.3%",
+    trend: "up",
+    icon: View,
+  },
+  {
+    name: "Avg Time",
+    value: '09:12',
+    change: "+55.8%",
+    trend: "up",
+    icon: Clock,
+  },
+  {
+    name: "Likes",
+    value: 205,
+    change: "+75.2%",
+    trend: "up",
+    icon: ThumbsUp,
+  },
+  {
+    name: "Dislikes",
+    value: '132',
+    change: "+15.2%",
+    trend: "up",
+    icon: ThumbsDown,
   },
 
 ];

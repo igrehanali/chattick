@@ -1,0 +1,84 @@
+.FAQ_Cards {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 20px;
+}
+.searchBar {
+  width: 300px;
+  margin-top: 10px;
+
+}
+
+.Search {
+  font-size: 12px;
+  color: gray;
+}
+
+.tableContainer {
+  background-color: white;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  overflow-y: auto;
+  margin-top: 1rem;
+}
+
+:global(.dark) .tableContainer {
+  background-color: #1f2937;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableHeader {
+  background-color: #f8fafc;
+  border-bottom: 2px solid #e5e7eb;
+}
+
+:global(.dark) .tableHeader {
+  background-color: #374151;
+}
+
+.tableHeaderCell {
+  padding: 1rem 1.5rem;
+  text-align: left;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: #4b5563;
+  white-space: nowrap;
+}
+
+.tableBody {
+  background-color: white;
+}
+
+:global(.dark) .tableBody {
+  background-color: #1f2937;
+}
+
+.tableRow {
+  border-bottom: 1px solid #e5e7eb;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.tableRow:hover {
+  background-color: #f8fafc;
+}
+
+:global(.dark) .tableRow:hover {
+  background-color: #374151;
+}
+
+:global(.dark) .tableRow {
+  border-color: #374151;
+}
+
+.tableCell {
+  padding: 1.25rem 1.5rem;
+  white-space: nowrap;
+  color: #111827;
+  font-size: 0.875rem;
+}
