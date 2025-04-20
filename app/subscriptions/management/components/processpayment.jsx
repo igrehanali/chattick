@@ -6,6 +6,7 @@ const ProcessPayment = () => {
   // ----> Payment Data <----
   const paymentTable = [
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: "ABCD",
       email: "abcd@gmail.com",
       amount: "$1500",
@@ -15,6 +16,7 @@ const ProcessPayment = () => {
       action: "Active",
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: "EFGH",
       email: "efgh@gmail.com",
       amount: "$1000",
@@ -24,6 +26,7 @@ const ProcessPayment = () => {
       action: "Blocked",
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: "IJKL",
       email: "IJKL@gmail.com",
       amount: "$500",
@@ -33,6 +36,7 @@ const ProcessPayment = () => {
       action: "Active",
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: "LMNO",
       email: "LMNO@gmail.com",
       amount: "$7000",
@@ -47,6 +51,7 @@ const ProcessPayment = () => {
   const filteredData = paymentTable.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
+      item.costumerID.toLowerCase().includes(query) ||
       item.name.toLowerCase().includes(query) ||
       item.email.toLowerCase().includes(query) ||
       item.amount.toLowerCase().includes(query) ||
@@ -75,6 +80,7 @@ const ProcessPayment = () => {
           {/* ----> Table Head <---- */}
           <thead className={styles.tableHeader}>
             <tr>
+              <th className={styles.tableHeaderCell}>Costumer Id</th>
               <th className={styles.tableHeaderCell}>Name</th>
               <th className={styles.tableHeaderCell}>Email</th>
               <th className={styles.tableHeaderCell}>Amount</th>
@@ -89,6 +95,7 @@ const ProcessPayment = () => {
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
                 <tr key={index} className={styles.tableRow}>
+                  <td className={styles.tableCell}>{item.costumerID}</td>
                   <td className={styles.tableCell}>{item.name}</td>
                   <td className={styles.tableCell}>{item.email}</td>
                   <td className={styles.tableCell}>{item.amount}</td>

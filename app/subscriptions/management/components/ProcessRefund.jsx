@@ -8,6 +8,7 @@ const ProcessRefund = () => {
   const refundData = [
     {
       customer: {
+        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
         name: 'Ayesha Khan',
         email: 'ayesha@example.com'
       },
@@ -19,6 +20,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
+        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
         name: 'Zain Ali',
         email: 'zain@example.com'
       },
@@ -30,6 +32,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
+        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
         name: 'Fatima Noor',
         email: 'fatima@example.com'
       },
@@ -41,6 +44,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
+        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
         name: 'Umer Shah',
         email: 'umer@example.com'
       },
@@ -52,6 +56,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
+        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
         name: 'Sara Javed',
         email: 'sara@example.com'
       },
@@ -67,6 +72,7 @@ const ProcessRefund = () => {
   const filteredRefunds = refundData.filter(item => {
     const query = searchQuery.toLowerCase();
     return (
+      item.customer.costumerID.toLowerCase().includes(query) ||
       item.customer.name.toLowerCase().includes(query) ||
       item.customer.email.toLowerCase().includes(query) ||
       item.reason.toLowerCase().includes(query) ||
@@ -93,7 +99,8 @@ const ProcessRefund = () => {
           {/* ----> Table Head <---- */}
           <thead className={styles.tableHeader}>
             <tr>
-              <th className={styles.tableHeaderCell}>Customer</th>
+              <th className={styles.tableHeaderCell}>Costumer Id</th>
+              <th className={styles.tableHeaderCell}>Name</th>
               <th className={styles.tableHeaderCell}>Payment Date</th>
               <th className={styles.tableHeaderCell}>Amount</th>
               <th className={styles.tableHeaderCell}>Reason</th>
@@ -107,6 +114,7 @@ const ProcessRefund = () => {
             {filteredRefunds.length > 0 ? (
               filteredRefunds.map((item, index) => (
                 <tr key={index} className={styles.tableRow}>
+                  <td className={styles.tableCell}>{item.customer.costumerID}</td>
                   <td className={styles.tableCell}>
                     {item.customer.name}
                     <br />

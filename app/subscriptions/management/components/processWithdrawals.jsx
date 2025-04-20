@@ -7,6 +7,7 @@ const ProcessWithdrawals = () => {
   // ----> Withdrawals Data <----
   const withdrawalData = [
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: 'John Doe',
       email: 'john@example.com',
       amount: '$1200',
@@ -15,6 +16,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: 'Jane Smith',
       email: 'jane@example.com',
       amount: '$800',
@@ -23,6 +25,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: 'Michael Brown',
       email: 'michael@example.com',
       amount: '$1500',
@@ -31,6 +34,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: 'Emily Johnson',
       email: 'emily@example.com',
       amount: '$600',
@@ -39,6 +43,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
+      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
       name: 'David Lee',
       email: 'david@example.com',
       amount: '$950',
@@ -52,6 +57,7 @@ const ProcessWithdrawals = () => {
   const filteredData = withdrawalData.filter((item) => {
     const query = searchQuery.toLowerCase();
     return (
+      item.costumerID.toLowerCase().includes(query) ||
       item.name.toLowerCase().includes(query) ||
       item.email.toLowerCase().includes(query) ||
       item.destination.toLowerCase().includes(query) ||
@@ -78,6 +84,7 @@ const ProcessWithdrawals = () => {
           {/* ----> Table Head <---- */}
           <thead className={styles.tableHeader}>
             <tr>
+              <th className={styles.tableHeaderCell}>Customer Id</th>
               <th className={styles.tableHeaderCell}>Customer Info</th>
               <th className={styles.tableHeaderCell}>Amount</th>
               <th className={styles.tableHeaderCell}>Destination</th>
@@ -91,6 +98,7 @@ const ProcessWithdrawals = () => {
             {filteredData.length > 0 ? (
               filteredData.map((item, index) => (
                 <tr key={index} className={styles.tableRow}>
+                  <td className={styles.tableCell}>{item.costumerID}</td>
                   <td className={styles.tableCell}>
                     {item.name} <br />
                     <small>{item.email}</small>
