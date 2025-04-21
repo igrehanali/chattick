@@ -326,7 +326,7 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Maximum Storage Size in (GBs)</label>
+            <label>Maximum Storage Size (GBs)</label>
             <input
               type="number"
               name="limits.MaximumStorageSizein(GBs)"
