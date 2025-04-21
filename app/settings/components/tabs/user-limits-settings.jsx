@@ -26,6 +26,54 @@ export default function UserLimitsSettings({ settings, handleChange }) {
             Allow Multiple Payment Methods
           </label>
         </div>
+        <div className={styles.checkboxGroup}>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={settings.userLimits.AllowMaximumNumberOfGroups}
+              onChange={(e) =>
+                handleChange(
+                  "userLimits",
+                  "AllowMaximumNumberOfGroups",
+                  e.target.checked
+                )
+              }
+            />
+            Allow Maximum number of groups
+          </label>
+        </div>
+        <div className={styles.checkboxGroup}>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={settings.userLimits.AllowMaximumNumberOfContacts}
+              onChange={(e) =>
+                handleChange(
+                  "userLimits",
+                  "AllowMaximumNumberOfContacts",
+                  e.target.checked
+                )
+              }
+            />
+            Allow Maximum number of Contacts
+          </label>
+        </div>
+        <div className={styles.checkboxGroup}>
+          <label className={styles.checkboxLabel}>
+            <input
+              type="checkbox"
+              checked={settings.userLimits.AllowMaximumNumberOfContestEntries}
+              onChange={(e) =>
+                handleChange(
+                  "userLimits",
+                  "AllowMaximumNumberOfContestEntries",
+                  e.target.checked
+                )
+              }
+            />
+            Allow Maximum number of contest entries
+          </label>
+        </div>
       </div>
     </div>
   );

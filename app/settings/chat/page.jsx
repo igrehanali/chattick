@@ -7,7 +7,7 @@ import { Button } from "@/app/components/ui/button";
 
 export default function ChatSettings() {
   const [settings, setSettings] = useState({
-    theme: "light",
+    theme: "sunlight",
     wallpaper: "",
     fontSize: "16",
     fontType: "Arial",
@@ -67,14 +67,14 @@ export default function ChatSettings() {
                 onChange={handleChange}
                 className={styles.select}
               >
-                <option value="" selected disabled>
+                <option value="" disabled>
                   Select Theme
                 </option>
-                <option value="light">Sunshine Mode 🌞</option>
-                <option value="light">Daylight ☀️</option>
-                <option value="light">Bright Vibes ✨</option>
-                <option value="dark">Midnight Vibes 🌙</option>
-                <option value="dark">Shadow Mode 🖤</option>
+                <option value="sunlight">Sunshine Mode 🌞</option>
+                <option value="daylight">Daylight ☀️</option>
+                <option value="brightLight">Bright Vibes ✨</option>
+                <option value="midDark">Midnight Vibes 🌙</option>
+                <option value="ShadowDark">Shadow Mode 🖤</option>
               </select>
             </label>
 

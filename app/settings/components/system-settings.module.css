@@ -30,6 +30,20 @@
     white-space: nowrap;
     flex: 0 0 auto;
 }
+.checkboxGroup {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+.checkboxLabel {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+.InputLabel {
+    display: flex;
+    flex-direction: column-reverse;
+}
 
 @media (max-width: 640px) {
     .tabsTrigger {
