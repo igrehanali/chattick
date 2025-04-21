@@ -16,6 +16,8 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
       withdrawals: {
         perDay: "",
         perMonth: "",
+        maxFileSize: "",
+        maxStorage: "",
       },
       points: {
         monthlyAccumulation: "",
@@ -317,6 +319,28 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             <input
               type="number"
               name="limits.videoCallDuration"
+              value={formData.limits.videoCallDuration}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Maximum File Size in (MBs)</label>
+            <input
+              type="number"
+              name="limits.MaximumFileSize"
+              value={formData.limits.videoCallDuration}
+              onChange={handleChange}
+              required
+              min="0"
+            />
+          </div>
+          <div className={styles.formGroup}>
+            <label>Maximum Storage Size in (GBs)</label>
+            <input
+              type="number"
+              name="limits.MaximumStorageSizein(GBs)"
               value={formData.limits.videoCallDuration}
               onChange={handleChange}
               required
