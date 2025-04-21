@@ -26,7 +26,7 @@ export default function UserLimitsSettings({ settings, handleChange }) {
             Allow Multiple Payment Methods
           </label>
         </div>
-        <div className={styles.checkboxGroup}>
+        {/* <div className={styles.checkboxGroup}>
           <label className={styles.checkboxLabel}>
             <input
               type="checkbox"
@@ -73,7 +73,7 @@ export default function UserLimitsSettings({ settings, handleChange }) {
             />
             Allow Maximum number of contest entries
           </label>
-        </div>
+        </div> */}
       </div>
     </div>
   );
