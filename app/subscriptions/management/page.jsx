@@ -6,7 +6,7 @@ import styles from "./management.module.css";
 import { Button } from "@/app/components/ui/button";
 
 // Different Tabs
-import ProcessPayment from "./components/ProcessPayment";
+import ProcessPayment from "./components/processpayment";
 import ProcessWithdrawals from "./components/processWithdrawals";
 import ProcessRefund from "./components/ProcessRefund";
 import TransactionLogs from "./components/TransactionLogs";
