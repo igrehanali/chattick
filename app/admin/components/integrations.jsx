@@ -1,5 +1,6 @@
 import { Button } from "@/app/components/ui/button";
 import React, { useState } from "react";
+import toast, { Toaster } from "react-hot-toast";
 
 const IntegrationManager = () => {
   const [integrations, setIntegrations] = useState([
@@ -52,8 +53,10 @@ const IntegrationManager = () => {
       updated[editIndex] = form;
       setIntegrations(updated);
       setEditIndex(null);
+      toast.success("Integration updated successfully!");
     } else {
       setIntegrations([...integrations, form]);
+      toast.success("Integration added successfully!");
     }
 
     setForm({
@@ -68,6 +71,7 @@ const IntegrationManager = () => {
 
   const handleEdit = (index) => {
     setForm(integrations[index]);
+    toast.success("Integration edited successfully!");
     setEditIndex(index);
   };
 
@@ -75,6 +79,7 @@ const IntegrationManager = () => {
     const filtered = integrations.filter((_, i) => i !== index);
     setIntegrations(filtered);
     if (editIndex === index) setEditIndex(null);
+    toast.success("Integration deleted successfully!");
   };
 
   const filteredIntegrations = integrations.filter(
@@ -83,6 +88,7 @@ const IntegrationManager = () => {
 
   return (
     <div style={styles.container}>
+      <Toaster />
       <h2>Integration Management</h2>
 
       {/* List */}
