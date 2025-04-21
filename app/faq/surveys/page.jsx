@@ -12,7 +12,7 @@ import {
 import SurveyResponses from "../components/SurveyResponses";
 import SurveyAnalytics from "../components/SurveyAnalytics";
 import SurveyModal from "../components/SurveyModal";
-import { AdminLayout } from "../../components/layout/admin-layout";
+import { AdminLayout } from "@/app/components/layout/admin-layout";
 import Link from "next/link";
 import ConfirmDialog from "@/app/contests/components/ConfirmDialog";
 import { surveyService } from "@/lib/services/survey-service";

@@ -1,5 +1,5 @@
 "use client";
-import { AdminLayout } from "../../components/layout/admin-layout";
+import { AdminLayout } from "@/app/components/layout/admin-layout";
 import {
     LineChart, Line, BarChart, Bar,
     XAxis, YAxis, CartesianGrid, Tooltip, Legend,
