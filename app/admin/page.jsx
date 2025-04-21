@@ -18,6 +18,7 @@ import SecurityTab from "./components/security";
 import ActivityTab from "./components/activity";
 import SuperAdminTab from "./components/super";
 import AccountSecurityTab from "./components/account-security";
+import Integrations from "./components/integrations";
 
 const AdminPage = () => {
   const [activeTab, setActiveTab] = useState("accounts");
@@ -29,7 +30,11 @@ const AdminPage = () => {
     { id: "activity", label: "Activity & Audit Logs", icon: ActivitySquare },
     { id: "super", label: "Super Admin", icon: UserCog },
     { id: "account-security", label: "Account Security", icon: Lock },
-    { id: "System Integrations & Management", label: "System Integrations & Management", icon: MonitorCog },
+    {
+      id: "System Integrations & Management",
+      label: "System Integrations & Management",
+      icon: MonitorCog,
+    },
   ];
 
   return (
@@ -88,6 +93,17 @@ const AdminPage = () => {
             }}
           >
             <AccountSecurityTab />
+          </div>
+          <div
+            className={styles.tabPanel}
+            style={{
+              display:
+                activeTab === "System Integrations & Management"
+                  ? "block"
+                  : "none",
+            }}
+          >
+            <Integrations />
           </div>
         </main>
       </div>
