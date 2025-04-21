@@ -73,7 +73,11 @@ const navigation = [
     icon: CreditCard,
     submenu: [
       { name: "Subscriptions", href: "/subscriptions", icon: CreditCard },
-      { name: "Manage Plans", href: "/subscriptions/managePlans", icon: FileCog },
+      {
+        name: "Manage Plans",
+        href: "/subscriptions/managePlans",
+        icon: FileCog,
+      },
       {
         name: "Payment Management",
         href: "/subscriptions/management",
@@ -106,8 +110,12 @@ const navigation = [
     ],
   },
 
-  // ----> Marketing Emails 
-  { name: "Marketing Emails", href: "/ManageMarketingEmailsAlerts", icon: MessageSquare },
+  // ----> Marketing Emails
+  {
+    name: "Marketing Emails",
+    href: "/ManageMarketingEmailsAlerts",
+    icon: MessageSquare,
+  },
 
   // Analytics — deep dive last
   {
@@ -209,9 +217,21 @@ export function Sidebar() {
   const pathname = usePathname();
   const [isOpen, setIsOpen] = useState(false);
   const [showSignOutAlert, setShowSignOutAlert] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
   const { logout } = useAuth();
   const [admin, setAdmin] = useState();
   const [adminRole, setAdminRole] = useState();
+
+  // Filter navigation items based on search term
+  const filteredNavigation = navigation.filter((item) => {
+    const matchesMain = item.name
+      .toLowerCase()
+      .includes(searchTerm.toLowerCase());
+    const matchesSubmenu = item.submenu?.some((subItem) =>
+      subItem.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    return matchesMain || matchesSubmenu;
+  });
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -324,10 +344,18 @@ export function Sidebar() {
         <div className={styles.header}>
           <span className={styles.headerTitle}>CHATTICK 💬</span>
         </div>
-        {/* hfhgf */}
         <nav className={styles.nav}>
+          <div className={styles.searchContainer}>
+            <input
+              type="text"
+              placeholder="Search menu..."
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+              className={styles.searchInput}
+            />
+          </div>
           <div className={styles.navList}>
-            {navigation.map((item) => {
+            {filteredNavigation.map((item) => {
               const isActive = pathname.startsWith(item.href);
               const isExpanded = expandedItems.includes(item.name);
 

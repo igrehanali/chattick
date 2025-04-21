@@ -19,6 +19,11 @@
 
 }
 
+.searchInput {
+    background-color: #1a1c2e;
+    color: #ebeef3;
+}
+
 .navItemContent {
     display: flex;
     align-items: center;

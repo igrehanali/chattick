@@ -79,53 +79,6 @@ const initialReportedChats = [
     actionHistory: ["User received warning on 2024-01-20T12:30:00Z"],
     action: "warning",
   },
-  {
-    id: 4,
-    reportingUserHDID: "HD404",
-    reportedUserHDID: "HD505",
-    category: "Bug Report",
-    chatLog: [
-      {
-        id: 1,
-        sender: "HD505",
-        message: "Error 500: Message failed to send",
-        timestamp: "2024-01-20T13:15:00Z",
-      },
-      {
-        id: 2,
-        sender: "HD505",
-        message: "System: Message delivery failed",
-        timestamp: "2024-01-20T13:18:00Z",
-      },
-    ],
-    timestamp: "2024-01-20T13:20:00Z",
-    status: "pending",
-    actionHistory: [],
-  },
-  {
-    id: 5,
-    reportingUserHDID: "HD606",
-    reportedUserHDID: "HD707",
-    category: "Harassment",
-    chatLog: [
-      {
-        id: 1,
-        sender: "HD707",
-        message: "[Hate speech content removed]",
-        timestamp: "2024-01-20T13:55:00Z",
-      },
-      {
-        id: 2,
-        sender: "HD707",
-        message: "[Discriminatory content removed]",
-        timestamp: "2024-01-20T13:58:00Z",
-      },
-    ],
-    timestamp: "2024-01-20T14:00:00Z",
-    status: "resolved",
-    actionHistory: ["User blocked on 2024-01-20T14:30:00Z"],
-    action: "block",
-  },
 ];
 
 export default function ReportsPage() {
@@ -335,6 +288,49 @@ export default function ReportsPage() {
                     </td>
                   </tr>
                 ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+
+        <section className={styles.bugReportsSection}>
+          <h2>Bug Reports</h2>
+          <div className={styles.tableContainer}>
+            <table className={styles.reportsTable}>
+              <thead>
+                <tr>
+                  <th>Report ID</th>
+                  <th>Status</th>
+                  <th>Reporter ID</th>
+                  <th>Timestamp</th>
+                  <th>Error Details</th>
+                </tr>
+              </thead>
+              <tbody>
+                {reportedChats
+                  .filter((report) => report.category === "Bug Report")
+                  .map((report) => (
+                    <tr key={report.id}>
+                      <td>{report.id}</td>
+                      <td>
+                        {report.status === "resolved" ? (
+                          <div className={styles.resolvedStatus}>
+                            <Check className={styles.checkIcon} />
+                            <span>Resolved</span>
+                          </div>
+                        ) : (
+                          <AlertTriangle className={styles.alertIcon} />
+                        )}
+                      </td>
+                      <td>{report.reportingUserHDID}</td>
+                      <td>{new Date(report.timestamp).toLocaleString()}</td>
+                      <td>
+                        {report.chatLog
+                          .map((message) => message.message)
+                          .join("; ")}
+                      </td>
+                    </tr>
+                  ))}
               </tbody>
             </table>
           </div>
