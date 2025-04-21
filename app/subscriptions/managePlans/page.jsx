@@ -1,17 +1,331 @@
 "use client";
 
-import { AdminLayout } from '@/app/components/layout/admin-layout'
-import React from 'react'
-import { styles } from '@/app/subscriptions/page.module.css'
+import {
+  CreditCard,
+  DollarSign,
+  Users,
+  RefreshCcw,
+  Search,
+  Filter,
+  X,
+  Plus,
+} from "lucide-react";
+import { subscriptionService } from "@/lib/services/subscription-service";
+import { toastService } from "@/lib/services/toast-service";
+import SubscriptionTierForm from "@/app/subscriptions/components/SubscriptionTierForm";
+import { adminService } from "@/lib/services/admin-service";
+import { AdminLayout } from '@/app/components/layout/admin-layout';
+import React, { useEffect, useState } from 'react';
+import styles from '@/app/subscriptions/page.module.css';
 
 const ManagePlans = () => {
+
+  const [admin, setAdmin] = useState();
+  const [adminRole, setAdminRole] = useState();
+  const [searchQuery, setSearchQuery] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [showTierForm, setShowTierForm] = useState(false);
+  const [editingTier, setEditingTier] = useState(null);
+  const [selectedYear, setSelectedYear] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [plans, setPlans] = useState([]);
+  const [userSubscriptions, setUserSubscriptions] = useState([]);
+  const [selectedCountry, setSelectedCountry] = useState("");
+  const [stats, setStats] = useState([
+    {
+      label: "Total Revenue",
+      value: "$0",
+      icon: <DollarSign className="w-5 h-5 text-green-500" />,
+    },
+    {
+      label: "Active Subscriptions",
+      value: "0",
+      icon: <Users className="w-5 h-5 text-blue-500" />,
+    },
+    {
+      label: "Processing Payments",
+      value: "0",
+      icon: <CreditCard className="w-5 h-5 text-purple-500" />,
+    },
+    {
+      label: "Pending Refunds",
+      value: "0",
+      icon: <RefreshCcw className="w-5 h-5 text-yellow-500" />,
+    },
+  ]);
+
+  useEffect(() => {
+    const fetchUsers = async () => {
+      try {
+        const userStr = localStorage.getItem("user");
+        const userData = JSON.parse(userStr);
+        const response = await adminService.getAdminById(userData.id);
+        setAdmin(response);
+      } catch (error) {
+        console.error("Error fetching users:", error);
+      }
+    };
+
+    fetchUsers();
+  }, []);
+
+  useEffect(() => {
+    const fetchRole = async () => {
+      if (admin?.roleId) {
+        try {
+          const response = await adminService.getRoleById(admin.roleId);
+          setAdminRole(response);
+        } catch (err) {
+          console.error(err);
+        }
+      }
+    };
+
+    fetchRole();
+  }, [admin]);
+
+  useEffect(() => {
+    const calculateStats = () => {
+      const totalRevenue = userSubscriptions.reduce((acc, sub) => {
+        const price = parseFloat(sub.purchasePrice || 0);
+        return acc + price;
+      }, 0);
+
+      const activeCount = userSubscriptions.filter(
+        (sub) => sub.status === "active"
+      ).length;
+      const processingCount = userSubscriptions.filter(
+        (sub) => sub.status === "processing"
+      ).length;
+      const pendingRefunds = userSubscriptions.filter(
+        (sub) => sub.status === "refund_pending"
+      ).length;
+
+      setStats([
+        {
+          label: "Total Revenue",
+          value: `$${totalRevenue.toFixed(2)}`,
+          icon: <DollarSign className="w-5 h-5 text-green-500" />,
+        },
+        {
+          label: "Active Subscriptions",
+          value: activeCount.toString(),
+          icon: <Users className="w-5 h-5 text-blue-500" />,
+        },
+        {
+          label: "Processing Payments",
+          value: processingCount.toString(),
+          icon: <CreditCard className="w-5 h-5 text-purple-500" />,
+        },
+        {
+          label: "Pending Refunds",
+          value: pendingRefunds.toString(),
+          icon: <RefreshCcw className="w-5 h-5 text-yellow-500" />,
+        },
+      ]);
+    };
+
+    calculateStats();
+  }, [userSubscriptions]);
+
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const subscriptionPlans =
+          await subscriptionService.getAllSubscriptions();
+        const activePlans = subscriptionPlans.filter(
+          (plan) => plan.status === "active"
+        );
+        setPlans(activePlans);
+      } catch (error) {
+        console.error("Error fetching subscription plans:", error);
+        toastService.error("Failed to fetch subscription plans");
+      }
+    };
+
+    fetchPlans();
+  }, []);
+
+
+
+  const canUpdateUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" &&
+      permission.types.includes("update")
+  );
+
+  const canWriteUsers = adminRole?.permissions?.find(
+    (permission) =>
+      permission.featureTitle === "Support" &&
+      permission.types.includes("write")
+  );
+
+  const years = ["2023", "2024", "2025"];
+  const months = [
+    { value: "01", label: "January" },
+    { value: "02", label: "February" },
+    { value: "03", label: "March" },
+  ];
+  const countries = ["USA", "Canada", "UK"];
+  const selectedPlan = "";
+
+  const itemsPerPage = 10;
+
+  const filteredSubscriptions = userSubscriptions.filter((sub) => {
+    const matchesSearch =
+      sub.customer.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      sub.userId.toLowerCase().includes(searchQuery.toLowerCase());
+    const matchesFilter = filterStatus === "all" || sub.status === filterStatus;
+    return matchesSearch && matchesFilter;
+  });
+
+  const paginatedSubscriptions = filteredSubscriptions.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredSubscriptions.length / itemsPerPage);
+
+  const handleChangePlan = async (subscriptionId) => {
+    const loadingToast = toastService.loading("Updating subscription plan...");
+    try {
+      const updatedSubscription = await subscriptionService.updateSubscription(
+        subscriptionId,
+        {
+          plan: selectedPlan || "Basic Plan",
+          status: "active",
+          autoRenew: true,
+        }
+      );
+      toastService.dismiss(loadingToast);
+      toastService.success("Subscription plan updated successfully");
+      // Refresh subscriptions
+      const subscriptions = await subscriptionService.getAllSubscriptions();
+      setUserSubscriptions(subscriptions);
+    } catch (error) {
+      toastService.dismiss(loadingToast);
+      toastService.error(`Failed to update plan: ${error.message}`);
+    }
+  };
+
+  const handleCancelRenewal = async (subscriptionId) => {
+    const loadingToast = toastService.loading(
+      "Canceling subscription renewal..."
+    );
+    try {
+      await subscriptionService.cancelSubscriptionRenewal(subscriptionId);
+      toastService.dismiss(loadingToast);
+      toastService.success("Subscription renewal canceled");
+      // Refresh subscriptions
+      const subscriptions = await subscriptionService.getAllSubscriptions();
+      setUserSubscriptions(subscriptions);
+    } catch (error) {
+      toastService.dismiss(loadingToast);
+      toastService.error(`Failed to cancel renewal: ${error.message}`);
+    }
+  };
+
+  const handleRenewPlan = async (subscriptionId) => {
+    const loadingToast = toastService.loading("Renewing subscription...");
+    try {
+      await subscriptionService.renewSubscription(subscriptionId, {
+        startDate: new Date().toISOString(),
+        endDate: new Date(
+          new Date().setFullYear(new Date().getFullYear() + 1)
+        ).toISOString(),
+        status: "active",
+      });
+      toastService.dismiss(loadingToast);
+      toastService.success("Subscription renewed successfully");
+      // Refresh subscriptions
+      const subscriptions = await subscriptionService.getAllSubscriptions();
+      setUserSubscriptions(subscriptions);
+    } catch (error) {
+      toastService.dismiss(loadingToast);
+      toastService.error(`Failed to renew subscription: ${error.message}`);
+    }
+  };
+
+  const handleCreateTier = () => {
+    setEditingTier(null);
+    setShowTierForm(true);
+  };
+
+  const handleEditTier = (tier) => {
+    setEditingTier(tier);
+    setShowTierForm(true);
+  };
+
+  const handleSubmitTier = async (tierData) => {
+    const loadingToast = toastService.loading("Creating subscription tier...");
+    try {
+      await subscriptionService.createSubscription({
+        ...tierData,
+        createdAt: new Date().toISOString(),
+        status: "active",
+      });
+      toastService.dismiss(loadingToast);
+      toastService.success("Subscription tier created successfully");
+      setShowTierForm(false);
+      setEditingTier(null);
+      // Refresh plans
+      const subscriptions = await subscriptionService.getAllSubscriptions();
+      setPlans(subscriptions);
+    } catch (error) {
+      toastService.dismiss(loadingToast);
+      toastService.error(
+        `Failed to create subscription tier: ${error.message}`
+      );
+    }
+  };
+
+  const handleDeactivateTier = async (tierId) => {
+    const loadingToast = toastService.loading(
+      "Deactivating subscription tier..."
+    );
+    try {
+      await subscriptionService.updateSubscription(tierId, {
+        status: "inactive",
+        deactivatedAt: new Date().toISOString(),
+      });
+      toastService.dismiss(loadingToast);
+      toastService.success("Subscription tier deactivated successfully");
+      // Refresh plans
+      const subscriptions = await subscriptionService.getAllSubscriptions();
+      setPlans(subscriptions);
+    } catch (error) {
+      toastService.dismiss(loadingToast);
+      toastService.error(`Failed to deactivate tier: ${error.message}`);
+    }
+  };
+
+  const handlePublishTier = async (tierId) => {
+    const loadingToast = toastService.loading(
+      "Publishing subscription tier..."
+    );
+    try {
+      await subscriptionService.updateSubscription(tierId, {
+        status: "active",
+        publishedAt: new Date().toISOString(),
+      });
+      toastService.dismiss(loadingToast);
+      toastService.success("Subscription tier published successfully");
+      // Refresh plans
+      const subscriptions = await subscriptionService.getAllSubscriptions();
+      setPlans(subscriptions);
+    } catch (error) {
+      toastService.dismiss(loadingToast);
+      toastService.error(`Failed to publish tier: ${error.message}`);
+    }
+  };
+
   return (
     <AdminLayout>
-      <div>
-        <h2>Manage Plans</h2>
-        {/* <div className={styles.plansContainer}>
+      <div className={styles.SubscriptionsPlans}>
+        <div className={styles.plansContainer}>
           <div className={styles.plansHeader}>
-            <h2>Subscription Plans</h2>
+            <h2>Manage Plans</h2>
             {canWriteUsers && (
               <button
                 onClick={handleCreateTier}
@@ -79,7 +393,28 @@ const ManagePlans = () => {
               </div>
             ))}
           </div>
-        </div> */}
+          {showTierForm && (
+            <div className={styles.modal}>
+              <div className={styles.modalContent}>
+                <button
+                  onClick={() => setShowTierForm(false)}
+                  className={styles.closeButton}
+                >
+                  <X className="w-4 h-4" />
+                </button>
+                <h2>
+                  {editingTier
+                    ? "Edit Subscription Tier"
+                    : "Create Subscription Tier"}
+                </h2>
+                <SubscriptionTierForm
+                  onSubmit={handleSubmitTier}
+                  initialData={editingTier}
+                />
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </AdminLayout>
   )

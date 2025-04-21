@@ -81,6 +81,9 @@
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }
+.SubscriptionsPlans {
+    margin-top: 10px;
+}
 
 :global(.dark) .plansContainer {
     background-color: #1f2937;

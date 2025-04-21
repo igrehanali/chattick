@@ -13,7 +13,6 @@ import {
 } from "lucide-react";
 import { subscriptionService } from "@/lib/services/subscription-service";
 import { toastService } from "@/lib/services/toast-service";
-import SubscriptionTierForm from "./components/SubscriptionTierForm";
 
 import { AdminLayout } from "../components/layout/admin-layout";
 import { adminService } from "@/lib/services/admin-service";
@@ -24,8 +23,6 @@ export default function SubscriptionsPage() {
   const [searchQuery, setSearchQuery] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
   const [currentPage, setCurrentPage] = useState(1);
-  const [showTierForm, setShowTierForm] = useState(false);
-  const [editingTier, setEditingTier] = useState(null);
   const [selectedYear, setSelectedYear] = useState("");
   const [selectedMonth, setSelectedMonth] = useState("");
   const [plans, setPlans] = useState([]);
@@ -189,139 +186,6 @@ export default function SubscriptionsPage() {
 
   const totalPages = Math.ceil(filteredSubscriptions.length / itemsPerPage);
 
-  const handleChangePlan = async (subscriptionId) => {
-    const loadingToast = toastService.loading("Updating subscription plan...");
-    try {
-      const updatedSubscription = await subscriptionService.updateSubscription(
-        subscriptionId,
-        {
-          plan: selectedPlan || "Basic Plan",
-          status: "active",
-          autoRenew: true,
-        }
-      );
-      toastService.dismiss(loadingToast);
-      toastService.success("Subscription plan updated successfully");
-      // Refresh subscriptions
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      setUserSubscriptions(subscriptions);
-    } catch (error) {
-      toastService.dismiss(loadingToast);
-      toastService.error(`Failed to update plan: ${error.message}`);
-    }
-  };
-
-  const handleCancelRenewal = async (subscriptionId) => {
-    const loadingToast = toastService.loading(
-      "Canceling subscription renewal..."
-    );
-    try {
-      await subscriptionService.cancelSubscriptionRenewal(subscriptionId);
-      toastService.dismiss(loadingToast);
-      toastService.success("Subscription renewal canceled");
-      // Refresh subscriptions
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      setUserSubscriptions(subscriptions);
-    } catch (error) {
-      toastService.dismiss(loadingToast);
-      toastService.error(`Failed to cancel renewal: ${error.message}`);
-    }
-  };
-
-  const handleRenewPlan = async (subscriptionId) => {
-    const loadingToast = toastService.loading("Renewing subscription...");
-    try {
-      await subscriptionService.renewSubscription(subscriptionId, {
-        startDate: new Date().toISOString(),
-        endDate: new Date(
-          new Date().setFullYear(new Date().getFullYear() + 1)
-        ).toISOString(),
-        status: "active",
-      });
-      toastService.dismiss(loadingToast);
-      toastService.success("Subscription renewed successfully");
-      // Refresh subscriptions
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      setUserSubscriptions(subscriptions);
-    } catch (error) {
-      toastService.dismiss(loadingToast);
-      toastService.error(`Failed to renew subscription: ${error.message}`);
-    }
-  };
-
-  const handleCreateTier = () => {
-    setEditingTier(null);
-    setShowTierForm(true);
-  };
-
-  const handleEditTier = (tier) => {
-    setEditingTier(tier);
-    setShowTierForm(true);
-  };
-
-  const handleSubmitTier = async (tierData) => {
-    const loadingToast = toastService.loading("Creating subscription tier...");
-    try {
-      await subscriptionService.createSubscription({
-        ...tierData,
-        createdAt: new Date().toISOString(),
-        status: "active",
-      });
-      toastService.dismiss(loadingToast);
-      toastService.success("Subscription tier created successfully");
-      setShowTierForm(false);
-      setEditingTier(null);
-      // Refresh plans
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      setPlans(subscriptions);
-    } catch (error) {
-      toastService.dismiss(loadingToast);
-      toastService.error(
-        `Failed to create subscription tier: ${error.message}`
-      );
-    }
-  };
-
-  const handleDeactivateTier = async (tierId) => {
-    const loadingToast = toastService.loading(
-      "Deactivating subscription tier..."
-    );
-    try {
-      await subscriptionService.updateSubscription(tierId, {
-        status: "inactive",
-        deactivatedAt: new Date().toISOString(),
-      });
-      toastService.dismiss(loadingToast);
-      toastService.success("Subscription tier deactivated successfully");
-      // Refresh plans
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      setPlans(subscriptions);
-    } catch (error) {
-      toastService.dismiss(loadingToast);
-      toastService.error(`Failed to deactivate tier: ${error.message}`);
-    }
-  };
-
-  const handlePublishTier = async (tierId) => {
-    const loadingToast = toastService.loading(
-      "Publishing subscription tier..."
-    );
-    try {
-      await subscriptionService.updateSubscription(tierId, {
-        status: "active",
-        publishedAt: new Date().toISOString(),
-      });
-      toastService.dismiss(loadingToast);
-      toastService.success("Subscription tier published successfully");
-      // Refresh plans
-      const subscriptions = await subscriptionService.getAllSubscriptions();
-      setPlans(subscriptions);
-    } catch (error) {
-      toastService.dismiss(loadingToast);
-      toastService.error(`Failed to publish tier: ${error.message}`);
-    }
-  };
-
   return (
     <AdminLayout>
       {hasManageUsersPermission ? (
@@ -341,101 +205,6 @@ export default function SubscriptionsPage() {
               </div>
             ))}
           </div>
-
-          <div className={styles.plansContainer}>
-            <div className={styles.plansHeader}>
-              <h2>Subscription Plans</h2>
-              {canWriteUsers && (
-                <button
-                  onClick={handleCreateTier}
-                  className={styles.createButton}
-                >
-                  <Plus className="w-4 h-4" />
-                  Create New Tier
-                </button>
-              )}
-            </div>
-            <div className={styles.plansGrid}>
-              {plans.map((plan, index) => (
-                <div key={index} className={styles.planCard}>
-                  <h3 className={styles.planName}>{plan.title}</h3>
-                  <div className={styles.planPrice}>€{plan.purchasePrice}</div>
-                  <p>Status: {plan.status}</p>
-                  <p>
-                    Duration:{" "}
-                    {new Date(plan.startDateTime).toLocaleDateString()} →{" "}
-                    {new Date(plan.endDateTime).toLocaleDateString()}
-                  </p>
-
-                  <ul className={styles.planStats}>
-                    <li>Contacts: {plan.contacts}</li>
-                    <li>Messages: {plan.messages}</li>
-                    <li>Voice Call Duration: {plan.voiceCallDuration} mins</li>
-                    <li>Video Call Duration: {plan.videoCallDuration} mins</li>
-                  </ul>
-
-                  {plan.features && plan.features.length > 0 && (
-                    <div>
-                      <h4>Features:</h4>
-                      <ul className={styles.planFeatures}>
-                        {plan.features.map((feature, featureIndex) => (
-                          <li key={featureIndex} className={styles.planFeature}>
-                            <span>✓</span> {feature}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                  )}
-
-                  {canUpdateUsers && (
-                    <div className={styles.planActions}>
-                      <button
-                        onClick={() => handleEditTier(plan)}
-                        className={styles.actionButton}
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeactivateTier(index)}
-                        className={`${styles.actionButton} ${styles.deactivateButton}`}
-                      >
-                        Deactivate
-                      </button>
-                      <button
-                        onClick={() => handlePublishTier(index)}
-                        className={`${styles.actionButton} ${styles.publishButton}`}
-                      >
-                        Publish
-                      </button>
-                    </div>
-                  )}
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {showTierForm && (
-            <div className={styles.modal}>
-              <div className={styles.modalContent}>
-                <button
-                  onClick={() => setShowTierForm(false)}
-                  className={styles.closeButton}
-                >
-                  <X className="w-4 h-4" />
-                </button>
-                <h2>
-                  {editingTier
-                    ? "Edit Subscription Tier"
-                    : "Create Subscription Tier"}
-                </h2>
-                <SubscriptionTierForm
-                  onSubmit={handleSubmitTier}
-                  initialData={editingTier}
-                />
-              </div>
-            </div>
-          )}
-
           <div className={styles.filterContainer}>
             <input
               type="text"

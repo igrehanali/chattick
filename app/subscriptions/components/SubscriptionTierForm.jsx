@@ -168,6 +168,7 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             <label>Per Day</label>
             <input
               type="number"
+              max='1'
               name="limits.withdrawals.perDay"
               value={formData.limits.withdrawals.perDay}
               onChange={handleChange}
@@ -179,6 +180,7 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             <input
               type="number"
               id="monthlyAmount"
+              max='1000'
               name="limits.withdrawals.totalAmount"
               placeholder="e.g. 10000 PKR"
               value={formData.limits.withdrawals.totalAmount}

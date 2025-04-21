@@ -10,6 +10,7 @@ const ProcessPayment = () => {
       name: "ABCD",
       email: "abcd@gmail.com",
       amount: "$1500",
+      date: new Date(),
       paymentMethod: "Bank",
       subscriptionType: "Basic",
       status: "Pending",
@@ -20,6 +21,7 @@ const ProcessPayment = () => {
       name: "EFGH",
       email: "efgh@gmail.com",
       amount: "$1000",
+      date: new Date(),
       paymentMethod: "Wallet",
       subscriptionType: "Premium",
       status: "Successful",
@@ -30,6 +32,7 @@ const ProcessPayment = () => {
       name: "IJKL",
       email: "IJKL@gmail.com",
       amount: "$500",
+      date: new Date(),
       paymentMethod: "Bank",
       subscriptionType: "Basic",
       status: "Pending",
@@ -40,6 +43,7 @@ const ProcessPayment = () => {
       name: "LMNO",
       email: "LMNO@gmail.com",
       amount: "$7000",
+      date: new Date(),
       paymentMethod: "Wallet",
       subscriptionType: "Premium",
       status: "Successful",
@@ -84,6 +88,7 @@ const ProcessPayment = () => {
               <th className={styles.tableHeaderCell}>Name</th>
               <th className={styles.tableHeaderCell}>Email</th>
               <th className={styles.tableHeaderCell}>Amount</th>
+              <th className={styles.tableHeaderCell}>Date</th>
               <th className={styles.tableHeaderCell}>Payment Method</th>
               <th className={styles.tableHeaderCell}>Subscription Type</th>
               <th className={styles.tableHeaderCell}>Status</th>
@@ -99,6 +104,7 @@ const ProcessPayment = () => {
                   <td className={styles.tableCell}>{item.name}</td>
                   <td className={styles.tableCell}>{item.email}</td>
                   <td className={styles.tableCell}>{item.amount}</td>
+                  <td className={styles.tableCell}>{item.date.toLocaleString()}</td>
                   <td className={styles.tableCell}>{item.paymentMethod}</td>
                   <td className={styles.tableCell}>{item.subscriptionType}</td>
                   <td className={styles.tableCell}>{item.status}</td>
