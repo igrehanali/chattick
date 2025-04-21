@@ -13,6 +13,37 @@ export default function ContestsList() {
   const [showProfiles, setShowProfiles] = useState(false);
   const [contests, setContests] = useState([]);
 
+  const OccurrenceData = [
+    {
+      contestId: 'CON9974',
+      occurrenceID: `OCUR${Math.floor(Math.random() * 100)}`,
+      startDate: new Date(),
+      endDate: new Date,
+      status: 'Closed'
+    },
+    {
+      contestId: 'CON9865',
+      occurrenceID: 'OCUR987',
+      startDate: new Date(),
+      endDate: new Date,
+      status: 'Registering'
+    },
+    {
+      contestId: 'CON5383',
+      occurrenceID: 'OCUR4534',
+      startDate: new Date(),
+      endDate: new Date,
+      status: 'Start',
+    },
+    {
+      contestId: 'CON9874',
+      occurrenceID: 'OCUR5467',
+      startDate: new Date(),
+      endDate: new Date,
+      status: 'Ended',
+    },
+  ]
+
   useEffect(() => {
     const loadContests = async () => {
       try {
@@ -173,15 +204,13 @@ export default function ContestsList() {
                   <td>{contest.title}</td>
                   <td>
                     <span
-                      className={`${styles.status} ${
-                        styles[contest.status.toLowerCase()]
-                      }`}
+                      className={`${styles.status} ${styles[contest.status.toLowerCase()]
+                        }`}
                     >
                       {contest.status}
                     </span>
                   </td>
                   <td>{contest.frequency}</td>
-
                   <td>
                     {formatDate(contest.registrationStartDateTime)} -{" "}
                     {formatDate(contest.registrationEndDateTime)}
@@ -233,6 +262,31 @@ export default function ContestsList() {
           </table>
         </div>
       )}
+
+
+      <div className={styles.OccurrenceTable}>
+        <h3>Occurrence Table</h3>
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Contest ID</th>
+              <th>Occurrence ID</th>
+              <th>Start Date</th>
+              <th>End Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {OccurrenceData.map((contest) => <tr>
+              <td>{contest.contestId}</td>
+              <td>{contest.occurrenceID}</td>
+              <td>{contest.startDate.toLocaleString()}</td>
+              <td>{contest.endDate.toLocaleString()}</td>
+              <td>{contest.status}</td>
+            </tr>)}
+          </tbody>
+        </table>
+      </div>
 
       {isModalOpen && (
         <ContestModal

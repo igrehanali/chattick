@@ -7,7 +7,7 @@ const ProcessWithdrawals = () => {
   // ----> Withdrawals Data <----
   const withdrawalData = [
     {
-      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+      costumerID: 'TXN920',
       name: 'John Doe',
       email: 'john@example.com',
       amount: '$1200',
@@ -16,7 +16,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
-      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+      costumerID: 'TXN919',
       name: 'Jane Smith',
       email: 'jane@example.com',
       amount: '$800',
@@ -25,7 +25,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
-      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+      costumerID: 'TXN918',
       name: 'Michael Brown',
       email: 'michael@example.com',
       amount: '$1500',
@@ -34,7 +34,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
-      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+      costumerID: 'TXN917',
       name: 'Emily Johnson',
       email: 'emily@example.com',
       amount: '$600',
@@ -43,7 +43,7 @@ const ProcessWithdrawals = () => {
       action: 'Retry'
     },
     {
-      costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+      costumerID: 'TXN916',
       name: 'David Lee',
       email: 'david@example.com',
       amount: '$950',

@@ -8,7 +8,7 @@ const ProcessRefund = () => {
   const refundData = [
     {
       customer: {
-        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+        costumerID: 'TXN914',
         name: 'Ayesha Khan',
         email: 'ayesha@example.com'
       },
@@ -20,7 +20,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
-        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+        costumerID: 'TXN913',
         name: 'Zain Ali',
         email: 'zain@example.com'
       },
@@ -32,7 +32,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
-        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+        costumerID: 'TXN912',
         name: 'Fatima Noor',
         email: 'fatima@example.com'
       },
@@ -44,7 +44,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
-        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+        costumerID: 'TXN9113',
         name: 'Umer Shah',
         email: 'umer@example.com'
       },
@@ -56,7 +56,7 @@ const ProcessRefund = () => {
     },
     {
       customer: {
-        costumerID: `TXN${Math.floor(Math.random() * 10000)}`,
+        costumerID: 'TXN911',
         name: 'Sara Javed',
         email: 'sara@example.com'
       },

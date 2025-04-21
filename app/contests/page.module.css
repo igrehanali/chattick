@@ -96,6 +96,16 @@
   outline: none;
   transition: border-color 0.2s;
 }
+.buttonGroup {
+  display: flex;
+  align-items: center;
+}
+.OccurrenceTable {
+  margin-block: 20px;
+}
+.OccurrenceTable .table{
+  margin-top: 20px;
+}
 
 .dark .searchInput {
   background-color: rgb(17, 24, 39);
@@ -121,7 +131,7 @@
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow: hidden;
+  overflow-x: auto ;
 }
 
 .dark .tableWrapper {

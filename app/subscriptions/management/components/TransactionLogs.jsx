@@ -9,7 +9,7 @@ const TransactionLogs = () => {
   // ----> Transaction Data <----
   const logs = [
     {
-      id: `TXN${Math.floor(Math.random() * 10000)}`,
+      id: 'TXN921',
       type: "Withdrawal",
       customer: "John Doe",
       status: "Success",
@@ -21,7 +21,7 @@ const TransactionLogs = () => {
       notes: "Processed successfully without issues.",
     },
     {
-      id: `TXN${Math.floor(Math.random() * 10000)}`,
+      id: 'TXN922',
       type: "Deposit",
       customer: "Jane Smith",
       status: "Failed",
@@ -33,7 +33,7 @@ const TransactionLogs = () => {
       notes: "Card expired. Customer notified.",
     },
     {
-      id: `TXN${Math.floor(Math.random() * 10000)}`,
+      id: 'TXN923',
       type: "Transfer",
       customer: "Alice Lee",
       status: "Pending",

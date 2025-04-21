@@ -13,22 +13,26 @@ export default function ContestantsList() {
   const [contestants, setContestants] = useState([
     {
       id: 1,
-      name: "John Doe",
+      contestId: `TX${Math.floor(Math.random() * 10000)}`,
+      OccurrenceId: `NXP${Math.floor(Math.random() * 100)}`,
       profilePic: "/avatars/default.png",
       email: "john@example.com",
       location: "United States",
       contest: "Summer Photo Contest",
-      submissionDate: new Date("2024-02-15").getTime(),
+      startDate: new Date(),
+      endDate: new Date(),
       status: "Pending",
     },
     {
       id: 2,
-      name: "Jane Smith",
+      contestId: `TX${Math.floor(Math.random() * 10000)}`,
+      OccurrenceId: `NXP${Math.floor(Math.random() * 100)}`,
       profilePic: "/avatars/default.png",
       email: "jane@example.com",
       location: "Canada",
       contest: "Summer Photo Contest",
-      submissionDate: new Date("2024-02-14").getTime(),
+      startDate: new Date(),
+      endDate: new Date(),
       status: "Approved",
     },
   ]);
@@ -36,6 +40,7 @@ export default function ContestantsList() {
 
   const filteredContestants = contestants.filter(
     (contestant) =>
+      contestant.contestId || contestant.OccurrenceId ||
       contestant.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
       contestant.email.toLowerCase().includes(searchQuery.toLowerCase()) ||
       contestant.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -138,11 +143,13 @@ export default function ContestantsList() {
             <thead>
               <tr>
                 <th>Profile</th>
-                <th>Name</th>
+                <th>Contest ID</th>
+                <th>Occurrence ID</th>
                 <th>Email</th>
                 <th>Location</th>
                 <th>Contest</th>
-                <th>Submission Date</th>
+                <th>Start Date</th>
+                <th>End Date</th>
                 <th>Status</th>
                 <th>Actions</th>
               </tr>
@@ -157,18 +164,21 @@ export default function ContestantsList() {
                       className={styles.profilePic}
                     />
                   </td>
-                  <td>{contestant.name}</td>
+                  <td>{contestant.contestId}</td>
+                  <td>{contestant.OccurrenceId}</td>
                   <td>{contestant.email}</td>
                   <td>{contestant.location}</td>
                   <td>{contestant.contest}</td>
                   <td>
-                    {new Date(contestant.submissionDate).toLocaleDateString()}
+                    {contestant.startDate.toLocaleString()}
+                  </td>
+                  <td>
+                    {contestant.endDate.toLocaleString()}
                   </td>
                   <td>
                     <span
-                      className={`${styles.status} ${
-                        styles[contestant.status.toLowerCase()]
-                      }`}
+                      className={`${styles.status} ${styles[contestant.status.toLowerCase()]
+                        }`}
                     >
                       {contestant.status}
                     </span>
