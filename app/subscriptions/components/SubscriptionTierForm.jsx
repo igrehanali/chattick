@@ -304,7 +304,7 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Voice Call Duration (minutes)</label>
+            <label>Voice Call Duration (min)</label>
             <input
               type="number"
               name="limits.voiceCallDuration"
@@ -315,18 +315,7 @@ export default function SubscriptionTierForm({ onSubmit, initialData }) {
             />
           </div>
           <div className={styles.formGroup}>
-            <label>Video Call Duration (minutes)</label>
-            <input
-              type="number"
-              name="limits.videoCallDuration"
-              value={formData.limits.videoCallDuration}
-              onChange={handleChange}
-              required
-              min="0"
-            />
-          </div>
-          <div className={styles.formGroup}>
-            <label>Maximum File Size in (MBs)</label>
+            <label>Maximum Upload Size (MBs)</label>
             <input
               type="number"
               name="limits.MaximumFileSize"
