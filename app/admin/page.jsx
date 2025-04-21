@@ -9,6 +9,7 @@ import {
   ActivitySquare,
   UserCog,
   Lock,
+  MonitorCog,
 } from "lucide-react";
 
 import AccountsTab from "./components/accounts";
@@ -28,6 +29,7 @@ const AdminPage = () => {
     { id: "activity", label: "Activity & Audit Logs", icon: ActivitySquare },
     { id: "super", label: "Super Admin", icon: UserCog },
     { id: "account-security", label: "Account Security", icon: Lock },
+    { id: "System Integrations & Management", label: "System Integrations & Management", icon: MonitorCog },
   ];
 
   return (
