@@ -85,16 +85,6 @@ export default function ChatSettings({ settings, handleChange }) {
           </select>
         </div>
 
-        <label className={styles.label}>Devices Allowed Per Account</label>
-        <input
-          className={styles.input}
-          type="number"
-          value={settings.chat.devicesAllowed}
-          onChange={(e) =>
-            handleChange("chat", "devicesAllowed", Number(e.target.value))
-          }
-        />
-
         <label className={styles.label}>Allowed File Types</label>
         <input
           className={styles.input}

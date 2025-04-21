@@ -151,7 +151,7 @@ export default function ChatSettings() {
                 onChange={handleChange}
                 className={styles.checkbox}
               />
-              Enable Disappearing Messages
+              Enable Deleting Messages
             </label>
 
             <label className={styles.checkboxLabel}>
@@ -164,6 +164,37 @@ export default function ChatSettings() {
               />
               Clear Chat on Screen Off
             </label>
+          </div>
+
+          <div className={styles.disappearingSetting}>
+            <label className={styles.label}>
+              Default Message Disappearing Time
+              <select
+                name="messageDeletionHour"
+                value={settings.messageDeletionHour}
+                onChange={handleChange}
+                className={styles.select}
+                required
+              >
+                {deletionTimes.map((time) => (
+                  <option key={time} value={time}>
+                    {time === "1" ? "1 hour" : `${time} hours`}
+                  </option>
+                ))}
+              </select>
+            </label>
+
+            <label className={styles.checkboxLabel}>
+              <input
+                type="checkbox"
+                name="Disappearing"
+                checked={settings.Disappearing}
+                onChange={handleChange}
+                className={styles.checkbox}
+              />
+              Enable Disappearing Messages
+            </label>
+
           </div>
         </section>
 

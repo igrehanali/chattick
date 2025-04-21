@@ -17,11 +17,17 @@
     margin-bottom: 2rem;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
+.disappearingSetting {
+    margin-top: 40px;
+}
 
 .section h2 {
     font-size: 1.25rem;
     color: var(--text-primary);
     margin-bottom: 1.5rem;
+}
+.checkboxLabel {
+    margin-top: 10px;
 }
 
 .settingGroup {
