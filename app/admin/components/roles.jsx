@@ -204,7 +204,7 @@ const RolesTab = () => {
         <>
           <div className="roles-form">
             <h3>{editingId ? "Edit Role" : "Add New Role"}</h3>
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit} className="form-of-roles">
               <div className="form-group">
                 <label>Role Name</label>
                 <input

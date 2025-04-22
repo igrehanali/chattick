@@ -45,7 +45,7 @@ const AdminPage = () => {
           {tabs.map((tab) => (
             <button
               key={tab.id}
-              className={activeTab === tab.id ? styles.activeTab : styles.tab}
+              className={`${styles.sidebarBtn} ${activeTab === tab.id ? styles.activeTab : styles.tab}`}
               onClick={() => setActiveTab(tab.id)}
             >
               <tab.icon size={20} />

@@ -194,11 +194,15 @@
   }
 
   .admin-card {
-    padding: 1rem;
+    padding: 10px;
   }
+
   .submit-button {
     width: 100%;
-    max-width: 210px;
+    max-width: 300px;
   }
-  
+  .action-button{
+    padding-inline: 5px;
+  }
+
 }

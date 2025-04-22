@@ -178,3 +178,15 @@
   color: #666;
   font-style: italic;
 }
+
+@media (max-width: 500px) {
+  .roles-container{
+    padding: 10px;
+  }
+  .permissions-grid {
+    overflow: auto;
+  }
+  .permissions-grid table{
+    overflow-y: auto;
+  }
+}

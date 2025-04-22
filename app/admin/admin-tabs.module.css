@@ -120,5 +120,15 @@
         bottom: 0;
         top: auto;
     }
-}
 
+    .tabPanel {
+        padding: 0px;
+    }
+
+    .sidebar {
+        padding: 10px 6px;
+    }
+    .sidebarBtn{
+        font-size: 10px;
+    }
+}
