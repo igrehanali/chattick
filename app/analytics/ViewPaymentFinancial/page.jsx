@@ -167,7 +167,7 @@ const ViewPaymentFinancial = () => {
                     <div className="chart-card">
                         <h2>Revenue by Plan Type</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={financialData.revenue.monthly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={financialData.revenue.monthly} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />
@@ -184,7 +184,7 @@ const ViewPaymentFinancial = () => {
                     <div className="chart-card">
                         <h2>Operating Costs Breakdown</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={financialData.costs.breakdown} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={financialData.costs.breakdown} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />
@@ -203,7 +203,7 @@ const ViewPaymentFinancial = () => {
                     <div className="chart-card">
                         <h2>Profit Metrics</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart data={financialData.profitMetrics.monthly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <ComposedChart data={financialData.profitMetrics.monthly} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis yAxisId="left" />
@@ -221,7 +221,7 @@ const ViewPaymentFinancial = () => {
                     <div className="chart-card">
                         <h2>Refunds Analysis</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <PieChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <PieChart margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <Pie
                                     data={financialData.refunds.byReason}
                                     dataKey="count"

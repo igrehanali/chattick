@@ -130,7 +130,7 @@ const AnalyzeNotificationAlert = () => {
                     <div className="chart-card">
                         <h2>Monthly Notification Overview</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart data={notificationData.monthlyOverview} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <ComposedChart data={notificationData.monthlyOverview} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />
@@ -148,7 +148,7 @@ const AnalyzeNotificationAlert = () => {
                         <h2>Notification Types Performance</h2>
                         <ResponsiveContainer width="100%" height="100%">
                             <ComposedChart data={notificationData.notificationTypes.distribution}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="type" angle={-45} textAnchor="end" height={100} />
                                 <YAxis yAxisId="left" />
@@ -166,7 +166,7 @@ const AnalyzeNotificationAlert = () => {
                         <h2>Notification Performance by Plan</h2>
                         <ResponsiveContainer width="100%" height="100%">
                             <ComposedChart data={notificationData.notificationTypes.bySubscriptionPlan}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="plan" />
                                 <YAxis yAxisId="left" />
@@ -184,7 +184,7 @@ const AnalyzeNotificationAlert = () => {
                         <h2>Hourly Notification Distribution</h2>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={notificationData.hourlyDistribution}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="hour" />
                                 <YAxis />
@@ -200,7 +200,7 @@ const AnalyzeNotificationAlert = () => {
                         <h2>Platform Delivery Success</h2>
                         <ResponsiveContainer width="100%" height="100%">
                             <BarChart data={notificationData.deliveryMetrics.byPlatform}
-                                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                                margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="platform" />
                                 <YAxis />

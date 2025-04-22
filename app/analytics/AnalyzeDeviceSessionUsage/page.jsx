@@ -100,7 +100,7 @@ const AnalyzeDeviceSessionUsage = () => {
                     <div className="chart-card">
                         <h2>Daily Active Sessions</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart data={sessionData.dailyMetrics} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <ComposedChart data={sessionData.dailyMetrics} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="hour" />
                                 <YAxis yAxisId="left" />
@@ -117,7 +117,7 @@ const AnalyzeDeviceSessionUsage = () => {
                     <div className="chart-card">
                         <h2>Weekly Session Trends</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart data={sessionData.weeklyTrend} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <ComposedChart data={sessionData.weeklyTrend} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="day" />
                                 <YAxis yAxisId="left" />
@@ -134,7 +134,7 @@ const AnalyzeDeviceSessionUsage = () => {
                     <div className="chart-card">
                         <h2>Session Duration Distribution</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={sessionData.sessionDurations} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={sessionData.sessionDurations} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="range" />
                                 <YAxis />
@@ -149,7 +149,7 @@ const AnalyzeDeviceSessionUsage = () => {
                     <div className="chart-card">
                         <h2>Peak Hours Analysis</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={sessionData.peakHours} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={sessionData.peakHours} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="hour" />
                                 <YAxis />

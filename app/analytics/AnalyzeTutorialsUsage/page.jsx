@@ -214,7 +214,7 @@ const AnalyzeTutorialsUsage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={tutorialData.overallMetrics.monthly}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 0, right: 0, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
@@ -252,7 +252,7 @@ const AnalyzeTutorialsUsage = () => {
               <BarChart
                 data={tutorialData.popularTutorials}
                 layout="vertical"
-                margin={{ top: 5, right: 30, left: 100, bottom: 5 }}
+                margin={{ top: 0, right: 0, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis type="number" />
@@ -275,7 +275,7 @@ const AnalyzeTutorialsUsage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <BarChart
                 data={tutorialData.stepCompletion["How to Subscribe"]}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="step" />
@@ -304,7 +304,7 @@ const AnalyzeTutorialsUsage = () => {
             <ResponsiveContainer width="100%" height="100%">
               <ComposedChart
                 data={tutorialData.categoryMetrics}
-                margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                margin={{ top: 5, right: 0, left: 0, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="category" />
@@ -333,7 +333,7 @@ const AnalyzeTutorialsUsage = () => {
           <div className="chart-card">
             <h2>Exit Points Analysis</h2>
             <ResponsiveContainer width="100%" height="100%">
-              <PieChart margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+              <PieChart margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                 <Pie
                   data={tutorialData.exitPoints}
                   dataKey="count"

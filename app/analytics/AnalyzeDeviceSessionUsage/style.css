@@ -89,6 +89,7 @@
 
     .chart-card {
         height: 350px;
+        padding: .5rem;
     }
 
     .filter-select {

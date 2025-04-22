@@ -136,7 +136,7 @@ const AnalyzeGroupUsage = () => {
                     <div className="chart-card">
                         <h2>Monthly Group Creation & Messages</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart data={groupData.monthlyMetrics} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <ComposedChart data={groupData.monthlyMetrics} margin={{ top: 5, right:0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis yAxisId="left" />
@@ -178,7 +178,7 @@ const AnalyzeGroupUsage = () => {
                     <div className="chart-card">
                         <h2>Active vs Inactive Groups</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={groupData.activityMetrics.monthly} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={groupData.activityMetrics.monthly} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />
@@ -194,7 +194,7 @@ const AnalyzeGroupUsage = () => {
                     <div className="chart-card">
                         <h2>Regional Group Activity</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <ComposedChart data={groupData.regionalData} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <ComposedChart data={groupData.regionalData} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="region" />
                                 <YAxis yAxisId="left" />
@@ -211,7 +211,7 @@ const AnalyzeGroupUsage = () => {
                     <div className="chart-card">
                         <h2>Group vs One-to-One Messages</h2>
                         <ResponsiveContainer width="100%" height="100%">
-                            <BarChart data={groupData.messageTypeBreakdown} margin={{ top: 5, right: 30, left: 20, bottom: 5 }}>
+                            <BarChart data={groupData.messageTypeBreakdown} margin={{ top: 5, right: 0, left: 0, bottom: 5 }}>
                                 <CartesianGrid strokeDasharray="3 3" />
                                 <XAxis dataKey="month" />
                                 <YAxis />

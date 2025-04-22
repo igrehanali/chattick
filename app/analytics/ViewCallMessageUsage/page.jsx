@@ -191,7 +191,7 @@ const ViewCallMessageUsage = () => {
           {/* Average Call Duration */}
           <div className="chart-card">
             <h2>Average Call Duration (minutes)</h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={window.innerWidth <= 768 ? 260 : 300 }>
               <LineChart data={usageData.callStats.averageDuration}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
@@ -252,7 +252,7 @@ const ViewCallMessageUsage = () => {
           {/* Message Types Distribution */}
           <div className="chart-card">
             <h2>Message Types Distribution</h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={window.innerWidth <= 768 ? 270 : 300}>
               <PieChart>
                 <Pie
                   data={usageData.messageStats.messageTypes}

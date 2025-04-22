@@ -81,10 +81,12 @@
 @media (max-width: 768px) {
     .charts-grid {
         grid-template-columns: 1fr;
+        padding: 12px;
     }
 
     .chart-card {
         height: 350px;
+        padding: 12px;
     }
 
     .filter-select {

@@ -11,10 +11,12 @@
     border-color: #4f46e5;
     box-shadow: 0 0 0 1px #4f46e5;
 }
+
 .Detail_grid {
-    display: flex;
-    align-items: center;
-    gap: 10px;
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 0.3rem;
+    margin-bottom: 1rem;
 }
 
 .charts-grid {
@@ -53,7 +55,8 @@
     .filter-select {
         min-width: 100%;
     }
-    .Detail_grid{
-        flex-wrap: wrap;
+
+    .Detail_grid {
+        grid-template-columns: repeat(1, 1fr);
     }
 }
