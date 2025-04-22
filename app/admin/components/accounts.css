@@ -196,8 +196,9 @@
   .admin-card {
     padding: 1rem;
   }
-
-  .action-buttons {
-    flex-direction: column;
+  .submit-button {
+    width: 100%;
+    max-width: 210px;
   }
+  
 }

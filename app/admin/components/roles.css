@@ -56,6 +56,21 @@
   cursor: pointer;
 }
 
+.roles-table-container {
+  overflow: auto;
+}
+
+.roles-table {
+  overflow-y: auto;
+  width: 100%;
+}
+
+.role_permissions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 .submit-button {
   background-color: #4CAF50;
   color: white;
@@ -122,10 +137,11 @@
   padding: 20px;
   background-color: #f5f5f5;
   border-radius: 8px;
+  width: 100%;
 }
 
 .audit-entries {
-  max-height: 300px;
+  width: 100%;
   overflow-y: auto;
 }
 
@@ -137,6 +153,7 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  overflow: auto;
   font-size: 14px;
 }
 

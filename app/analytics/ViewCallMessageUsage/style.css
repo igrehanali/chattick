@@ -1,5 +1,6 @@
 .filters-section {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin: 1rem 0;
 }
@@ -51,5 +52,8 @@
 
     .filter-select {
         min-width: 100%;
+    }
+    .Detail_grid{
+        flex-wrap: wrap;
     }
 }

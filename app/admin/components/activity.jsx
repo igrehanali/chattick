@@ -111,69 +111,71 @@ const Activity = () => {
         </div>
 
         {/* Activity Logs Table */}
-        <table className="activity-table">
-          <thead>
-            <tr>
-              <th>Admin Username</th>
-              <th>Action</th>
-              <th>Timestamp</th>
-              <th>IP Address</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredLogs.length > 0 ? (
-              filteredLogs.map((log) => (
-                <tr key={log.id}>
-                  <td>{log.username}</td>
-                  <td>{log.action}</td>
-                  <td>{formatTimestamp(log.timestamp)}</td>
-                  <td>{log.ip}</td>
-                  <td>
-                    <button
-                      className="revoke-btn"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            `Are you sure you want to revoke access for ${log.username}?`
-                          )
-                        ) {
-                          // In production, this would make an API call
-                          setLogs((prevLogs) =>
-                            prevLogs.filter((l) => l.id !== log.id)
-                          );
-                          toast.success(`Access revoked for ${log.username}`);
-                        }
-                      }}
-                    >
-                      Revoke Access
-                    </button>
-                    <button
-                      className="investigate-btn"
-                      onClick={() => {
-                        // In production, this would open a detailed investigation view
-                        toast(
-                          `Investigating activity for user: ${log.username}`,
-                          {
-                            icon: "🔍",
+        <div className="activity-table-container">
+          <table className="activity-table">
+            <thead>
+              <tr>
+                <th>Admin Username</th>
+                <th>Action</th>
+                <th>Timestamp</th>
+                <th>IP Address</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody>
+              {filteredLogs.length > 0 ? (
+                filteredLogs.map((log) => (
+                  <tr key={log.id}>
+                    <td>{log.username}</td>
+                    <td>{log.action}</td>
+                    <td>{formatTimestamp(log.timestamp)}</td>
+                    <td>{log.ip}</td>
+                    <td className="activityBtn">
+                      <button
+                        className="revoke-btn"
+                        onClick={() => {
+                          if (
+                            window.confirm(
+                              `Are you sure you want to revoke access for ${log.username}?`
+                            )
+                          ) {
+                            // In production, this would make an API call
+                            setLogs((prevLogs) =>
+                              prevLogs.filter((l) => l.id !== log.id)
+                            );
+                            toast.success(`Access revoked for ${log.username}`);
                           }
-                        );
-                      }}
-                    >
-                      Investigate
-                    </button>
+                        }}
+                      >
+                        Revoke Access
+                      </button>
+                      <button
+                        className="investigate-btn"
+                        onClick={() => {
+                          // In production, this would open a detailed investigation view
+                          toast(
+                            `Investigating activity for user: ${log.username}`,
+                            {
+                              icon: "🔍",
+                            }
+                          );
+                        }}
+                      >
+                        Investigate
+                      </button>
+                    </td>
+                  </tr>
+                ))
+              ) : (
+                <tr>
+                  <td colSpan="5" className="no-results">
+                    No logs found.
                   </td>
                 </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="5" className="no-results">
-                  No logs found.
-                </td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );

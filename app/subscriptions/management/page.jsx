@@ -51,6 +51,7 @@ const management = () => {
                 key={tab.value}
                 variant={activeTab === tab.value ? "default" : "outline"}
                 onClick={() => setActiveTab(tab.value)}
+                className={styles.paymentsBtn}
               >
                 {tab.label}
               </Button>

@@ -102,9 +102,11 @@
 }
 .OccurrenceTable {
   margin-block: 20px;
+  overflow-y: auto;
 }
 .OccurrenceTable .table{
   margin-top: 20px;
+  overflow-y: auto;
 }
 
 .dark .searchInput {

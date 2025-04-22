@@ -100,6 +100,7 @@ const RenewalAnalytics = () => {
           <select
             value={selectedYear}
             onChange={(e) => setSelectedYear(Number(e.target.value))}
+            className="filter-select"
           >
             {years.map((year) => (
               <option key={year} value={year}>
@@ -111,6 +112,7 @@ const RenewalAnalytics = () => {
           <select
             value={selectedMonth}
             onChange={(e) => setSelectedMonth(e.target.value)}
+            className="filter-select"
           >
             <option value="">All Months</option>
             {months.map((month) => (

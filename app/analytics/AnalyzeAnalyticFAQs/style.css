@@ -15,6 +15,7 @@
 .Total_views p{
   font-weight: 600;
   font-size: 26px;
+  text-align: center;
 }
 .name_icon p{
   font-weight: 600;
@@ -23,6 +24,7 @@
 .name_icon {
   display: flex;
   align-items: center;
+  flex-direction: column-reverse;
   justify-content: space-between;
 }
 .searchBar {
@@ -101,4 +103,11 @@
   white-space: nowrap;
   color: #111827;
   font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+  .FAQ_Cards{
+    flex-wrap: wrap ;
+  }
+  
 }

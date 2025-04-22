@@ -276,14 +276,16 @@ const RolesTab = () => {
                 {roles.map((role) => (
                   <tr key={role.id}>
                     <td>{role.name}</td>
-                    <td>
-                      {role.permissions
-                        .map((p) => `${p.featureTitle} (${p.types.join(", ")})`)
-                        .join("; ")}
+                    <td className="role_permissions">
+                      <p className="permission_items">
+                        {role.permissions
+                          .map((p) => `${p.featureTitle} (${p.types.join(",")})`)
+                          .join("; ")}
+                      </p>
                     </td>
                     <td>{new Date(role.lastModified).toLocaleString()}</td>
                     <td>{role.modifiedBy}</td>
-                    <td>
+                    <td className="permissionsBtn">
                       <button
                         className="edit-button"
                         onClick={() => handleEdit(role)}

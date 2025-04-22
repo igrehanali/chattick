@@ -90,4 +90,7 @@
   .security-card {
     padding: 1rem;
   }
+  .submit-button {
+    max-width: 180px;
+  }
 }

@@ -1,7 +1,9 @@
 .filters-section {
     display: flex;
+    flex-wrap: wrap;
     gap: 1rem;
     margin: 1rem 0;
+    width: 100%;
 }
 
 /* .filter-select {
@@ -20,8 +22,6 @@
 
 .filter-select {
     flex: 1;
-    min-width: 200px;
-    max-width: 300px;
     padding: 0.5rem;
     border-radius: 0.375rem;
     border: 1px solid #e2e8f0;

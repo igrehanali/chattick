@@ -155,3 +155,11 @@ h3 {
 .recovery-input-group .btn {
   white-space: nowrap;
 }
+@media (max-width: 768px) {
+  .recovery-input-group{
+    flex-direction: column;
+  }
+  .device-item {
+    flex-direction: column;
+  }
+}

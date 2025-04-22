@@ -166,3 +166,9 @@
   align-items: center;
   justify-content: center;
 }
+
+@media (max-width: 500px) {
+  .paymentsBtn{
+    width: 200px;
+  }
+}
