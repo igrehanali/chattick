@@ -258,10 +258,7 @@ const ViewCallMessageUsage = () => {
           {/* Message Types Distribution */}
           <div className="chart-card">
             <h2>Message Types Distribution</h2>
-            <ResponsiveContainer
-              width="100%"
-              height={window.innerWidth <= 768 ? 270 : 300}
-            >
+            <ResponsiveContainer width="100%" height={chartHeight}>
               <PieChart>
                 <Pie
                   data={usageData.messageStats.messageTypes}
