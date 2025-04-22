@@ -26,6 +26,7 @@ const ViewCallMessageUsage = () => {
   const [selectedCountry, setSelectedCountry] = useState("All");
   const [selectedPlan, setSelectedPlan] = useState("All");
   const [countries, setCountries] = useState([]);
+  const [chartHeight, setChartHeight] = useState(300);
 
   // Fetch countries
   useEffect(() => {
@@ -42,6 +43,11 @@ const ViewCallMessageUsage = () => {
     fetchCountries();
   }, []);
 
+  useEffect(() => {
+    if (typeof window !== "undefined") {
+      setChartHeight(window.innerWidth <= 768 ? 260 : 300);
+    }
+  }, []);
   const COLORS = ["#0088FE", "#00C49F", "#FFBB28", "#FF8042", "#8884d8"];
   // Mock data - Replace with actual API data
   const usageData = {
@@ -191,7 +197,7 @@ const ViewCallMessageUsage = () => {
           {/* Average Call Duration */}
           <div className="chart-card">
             <h2>Average Call Duration (minutes)</h2>
-            <ResponsiveContainer width="100%" height={window.innerWidth <= 768 ? 260 : 300 }>
+            <ResponsiveContainer width="100%" height={chartHeight}>
               <LineChart data={usageData.callStats.averageDuration}>
                 <CartesianGrid strokeDasharray="3 3" />
                 <XAxis dataKey="month" />
@@ -202,13 +208,13 @@ const ViewCallMessageUsage = () => {
                   type="monotone"
                   dataKey="audioDuration"
                   stroke="#8884d8"
-                  name="Audio Calls"
+                  name="Audio Duration"
                 />
                 <Line
                   type="monotone"
                   dataKey="videoDuration"
                   stroke="#82ca9d"
-                  name="Video Calls"
+                  name="Video Duration"
                 />
               </LineChart>
             </ResponsiveContainer>
@@ -252,7 +258,10 @@ const ViewCallMessageUsage = () => {
           {/* Message Types Distribution */}
           <div className="chart-card">
             <h2>Message Types Distribution</h2>
-            <ResponsiveContainer width="100%" height={window.innerWidth <= 768 ? 270 : 300}>
+            <ResponsiveContainer
+              width="100%"
+              height={window.innerWidth <= 768 ? 270 : 300}
+            >
               <PieChart>
                 <Pie
                   data={usageData.messageStats.messageTypes}
