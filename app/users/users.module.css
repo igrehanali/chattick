@@ -178,41 +178,8 @@
     gap: 0.7rem;
 }
 
-.actionButtons button {
-    padding: 0.6rem 1rem;
-    border-radius: 6px;
-    font-size: 0.8rem;
-    font-weight: 500;
-    transition: all 0.3s ease-in-out;
-    background-color: #2563eb;
-    color: white;
-    border: none;
-    cursor: pointer;
-    box-shadow: 0 3px 8px rgba(37, 99, 235, 0.1);
-}
 
-.actionButtons button:hover {
-    background-color: #1e40af;
-    box-shadow: 0 6px 14px rgba(37, 99, 235, 0.2);
-    transform: translateY(-2px);
-}
 
-.actionButtons button:active {
-    transform: translateY(0);
-}
-
-/* Secondary Button */
-.actionButtons button[variant="ghost"] {
-    background-color: transparent;
-    border: 2px solid #e5e7eb;
-    color: #374151;
-}
-
-.actionButtons button[variant="ghost"]:hover {
-    background-color: #f3f4f6;
-    border-color: #2563eb;
-    box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
-}
 
 /* Header Button */
 .header button {

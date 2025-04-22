@@ -3,110 +3,12 @@
 import React, { useState, useEffect } from "react";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
 import { adminService } from "@/lib/services/admin-service";
+import { db, firestore } from "@/lib/firebase";
+import { collection, getDocs } from "firebase/firestore";
 import styles from "./users.module.css";
+import { Button } from "../components/ui/button";
 
-const initialUsers = [
-  {
-    hdid: "HD001",
-    subscriptionStatus: "Active",
-    activePlan: "Premium",
-    subscriptionStartDate: "2024-02-01",
-    subscriptionEndDate: "2025-02-01",
-    joinDate: "2024-01-15",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 0,
-  },
-  {
-    hdid: "HD002",
-    subscriptionStatus: "Active",
-    activePlan: "Basic",
-    subscriptionStartDate: "2024-03-05",
-    subscriptionEndDate: "2025-03-05",
-    joinDate: "2024-01-10",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 2,
-  },
-  {
-    hdid: "HD003",
-    subscriptionStatus: "Blocked",
-    activePlan: "Standard",
-    subscriptionStartDate: "2024-01-20",
-    subscriptionEndDate: "2025-01-20",
-    joinDate: "2024-01-20",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 1,
-  },
-  {
-    hdid: "HD004",
-    subscriptionStatus: "Active",
-    activePlan: "Premium",
-    subscriptionStartDate: "2024-02-10",
-    subscriptionEndDate: "2025-02-10",
-    joinDate: "2024-01-12",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 0,
-  },
-  {
-    hdid: "HD005",
-    subscriptionStatus: "Blocked",
-    activePlan: "Basic",
-    subscriptionStartDate: "2023-12-15",
-    subscriptionEndDate: "2024-12-15",
-    joinDate: "2024-01-08",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 3,
-  },
-  {
-    hdid: "HD006",
-    subscriptionStatus: "Active",
-    activePlan: "Standard",
-    subscriptionStartDate: "2024-03-01",
-    subscriptionEndDate: "2025-03-01",
-    joinDate: "2024-01-18",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 0,
-  },
-  {
-    hdid: "HD007",
-    subscriptionStatus: "Active",
-    activePlan: "Premium",
-    subscriptionStartDate: "2024-01-25",
-    subscriptionEndDate: "2025-01-25",
-    joinDate: "2024-01-22",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 1,
-  },
-  {
-    hdid: "HD008",
-    subscriptionStatus: "Active",
-    activePlan: "Standard",
-    subscriptionStartDate: "2024-02-05",
-    subscriptionEndDate: "2025-02-05",
-    joinDate: "2024-01-05",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 0,
-  },
-  {
-    hdid: "HD009",
-    subscriptionStatus: "Blocked",
-    activePlan: "Basic",
-    subscriptionStartDate: "2023-11-30",
-    subscriptionEndDate: "2024-11-30",
-    joinDate: "2024-01-14",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 4,
-  },
-  {
-    hdid: "HD010",
-    subscriptionStatus: "Active",
-    activePlan: "Premium",
-    subscriptionStartDate: "2024-02-15",
-    subscriptionEndDate: "2025-02-15",
-    joinDate: "2024-01-25",
-    pointsBalanceEncrypted: "********",
-    failedTransactions: 0,
-  },
-];
+const initialUsers = [];
 
 export default function UsersPage() {
   const [users, setUsers] = useState(initialUsers);
@@ -121,6 +23,16 @@ export default function UsersPage() {
         const userData = JSON.parse(userStr);
         const response = await adminService.getAdminById(userData.id);
         setAdmin(response);
+
+        // Fetch users from Firebase
+        const usersCollection = collection(db, "Users");
+        const usersSnapshot = await getDocs(usersCollection);
+        const usersData = usersSnapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setUsers(usersData);
+        console.log(usersData);
       } catch (error) {
         console.error("Error fetching users:", error);
       }
@@ -187,9 +99,9 @@ export default function UsersPage() {
     }
   };
 
-  const filteredUsers = users.filter((user) =>
-    user.hdid.includes(searchQuery.toLowerCase())
-  );
+  // const filteredUsers = users.filter((user) =>
+  //   user.hdid.includes(searchQuery.toLowerCase())
+  // );
 
   return (
     <AdminLayout>
@@ -235,8 +147,8 @@ export default function UsersPage() {
                 </thead>
                 <tbody className={styles.tableBody}>
                   {users.map((user) => (
-                    <tr key={user.hdid}>
-                      <td className={styles.tableCell}>{user.hdid}</td>
+                    <tr key={user.username}>
+                      <td className={styles.tableCell}>{user.id}</td>
                       <td className={styles.tableCell}>
                         <span
                           className={`${styles.status} ${
@@ -245,12 +157,18 @@ export default function UsersPage() {
                               : ""
                           }`}
                         >
-                          {user.subscriptionStatus}
+                          {user.subscriptionStatus === true
+                            ? "Active"
+                            : "inActive"}
                         </span>
                       </td>
-                      <td className={styles.tableCell}>{user.activePlan}</td>
                       <td className={styles.tableCell}>
-                        {user.subscriptionStartDate}
+                        {user.subscriptionPlan.planName}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {user.subscriptionPlan.createdAt
+                          .toDate()
+                          .toLocaleDateString()}
                       </td>
                       <td className={styles.tableCell}>
                         {user.subscriptionEndDate}
@@ -268,22 +186,21 @@ export default function UsersPage() {
                         <td className={styles.tableCell}>
                           <div className={styles.actionButtons}>
                             {canUpdateUsers && (
-                              <button
+                              <Button
+                                variant="primary"
                                 onClick={() => handleBlockUser(user.hdid)}
-                                className={styles.actionButton}
                               >
                                 {user.subscriptionStatus === "Blocked"
                                   ? "Unblock"
                                   : "Block"}
-                              </button>
+                              </Button>
                             )}
                             {canWriteUsers && (
-                              <button
+                              <Button
                                 onClick={() => handleResetPassword(user.hdid)}
-                                className={styles.actionButton}
                               >
                                 Reset Password
-                              </button>
+                              </Button>
                             )}
                           </div>
                         </td>

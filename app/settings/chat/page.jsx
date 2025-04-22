@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import styles from "./page.module.css";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
 import { Button } from "@/app/components/ui/button";
+import { db } from "@/lib/firebase";
+import { doc, getDoc, setDoc, serverTimestamp } from "firebase/firestore";
+import { storage } from "@/lib/firebase";
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import toast from "react-hot-toast";
 
 export default function ChatSettings() {
+  const [isLoading, setIsLoading] = useState(false);
   const [settings, setSettings] = useState({
     theme: "sunlight",
     wallpaper: "",
@@ -36,17 +42,66 @@ export default function ChatSettings() {
     }));
   };
 
-  const handleWallpaperChange = (e) => {
+  const handleWallpaperChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
+      setIsLoading(true);
+      try {
+        const storageRef = ref(
+          storage,
+          `wallpapers/${Date.now()}_${file.name}`
+        );
+        await uploadBytes(storageRef, file);
+        const url = await getDownloadURL(storageRef);
         setSettings((prev) => ({
           ...prev,
-          wallpaper: reader.result,
+          wallpaper: url,
         }));
-      };
-      reader.readAsDataURL(file);
+        toast.success("Wallpaper uploaded successfully");
+      } catch (error) {
+        console.error("Error uploading wallpaper:", error);
+        toast.error("Failed to upload wallpaper");
+      } finally {
+        setIsLoading(false);
+      }
+    }
+  };
+
+  useEffect(() => {
+    loadSettings();
+  }, []);
+
+  const loadSettings = async () => {
+    setIsLoading(true);
+    try {
+      const settingsRef = doc(db, "settings", "chat");
+      const settingsSnap = await getDoc(settingsRef);
+
+      if (settingsSnap.exists()) {
+        setSettings(settingsSnap.data());
+      }
+    } catch (error) {
+      console.error("Error loading settings:", error);
+      toast.error("Failed to load settings");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const saveSettings = async () => {
+    setIsLoading(true);
+    try {
+      const settingsRef = doc(db, "settings", "chat");
+      await setDoc(settingsRef, {
+        ...settings,
+        updatedAt: serverTimestamp(),
+      });
+      toast.success("Settings saved successfully");
+    } catch (error) {
+      console.error("Error saving settings:", error);
+      toast.error("Failed to save settings");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -85,6 +140,7 @@ export default function ChatSettings() {
                 accept="image/*"
                 onChange={handleWallpaperChange}
                 className={styles.fileInput}
+                disabled={isLoading}
               />
             </label>
 
@@ -194,7 +250,6 @@ export default function ChatSettings() {
               />
               Enable Disappearing Messages
             </label>
-
           </div>
         </section>
 
@@ -227,10 +282,11 @@ export default function ChatSettings() {
         </section>
 
         <Button
-          //   className={styles.saveButton}
-          onClick={() => console.log(settings)}
+          className={styles.saveButton}
+          onClick={saveSettings}
+          disabled={isLoading}
         >
-          Save Changes
+          {isLoading ? "Saving..." : "Save Changes"}
         </Button>
       </div>
     </AdminLayout>

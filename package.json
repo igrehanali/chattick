@@ -25,6 +25,7 @@
     "@radix-ui/react-toast": "^1.2.6",
     "@tiptap/react": "^2.11.5",
     "@tiptap/starter-kit": "^2.11.5",
+    "country-list": "^2.3.0",
     "draft-js": "^0.11.7",
     "firebase": "^11.6.0",
     "framer-motion": "^12.4.12",

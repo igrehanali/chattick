@@ -80,9 +80,12 @@
     background-color: white;
     border-radius: 0.5rem;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    margin-top: 1.5rem;
 }
+
 .SubscriptionsPlans {
     margin-top: 10px;
+    padding: 1rem;
 }
 
 :global(.dark) .plansContainer {
@@ -140,7 +143,6 @@
 }
 
 .planCard:hover {
-    transform: translateY(-4px);
     box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
 }
 
@@ -155,17 +157,15 @@
 .planName {
     font-size: 1.5rem;
     font-weight: 700;
-    margin-bottom: 0.75rem;
-    background: linear-gradient(45deg, #1e40af, #3b82f6);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+    /* margin-bottom: 0.75rem; */
+    columns: #111827;
 }
 
 .planPrice {
     font-size: 2rem;
     font-weight: 700;
-    color: #2563eb;
     margin-bottom: 1rem;
+    color: #313131;
 }
 
 .planFeatures {
@@ -309,6 +309,7 @@
     display: flex;
     gap: 0.5rem;
     margin-top: 1rem;
+    /* flex-wrap: wrap; */
 }
 
 .deactivateButton {
