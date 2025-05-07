@@ -82,7 +82,7 @@ export default function UsersPage() {
           user.id === userId
             ? {
                 ...user,
-                status: user.status === "Active" ? "Blocked" : "Active",
+                subscriptionStatus: user.subscriptionStatus === true ? false : true,
               }
             : user
         )
@@ -99,9 +99,17 @@ export default function UsersPage() {
     }
   };
 
-  // const filteredUsers = users.filter((user) =>
-  //   user.hdid.includes(searchQuery.toLowerCase())
-  // );
+
+  const filteredUsers = users.filter((user) => {
+    const query = searchQuery.toLowerCase();
+
+    const hdidMatch = user.HDID?.toLowerCase().includes(query);
+    const status = user.subscriptionStatus === true ? "active" : "inactive";
+    const statusMatch = status.includes(query);
+
+    return hdidMatch || statusMatch;
+  });
+
 
   return (
     <AdminLayout>
@@ -146,9 +154,9 @@ export default function UsersPage() {
                   </tr>
                 </thead>
                 <tbody className={styles.tableBody}>
-                  {users.map((user) => (
+                  {filteredUsers.map((user) => (
                     <tr key={user.username}>
-                      <td className={styles.tableCell}>{user.id}</td>
+                      <td className={styles.tableCell}>{user.HDID}</td>
                       <td className={styles.tableCell}>
                         <span
                           className={`${styles.status} ${
@@ -173,7 +181,9 @@ export default function UsersPage() {
                       <td className={styles.tableCell}>
                         {user.subscriptionEndDate}
                       </td>
-                      <td className={styles.tableCell}>{user.joinDate}</td>
+                      <td className={styles.tableCell}>{user.createdAt
+                        .toDate()
+                        .toLocaleString()}</td>
                       <td className={styles.tableCell}>
                         <span className={styles.encrypted}>
                           {user.pointsBalanceEncrypted}
@@ -188,16 +198,14 @@ export default function UsersPage() {
                             {canUpdateUsers && (
                               <Button
                                 variant="primary"
-                                onClick={() => handleBlockUser(user.hdid)}
+                                onClick={() => handleBlockUser(user.id)}
                               >
-                                {user.subscriptionStatus === "Blocked"
-                                  ? "Unblock"
-                                  : "Block"}
+                                {user.subscriptionStatus ? "Block" : "Unblock"}
                               </Button>
                             )}
                             {canWriteUsers && (
                               <Button
-                                onClick={() => handleResetPassword(user.hdid)}
+                                onClick={() => handleResetPassword(user.id)}
                               >
                                 Reset Password
                               </Button>
