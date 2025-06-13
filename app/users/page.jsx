@@ -82,7 +82,8 @@ export default function UsersPage() {
           user.id === userId
             ? {
                 ...user,
-                subscriptionStatus: user.subscriptionStatus === true ? false : true,
+                subscriptionStatus:
+                  user.subscriptionStatus === true ? false : true,
               }
             : user
         )
@@ -99,7 +100,6 @@ export default function UsersPage() {
     }
   };
 
-
   const filteredUsers = users.filter((user) => {
     const query = searchQuery.toLowerCase();
 
@@ -109,7 +109,6 @@ export default function UsersPage() {
 
     return hdidMatch || statusMatch;
   });
-
 
   return (
     <AdminLayout>
@@ -134,90 +133,6 @@ export default function UsersPage() {
                 />
               </div>
             </div>
-
-            <div className={styles.tableWrapper}>
-              <table className={styles.table}>
-                <thead className={styles.tableHeader}>
-                  <tr>
-                    <th className={styles.tableHeaderCell}>HDID</th>
-                    <th className={styles.tableHeaderCell}>
-                      Subscription Status
-                    </th>
-                    <th className={styles.tableHeaderCell}>Active Plan</th>
-                    <th className={styles.tableHeaderCell}>Start Date</th>
-                    <th className={styles.tableHeaderCell}>End Date</th>
-                    <th className={styles.tableHeaderCell}>Join Date</th>
-                    <th className={styles.tableHeaderCell}>Points Balance</th>
-                    <th className={styles.tableHeaderCell}>
-                      Failed Transactions
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className={styles.tableBody}>
-                  {filteredUsers.map((user) => (
-                    <tr key={user.username}>
-                      <td className={styles.tableCell}>{user.HDID}</td>
-                      <td className={styles.tableCell}>
-                        <span
-                          className={`${styles.status} ${
-                            user.subscriptionStatus === "Blocked"
-                              ? styles.blocked
-                              : ""
-                          }`}
-                        >
-                          {user.subscriptionStatus === true
-                            ? "Active"
-                            : "inActive"}
-                        </span>
-                      </td>
-                      <td className={styles.tableCell}>
-                        {user.subscriptionPlan.planName}
-                      </td>
-                      <td className={styles.tableCell}>
-                        {user.subscriptionPlan.createdAt
-                          .toDate()
-                          .toLocaleDateString()}
-                      </td>
-                      <td className={styles.tableCell}>
-                        {user.subscriptionEndDate}
-                      </td>
-                      <td className={styles.tableCell}>{user.createdAt
-                        .toDate()
-                        .toLocaleString()}</td>
-                      <td className={styles.tableCell}>
-                        <span className={styles.encrypted}>
-                          {user.pointsBalanceEncrypted}
-                        </span>
-                      </td>
-                      <td className={styles.tableCell}>
-                        {user.failedTransactions}
-                      </td>
-                      {(canUpdateUsers || canWriteUsers) && (
-                        <td className={styles.tableCell}>
-                          <div className={styles.actionButtons}>
-                            {canUpdateUsers && (
-                              <Button
-                                variant="primary"
-                                onClick={() => handleBlockUser(user.id)}
-                              >
-                                {user.subscriptionStatus ? "Block" : "Unblock"}
-                              </Button>
-                            )}
-                            {canWriteUsers && (
-                              <Button
-                                onClick={() => handleResetPassword(user.id)}
-                              >
-                                Reset Password
-                              </Button>
-                            )}
-                          </div>
-                        </td>
-                      )}
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-            </div>
           </div>
         </div>
       ) : (
@@ -229,3 +144,87 @@ export default function UsersPage() {
     </AdminLayout>
   );
 }
+//
+//  <div className={styles.tableWrapper}>
+//             <table className={styles.table}>
+//               <thead className={styles.tableHeader}>
+//                 <tr>
+//                   <th className={styles.tableHeaderCell}>HDID</th>
+//                   <th className={styles.tableHeaderCell}>
+//                     Subscription Status
+//                   </th>
+//                   <th className={styles.tableHeaderCell}>Active Plan</th>
+//                   <th className={styles.tableHeaderCell}>Start Date</th>
+//                   <th className={styles.tableHeaderCell}>End Date</th>
+//                   <th className={styles.tableHeaderCell}>Join Date</th>
+//                   <th className={styles.tableHeaderCell}>Points Balance</th>
+//                   <th className={styles.tableHeaderCell}>
+//                     Failed Transactions
+//                   </th>
+//                 </tr>
+//               </thead>
+//               <tbody className={styles.tableBody}>
+//                 {filteredUsers.map((user) => (
+//                   <tr key={user.username}>
+//                     <td className={styles.tableCell}>{user.HDID}</td>
+//                     <td className={styles.tableCell}>
+//                       <span
+//                         className={`${styles.status} ${
+//                           user.subscriptionStatus === "Blocked"
+//                             ? styles.blocked
+//                             : ""
+//                         }`}
+//                       >
+//                         {user.subscriptionStatus === true
+//                           ? "Active"
+//                           : "inActive"}
+//                       </span>
+//                     </td>
+//                     <td className={styles.tableCell}>
+//                       {user.subscriptionPlan.planName}
+//                     </td>
+//                     <td className={styles.tableCell}>
+//                       {user.subscriptionPlan.createdAt
+//                         .toDate()
+//                         .toLocaleDateString()}
+//                     </td>
+//                     <td className={styles.tableCell}>
+//                       {user.subscriptionEndDate}
+//                     </td>
+//                     <td className={styles.tableCell}>
+//                       {user.createdAt.toDate().toLocaleString()}
+//                     </td>
+//                     <td className={styles.tableCell}>
+//                       <span className={styles.encrypted}>
+//                         {user.pointsBalanceEncrypted}
+//                       </span>
+//                     </td>
+//                     <td className={styles.tableCell}>
+//                       {user.failedTransactions}
+//                     </td>
+//                     {(canUpdateUsers || canWriteUsers) && (
+//                       <td className={styles.tableCell}>
+//                         <div className={styles.actionButtons}>
+//                           {canUpdateUsers && (
+//                             <Button
+//                               variant="primary"
+//                               onClick={() => handleBlockUser(user.id)}
+//                             >
+//                               {user.subscriptionStatus ? "Block" : "Unblock"}
+//                             </Button>
+//                           )}
+//                           {canWriteUsers && (
+//                             <Button
+//                               onClick={() => handleResetPassword(user.id)}
+//                             >
+//                               Reset Password
+//                             </Button>
+//                           )}
+//                         </div>
+//                       </td>
+//                     )}
+//                   </tr>
+//                 ))}
+//               </tbody>
+//             </table>
+//           </div>
