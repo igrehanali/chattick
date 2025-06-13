@@ -15,34 +15,34 @@ export default function ContestsList() {
 
   const OccurrenceData = [
     {
-      contestId: 'CON9974',
+      contestId: "CON9974",
       occurrenceID: `OCUR${Math.floor(Math.random() * 100)}`,
       startDate: new Date(),
-      endDate: new Date,
-      status: 'Closed'
+      endDate: new Date(),
+      status: "Closed",
     },
     {
-      contestId: 'CON9865',
-      occurrenceID: 'OCUR987',
+      contestId: "CON9865",
+      occurrenceID: "OCUR987",
       startDate: new Date(),
-      endDate: new Date,
-      status: 'Registering'
+      endDate: new Date(),
+      status: "Registering",
     },
     {
-      contestId: 'CON5383',
-      occurrenceID: 'OCUR4534',
+      contestId: "CON5383",
+      occurrenceID: "OCUR4534",
       startDate: new Date(),
-      endDate: new Date,
-      status: 'Start',
+      endDate: new Date(),
+      status: "Start",
     },
     {
-      contestId: 'CON9874',
-      occurrenceID: 'OCUR5467',
+      contestId: "CON9874",
+      occurrenceID: "OCUR5467",
       startDate: new Date(),
-      endDate: new Date,
-      status: 'Ended',
+      endDate: new Date(),
+      status: "Ended",
     },
-  ]
+  ];
 
   useEffect(() => {
     const loadContests = async () => {
@@ -127,7 +127,7 @@ export default function ContestsList() {
   };
 
   const filteredContests = contests.filter((contest) =>
-    contest.title.toLowerCase().includes(searchQuery.toLowerCase())
+    contest.contestName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   const formatDate = (dateString) => {
@@ -201,23 +201,24 @@ export default function ContestsList() {
             <tbody>
               {filteredContests.map((contest) => (
                 <tr key={contest.id}>
-                  <td>{contest.title}</td>
+                  <td>{contest.contestName}</td>
                   <td>
                     <span
-                      className={`${styles.status} ${styles[contest.status.toLowerCase()]
-                        }`}
+                      className={`${styles.status} ${
+                        styles[contest.status.toLowerCase()]
+                      }`}
                     >
                       {contest.status}
                     </span>
                   </td>
-                  <td>{contest.frequency}</td>
+                  <td>{contest.contestType}</td>
                   <td>
-                    {formatDate(contest.registrationStartDateTime)} -{" "}
-                    {formatDate(contest.registrationEndDateTime)}
+                    {formatDate(contest.registrationStartDate)} -{" "}
+                    {formatDate(contest.registrationEndDate)}
                   </td>
                   <td>
-                    {formatDate(contest.startDateTime)} -{" "}
-                    {formatDate(contest.endDateTime)}
+                    {formatDate(contest.startDate)} -{" "}
+                    {formatDate(contest.endDate)}
                   </td>
                   <td>{contest.minParticipants}</td>
                   <td>
@@ -237,23 +238,6 @@ export default function ContestsList() {
                       >
                         <Trash2 className={styles.actionIcon} />
                       </Button>
-                      {contest.status === "Unpublished" ? (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handlePublishContest(contest.id)}
-                        >
-                          Publish
-                        </Button>
-                      ) : (
-                        <Button
-                          variant="ghost"
-                          size="sm"
-                          onClick={() => handleUnpublishContest(contest.id)}
-                        >
-                          Unpublish
-                        </Button>
-                      )}
                     </div>
                   </td>
                 </tr>
@@ -262,7 +246,6 @@ export default function ContestsList() {
           </table>
         </div>
       )}
-
 
       <div className={styles.OccurrenceTable}>
         <h3>Occurrence Table</h3>
@@ -277,13 +260,15 @@ export default function ContestsList() {
             </tr>
           </thead>
           <tbody>
-            {OccurrenceData.map((contest) => <tr>
-              <td>{contest.contestId}</td>
-              <td>{contest.occurrenceID}</td>
-              <td>{contest.startDate.toLocaleString()}</td>
-              <td>{contest.endDate.toLocaleString()}</td>
-              <td>{contest.status}</td>
-            </tr>)}
+            {OccurrenceData.map((contest, index) => (
+              <tr key={index}>
+                <td>{contest.contestId}</td>
+                <td>{contest.occurrenceID}</td>
+                <td>{contest.startDate.toLocaleString()}</td>
+                <td>{contest.endDate.toLocaleString()}</td>
+                <td>{contest.status}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>

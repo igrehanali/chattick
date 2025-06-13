@@ -96,15 +96,18 @@
   outline: none;
   transition: border-color 0.2s;
 }
+
 .buttonGroup {
   display: flex;
   align-items: center;
 }
+
 .OccurrenceTable {
   margin-block: 20px;
   overflow-y: auto;
 }
-.OccurrenceTable .table{
+
+.OccurrenceTable .table {
   margin-top: 20px;
   overflow-y: auto;
 }
@@ -133,7 +136,10 @@
   background-color: white;
   border-radius: 0.5rem;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-  overflow-x: auto ;
+  overflow-x: auto;
+  overflow-y: scroll;
+  border: 1px solid rgb(229, 231, 235);
+  max-height: 60vh;
 }
 
 .dark .tableWrapper {
@@ -143,6 +149,8 @@
 .table {
   width: 100%;
   border-collapse: collapse;
+  max-height: 60vh;
+  overflow-y: scroll;
 }
 
 .table th {
