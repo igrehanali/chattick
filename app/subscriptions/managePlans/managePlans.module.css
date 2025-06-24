@@ -1,0 +1,143 @@
+.plansGrid {
+  display: grid;
+  grid-template-columns: repeat(1, 1fr);
+  gap: 1.5rem;
+  padding: 1.5rem;
+}
+.planCard {
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  padding: 2rem;
+  transition: all 0.3s ease-in-out;
+  background-color: white;
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+@media (min-width: 768px) {
+  .plansGrid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (min-width: 1024px) {
+  .plansGrid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+.planCard::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #2563eb, #3b82f6);
+  opacity: 0;
+  transition: opacity 0.3s ease-in-out;
+}
+
+.planCard:hover {
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+}
+
+.planCard:hover::before {
+  opacity: 1;
+}
+
+:global(.dark) .planCard {
+  border-color: #374151;
+}
+.planHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+.planBadge {
+  background: green;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  width: 70px;
+}
+.planStats{
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+.inactiveBadge {
+  background: red;
+  color: #ffffff;
+  padding: 0.25rem 0.5rem;
+  border-radius: 12px;
+  width: 70px;
+}
+.planName {
+  font-size: 1.5rem;
+  font-weight: 700;
+  /* margin-bottom: 0.75rem; */
+  columns: #111827;
+}
+.planPrice {
+  font-size: 1rem;
+  font-weight: 700;
+  margin-bottom: 1rem;
+  color: #313131;
+}
+.planFeatures {
+  list-style: none;
+  padding: 0;
+  margin: 1rem 0 0 0;
+}
+
+.planFeature {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 0.5rem;
+  color: #6b7280;
+}
+.planActions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  /* flex-wrap: wrap; */
+}
+.actionButton {
+  width: 100%;
+  padding: 0.5rem 1rem;
+  background-color: #2563eb;
+  color: white;
+  border: none;
+  border-radius: 0.375rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.actionButton:hover {
+  background-color: #1d4ed8;
+}
+.actionButtons {
+  display: flex;
+  gap: 0.5rem;
+} 
+.deactivateButton {
+  background-color: #dc2626;
+}
+
+.deactivateButton:hover {
+  background-color: #b91c1c;
+}
+.publishButton {
+  background-color: #059669;
+}
+
+.publishButton:hover {
+  background-color: #047857;
+}

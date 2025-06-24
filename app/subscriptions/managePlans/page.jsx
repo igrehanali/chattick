@@ -19,7 +19,8 @@ import SubscriptionTierForm from "@/app/subscriptions/components/SubscriptionTie
 import { adminService } from "@/lib/services/admin-service";
 import { AdminLayout } from "@/app/components/layout/admin-layout";
 import React, { useEffect, useState } from "react";
-import styles from "@/app/subscriptions/page.module.css";
+import styles from "@/app/subscriptions/managePlans/managePlans.module.css";
+import styles2 from "@/app/subscriptions/page.module.css";
 import Loader from "@/lib/loader";
 import { Button } from "@/app/components/ui/button";
 
@@ -355,8 +356,7 @@ const ManagePlans = () => {
     } catch (error) {
       toastService.dismiss(loadingToast);
       toastService.error(
-        `Failed to ${isEditing ? "update" : "create"} subscription tier: ${
-          error.message
+        `Failed to ${isEditing ? "update" : "create"} subscription tier: ${error.message
         }`
       );
     }
@@ -408,13 +408,13 @@ const ManagePlans = () => {
     <AdminLayout>
       <div>
         {/* Plans Container */}
-        <div className={styles.plansContainer}>
-          <div className={styles.plansHeader}>
+        <div className={styles2.plansContainer}>
+          <div className={styles2.plansHeader}>
             <h2>Manage Plans</h2>
             {canWriteUsers && (
               <Button
                 onClick={handleCreateTier}
-                className={styles.createButton}
+                className={styles2.createButton}
               >
                 <Plus className="w-4 h-4" />
                 Create New Tier
@@ -423,16 +423,16 @@ const ManagePlans = () => {
           </div>
 
           {isLoading ? (
-            <div className={styles.loadingContainer}>
+            <div className={styles2.loadingContainer}>
               <Loader />
             </div>
           ) : plans.length === 0 ? (
-            <div className={styles.emptyState}>
+            <div className={styles2.emptyState}>
               <p>No subscription plans found</p>
               {canWriteUsers && (
                 <button
                   onClick={handleCreateTier}
-                  className={styles.createButton}
+                  className={styles2.createButton}
                 >
                   <Plus className="w-4 h-4" />
                   Create New Tier
@@ -442,38 +442,44 @@ const ManagePlans = () => {
           ) : (
             <div className={styles.plansGrid}>
               {plans.map((plan, index) => (
-                <div key={index} className={styles.planCard}>
-                  <div className={styles.planBadge}>{plan.status}</div>
-                  <h3 className={styles.planName}>{plan.title}</h3>
+                <div
+                  key={index}
+                  className={styles.planCard}
+                >
+                  <div className={styles.planHeader}>
+                    <h3 className={styles.planName}>{plan.title}</h3>
+                    <div className={plan.status === "active" ? styles.planBadge : styles.inactiveBadge}>
+                      {plan.status.toUpperCase()}
+                    </div>
+                  </div>
+
+
                   <div className={styles.planPrice}>
-                    {plan.currency} •{plan.purchasePrice}
-                  </div>
-                  <div className={styles.planDuration}>
-                    <Calendar className="w-4 h-4 mr-1" />
-                    <span>
-                      {new Date(plan.startDateTime).toLocaleDateString()} →{" "}
-                      {new Date(plan.endDateTime).toLocaleDateString()}
-                    </span>
+                    {plan.currency} - ${plan.purchasePrice}
                   </div>
 
-                  <ul className={styles.planStats}>
-                    <li>Contacts: {plan.limits.contacts || 0}</li>
-                    <li>Messages: {plan.limits.messages || 0}</li>
-                    <li>
-                      Voice Call: {plan.limits.voiceCallDuration || 0} mins
-                    </li>
-                    <li>
-                      Video Call: {plan.limits.videoCallDuration || 0} mins
-                    </li>
-                  </ul>
 
-                  {plan.features && plan.features.length > 0 && (
+                  <div className={styles.planStats}>
+                    <div className={styles.planDuration}>
+                      <Calendar size={16} style={{ marginRight: "5px" }} />
+                      <span>
+                        {new Date(plan.startDateTime).toLocaleDateString()} &rarr;{" "}
+                        {new Date(plan.endDateTime).toLocaleDateString()}
+                      </span>
+                    </div>
+                    <p>👥 Contacts: {plan.limits.contacts || 0}</p>
+                    <p>💬 Messages: {plan.limits.messages || 0}</p>
+                    <p>📞 Voice Call: {plan.limits.voiceCallDuration || 0} mins</p>
+                    <p>🎥 Video Call: {plan.limits.videoCallDuration || 0} mins</p>
+                  </div>
+
+                  {plan.features?.length > 0 && (
                     <div className={styles.featuresContainer}>
-                      <h4>Features:</h4>
+                      <h4 >Features:</h4>
                       <ul className={styles.planFeatures}>
                         {plan.features.map((feature, featureIndex) => (
                           <li key={featureIndex} className={styles.planFeature}>
-                            <span className={styles.checkmark}>✓</span>{" "}
+                            <span className={styles.checkmark}>✓</span>
                             {feature}
                           </li>
                         ))}
@@ -482,9 +488,9 @@ const ManagePlans = () => {
                   )}
 
                   {canUpdateUsers && (
-                    <>
-                      <div className={styles.planActions}>
-                        <Button onClick={() => handleEditTier(plan)}>
+                    <div className={styles.planActions}>
+                      <div className="flex gap-2">
+                        <Button onClick={() => handleEditTier(plan)} className={`${styles.actionButton}`}>
                           Edit
                         </Button>
                         <Button
@@ -504,30 +510,31 @@ const ManagePlans = () => {
                       >
                         Publish
                       </Button>
-                    </>
+                    </div>
                   )}
                 </div>
               ))}
             </div>
+
           )}
 
           {/* Pagination */}
           {totalPages > 1 && (
-            <div className={styles.pagination}>
+            <div className={styles2.pagination}>
               <button
                 onClick={() => handlePageChange(currentPage - 1)}
                 disabled={currentPage === 1}
-                className={styles.paginationButton}
+                className={styles2.paginationButton}
               >
                 Previous
               </button>
-              <span className={styles.pageInfo}>
+              <span className={styles2.pageInfo}>
                 Page {currentPage} of {totalPages}
               </span>
               <button
                 onClick={() => handlePageChange(currentPage + 1)}
                 disabled={currentPage === totalPages}
-                className={styles.paginationButton}
+                className={styles2.paginationButton}
               >
                 Next
               </button>
@@ -537,15 +544,15 @@ const ManagePlans = () => {
 
         {/* Subscription Tier Form Modal */}
         {showTierForm && (
-          <div className={styles.modal}>
-            <div className={styles.modalContent}>
+          <div className={styles2.modal}>
+            <div className={styles2.modalContent}>
               <button
                 onClick={() => setShowTierForm(false)}
-                className={styles.closeButton}
+                className={styles2.closeButton}
               >
                 <X className="w-4 h-4" />
               </button>
-              <h2 className={styles.modalTitle}>
+              <h2 className={styles2.modalTitle}>
                 {editingTier
                   ? "Edit Subscription Tier"
                   : "Create Subscription Tier"}

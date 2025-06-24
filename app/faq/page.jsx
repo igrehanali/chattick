@@ -41,6 +41,7 @@ export default function FAQPage() {
     };
     fetchData();
   }, []);
+  
   const [searchQuery, setSearchQuery] = useState("");
   const [isFAQModalOpen, setIsFAQModalOpen] = useState(false);
   const [isCategoryModalOpen, setIsCategoryModalOpen] = useState(false);

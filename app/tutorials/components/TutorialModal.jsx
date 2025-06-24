@@ -121,6 +121,7 @@ export default function TutorialModal({ isOpen, onClose, tutorial, onSave }) {
               <Label htmlFor="title">Title</Label>
               <Input
                 id="title"
+                placeholder="Enter title"
                 value={formData.title}
                 onChange={(e) =>
                   setFormData((prev) => ({ ...prev, title: e.target.value }))
@@ -133,6 +134,7 @@ export default function TutorialModal({ isOpen, onClose, tutorial, onSave }) {
               <Label htmlFor="description">Description</Label>
               <Input
                 id="description"
+                placeholder="Enter description"
                 value={formData.description}
                 onChange={(e) =>
                   setFormData((prev) => ({
