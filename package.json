@@ -33,7 +33,7 @@
     "jspdf": "^3.0.1",
     "ldrs": "^1.1.6",
     "lucide-react": "^0.479.0",
-    "next": "15.2.1",
+    "next": "^15.3.4",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hot-toast": "^2.5.2",

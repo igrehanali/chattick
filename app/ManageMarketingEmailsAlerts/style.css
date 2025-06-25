@@ -173,6 +173,17 @@
     flex-direction: column;
     gap: 1.5rem;
 }
+.preview-content {
+    border: 1px solid #ccc;
+    padding: 16px;
+    background: #fafafa;
+    min-height: 200px;
+    font-family: Arial, sans-serif; 
+}
+.delete-btn {
+    background: #e53e3e !important;
+    color: white;
+}
 
 @media (max-width: 1024px) {
     .template-management {

@@ -10,7 +10,7 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
     contestId: "",
     contestName: "",
     contestType: "Daily",
-    endDate: "",
+    endDate: Timestamp.now(),
     entryPrice: 0,
     maxParticipants: 0,
     minParticipants: 0,
@@ -18,7 +18,7 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
     prizePool: 0,
     registrationEndDate: "",
     registrationStartDate: "",
-    startDate: "",
+    startDate: Timestamp.now(),
     status: "registering", // Default value
     totalWinner: 0,
     updatedAt: Timestamp.now(),
@@ -77,10 +77,19 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
 
   const handleChange = (e) => {
     const { name, value } = e.target;
+
+    const isTimestampField = [
+      "startDate",
+      "endDate",
+      "registrationStartDate",
+      "registrationEndDate",
+    ].includes(name);
+
     setFormData((prev) => ({
       ...prev,
-      [name]: value,
+      [name]: isTimestampField ? Timestamp.fromDate(new Date(value)) : value,
     }));
+
     if (errors[name]) {
       setErrors((prev) => ({
         ...prev,
@@ -89,10 +98,18 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
     }
   };
 
+  const formatTimestamp = (timestamp) => {
+    if (!timestamp?.toDate) return "";
+    const date = timestamp.toDate();
+    return new Date(date.getTime() - date.getTimezoneOffset() * 60000)
+      .toISOString()
+      .slice(0, 16);
+  };
+
   if (!isOpen) return null;
 
   const renderField = (key, value) => {
-    if (typeof value === "string" && key.includes("Date")) {
+    if (key.includes("Date")) {
       return (
         <div className={styles.formGroup} key={key}>
           <label htmlFor={key}>{key}</label>
@@ -100,7 +117,11 @@ export default function ContestModal({ isOpen, onClose, onSave, contest }) {
             type="datetime-local"
             id={key}
             name={key}
-            value={value}
+            value={
+              value instanceof Timestamp
+                ? formatTimestamp(value)
+                : value || ""
+            }
             onChange={handleChange}
             className={`${styles.input} ${errors[key] ? styles.error : ""}`}
           />

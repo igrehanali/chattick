@@ -8,6 +8,7 @@ import ContestModal from "./ContestModal";
 import ContestProfile from "./ContestProfile";
 import PrizePoolModal from "./PrizePoolModal";
 import { contestService } from "@/lib/services/contest-service";
+import { Timestamp } from "firebase/firestore";
 
 export default function ContestsList() {
   const [showProfiles, setShowProfiles] = useState(false);
@@ -130,13 +131,29 @@ export default function ContestsList() {
     contest.contestName.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
-  const formatDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("en-US", {
-      year: "numeric",
-      month: "2-digit",
-      day: "2-digit",
-    });
+  const formatDate = (value) => {
+    if (!value) return "—";
+
+    let date;
+
+    // Firestore Timestamp
+    if (value instanceof Timestamp || (value?.seconds && value?.nanoseconds)) {
+      date = new Timestamp(value.seconds, value.nanoseconds).toDate();
+    }
+    // ISO string or Date object
+    else if (typeof value === "string" || value instanceof Date) {
+      date = new Date(value);
+    } else {
+      return "Invalid Date";
+    }
+
+    return isNaN(date.getTime())
+      ? "Invalid Date"
+      : date.toLocaleDateString("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+      });
   };
 
   // Add this handler after other handlers
